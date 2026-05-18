@@ -1,0 +1,973 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title><!-- v20260517060000 -->光・宇宙・政治 ニュースポータル</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=Oswald:wght@500;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+:root{--red:#dc2626;--red-lt:#fef2f2;--purple:#7c3aed;--green:#059669;--blue:#2563eb;--bg:#f1f3f6;--white:#fff;--border:#e2e5ea;--text:#111827;--muted:#6b7280;--side:210px}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Noto Sans JP',sans-serif;font-size:13px;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column}
+#loading{position:fixed;inset:0;background:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;transition:opacity .5s}
+#loading.out{opacity:0;pointer-events:none}
+.ld-logo{display:flex;align-items:center;gap:10px;margin-bottom:20px;animation:ldp 1.6s ease-in-out infinite}
+.ld-logo-bar{width:6px;height:36px;background:var(--red);border-radius:2px}
+.ld-logo-txt{font-family:'Oswald','Noto Sans JP',sans-serif;font-size:28px;font-weight:700;color:#1a1a1a;letter-spacing:.02em;line-height:1}
+@keyframes ldp{0%,100%{opacity:1}50%{opacity:.55}}
+.ld-text{font-size:13px;color:var(--muted);margin-bottom:14px}
+.ld-bar{width:160px;height:3px;background:#f3f4f6;border-radius:2px;overflow:hidden}
+.ld-fill{height:100%;background:var(--red);border-radius:2px;animation:ldf 1.6s ease-in-out infinite}
+@keyframes ldf{0%{width:0;margin-left:0}50%{width:100%;margin-left:0}100%{width:0;margin-left:100%}}
+.hdr{background:var(--white);border-bottom:1px solid var(--border);height:52px;display:flex;align-items:center;padding:0 20px;gap:12px;position:sticky;top:0;z-index:200;box-shadow:0 1px 6px rgba(0,0,0,.06)}
+.hdr-logo{display:flex;align-items:center;gap:7px;flex-shrink:0;padding-right:10px;border-right:1px solid var(--border);height:30px}
+.hdr-logo-bar{width:4px;height:22px;background:var(--red);border-radius:2px}
+.hdr-logo-txt{font-family:'Oswald','Noto Sans JP',sans-serif;font-size:17px;font-weight:700;color:#1a1a1a;letter-spacing:.02em;line-height:1}
+.hdr h1{font-size:15px;font-weight:700;font-family:'Oswald',sans-serif;letter-spacing:.04em}
+.hdr-sub{font-size:10px;color:var(--muted);margin-left:4px}
+.hdr-right{margin-left:auto;display:flex;align-items:center;gap:6px;font-size:11px;color:var(--muted)}
+.hdr-live{width:7px;height:7px;border-radius:50%;background:var(--green);animation:blink 2s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
+.wrap{display:flex;flex:1;min-height:0}
+.side{width:var(--side);flex-shrink:0;background:var(--white);border-right:1px solid var(--border);overflow-y:auto}
+.side-inner{padding:14px 12px;display:flex;flex-direction:column;gap:14px}
+.side-date-lbl{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:2px}
+.side-date-val{font-size:20px;font-weight:700;font-family:'Oswald',sans-serif;line-height:1.1}
+.side-badge{display:none;align-items:center;gap:4px;font-size:10px;color:var(--red);font-weight:600;margin-top:4px}
+.side-badge.on{display:flex}
+.side-badge::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--red)}
+.conn-ok{font-size:10px;color:var(--green);margin-top:4px;display:none}
+.conn-ok.on{display:block}
+.conn-err{font-size:10px;color:var(--red);margin-top:4px;line-height:1.5;display:none}
+.conn-err.on{display:block}
+.cal{border:1px solid var(--border);border-radius:10px;overflow:hidden}
+.cal-hd{display:flex;align-items:center;justify-content:space-between;padding:8px 10px;background:#fafafa;border-bottom:1px solid var(--border)}
+.cal-hd-lbl{font-size:12px;font-weight:700;font-family:'Oswald',sans-serif}
+.cal-nav{background:none;border:none;cursor:pointer;color:var(--muted);font-size:16px;padding:0 4px;border-radius:5px;line-height:1;transition:background .1s}
+.cal-nav:hover{background:#f3f4f6;color:var(--text)}
+.cal-grid{display:grid!important;grid-template-columns:repeat(7,1fr)!important;padding:6px 6px 8px;gap:2px;width:100%;box-sizing:border-box}
+.cal-dh{text-align:center;font-size:9px;color:var(--muted);padding:2px 0;font-weight:600}
+.cal-cell{text-align:center;font-size:10px;color:#c9cdd5;padding:5px 1px;border-radius:5px;cursor:default;line-height:1;position:relative;transition:background .1s}
+.cal-cell.has{color:var(--text);cursor:pointer;font-weight:600}
+.cal-cell.has:hover{background:var(--red-lt);color:var(--red)}
+.cal-cell.sel{background:var(--red)!important;color:#fff!important;font-weight:700}
+.cal-cell.today:not(.sel){outline:1.5px solid var(--red);color:var(--red);font-weight:600}
+.cal-cell.has:not(.sel)::after{content:'';position:absolute;bottom:1px;left:50%;transform:translateX(-50%);width:3px;height:3px;border-radius:50%;background:var(--red)}
+.cal-leg{display:flex;gap:10px;padding:3px 8px 7px;font-size:9px;color:var(--muted)}
+.cal-leg span{display:flex;align-items:center;gap:3px}
+.leg-dot{width:5px;height:5px;border-radius:50%;background:var(--red)}
+.leg-sq{width:9px;height:9px;border-radius:2px;outline:1.5px solid var(--red)}
+.sb-lbl{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;font-weight:600;margin-bottom:8px}
+.pdf-card{background:#fafafa;border:1px solid var(--border);border-radius:9px;padding:9px 10px;margin-bottom:7px}
+.pdf-card-top{display:flex;align-items:center;gap:8px;margin-bottom:7px}
+.pdf-ico{width:30px;height:30px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
+.pdf-ico.t{background:#dbeafe}.pdf-ico.p{background:#fce7f3}
+.pdf-name{font-size:10px;color:#374151;line-height:1.35;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:118px}
+.pdf-btn{display:flex;align-items:center;justify-content:center;gap:5px;width:100%;padding:6px;background:var(--red);color:#fff;border:none;border-radius:6px;cursor:pointer;font-size:10px;font-weight:700;font-family:inherit;transition:opacity .15s;text-decoration:none}
+.pdf-btn:hover{opacity:.85}
+.pdf-btn.off{background:#d1d5db;cursor:not-allowed;pointer-events:none}
+.audio-card{background:#fafafa;border:1px solid var(--border);border-radius:9px;padding:9px 10px}
+.audio-top{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.audio-ico{width:30px;height:30px;background:#f3e8ff;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+.audio-name{font-size:10px;color:#374151;line-height:1.4}
+.audio-none{font-size:11px;color:var(--muted);text-align:center;padding:12px 0}.audio-card{background:#fafafa;border:1px solid var(--border);border-radius:9px;padding:10px;margin-bottom:0}.audio-card iframe{width:100%;height:80px;border:none;border-radius:6px;display:block}.aplayer{background:#f5f0ff;border:1.5px solid #c4b5fd;border-radius:10px;padding:12px 10px}.aplayer-title{font-size:10px;color:#6d28d9;font-weight:700;margin-bottom:10px;display:flex;align-items:center;gap:5px}.aplayer-row1{display:flex;align-items:center;gap:8px;margin-bottom:10px}.aplay-btn{width:36px;height:36px;border-radius:50%;background:#7c3aed;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .15s,transform .1s;color:#fff;font-size:15px;box-shadow:0 2px 6px rgba(124,58,237,.4)}.aplay-btn:hover{background:#6d28d9;transform:scale(1.05)}.aplay-btn:active{transform:scale(.95)}.atime-wrap{display:flex;flex-direction:column;flex:1;gap:6px}.abar-wrap{position:relative;height:28px;display:flex;align-items:center;cursor:pointer;border-radius:14px;background:#ede9fe;padding:0 2px}.abar-bg{width:100%;height:6px;background:#ddd6fe;border-radius:3px;pointer-events:none}.abar-fill{position:absolute;left:2px;height:6px;background:linear-gradient(90deg,#7c3aed,#a78bfa);border-radius:3px;width:0%;pointer-events:none;transition:width .1s linear}.abar-thumb{width:16px;height:16px;border-radius:50%;background:#7c3aed;position:absolute;top:50%;transform:translate(-50%,-50%);pointer-events:none;box-shadow:0 1px 4px rgba(124,58,237,.5);transition:left .1s linear}.abar-hit{position:absolute;inset:0;cursor:pointer;border-radius:14px}.atime{font-size:10px;color:#6d28d9;font-weight:600;text-align:right;letter-spacing:.03em}.amute-btn{width:28px;height:28px;border-radius:7px;background:#ede9fe;border:1.5px solid #c4b5fd;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .15s;color:#7c3aed;font-size:13px}.amute-btn:hover{background:#ddd6fe}.adrive-link{display:block;text-align:center;font-size:9px;color:#a78bfa;text-decoration:none;margin-top:6px;padding:3px;border-radius:4px}.adrive-link:hover{color:#7c3aed;background:#f5f3ff}
+.aspeed-row{display:flex;align-items:center;gap:5px;margin-top:8px}.aspeed-lbl{font-size:9px;color:#7c3aed;font-weight:700;white-space:nowrap}.aspeed-btn{flex:1;padding:4px 2px;background:#ede9fe;border:1.5px solid #c4b5fd;border-radius:7px;color:#6d28d9;font-size:10px;font-weight:700;cursor:pointer;transition:all .15s;font-family:inherit;text-align:center}.aspeed-btn:hover{background:#ddd6fe}.aspeed-btn.act{background:#7c3aed;border-color:#7c3aed;color:#fff;box-shadow:0 1px 4px rgba(124,58,237,.4)}
+.ncard-foot{display:flex;align-items:center;justify-content:flex-end;padding:6px 12px 10px;border-top:1px solid var(--border);margin-top:4px}
+.good-btn{display:inline-flex;align-items:center;gap:5px;font-size:12px;color:var(--muted);background:none;border:1.5px solid var(--border);border-radius:20px;padding:4px 12px;cursor:pointer;transition:all .15s;user-select:none;font-family:inherit}
+.good-btn:hover{border-color:#f43f5e;color:#f43f5e;background:rgba(244,63,94,.05)}
+.good-btn.liked{border-color:#f43f5e;color:#f43f5e;background:rgba(244,63,94,.07)}
+.good-btn .gbheart{font-size:14px}.good-btn.liked .gbheart{animation:goodPop .35s ease}
+@keyframes goodPop{0%{transform:scale(1)}40%{transform:scale(1.55)}70%{transform:scale(.88)}100%{transform:scale(1)}}
+
+.main{flex:1;min-width:0;padding:16px 20px;overflow-y:auto}
+.tabs{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap}
+.tab{display:flex;align-items:center;gap:6px;padding:7px 14px;border-radius:22px;border:1px solid var(--border);background:var(--white);font-size:12px;font-weight:500;color:#374151;cursor:pointer;transition:all .15s;white-space:nowrap;font-family:inherit}
+.tab:hover{border-color:var(--red);color:var(--red)}
+.tab.act{color:#fff;border-color:transparent}
+.tab[data-i="0"].act{background:var(--red)}
+.tab[data-i="1"].act{background:var(--purple)}
+.tab[data-i="2"].act{background:var(--green)}
+.tab[data-i="3"].act{background:var(--blue)}
+.tab-ico{font-size:13px}
+.tab-badge{display:inline-flex;align-items:center;justify-content:center;min-width:18px;height:18px;padding:0 4px;border-radius:9px;font-size:10px;font-weight:700;background:rgba(0,0,0,.12)}
+.tab.act .tab-badge{background:rgba(255,255,255,.28)}
+.panel{display:none}.panel.act{display:block;animation:fin .2s}
+@keyframes fin{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+.kw-bar{background:#f8f9fb;border:1px solid var(--border);border-radius:8px;padding:8px 12px;margin-bottom:14px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.kw-ico{color:var(--muted);font-size:12px;flex-shrink:0}
+.kw-tag{font-size:11px;color:#4b5563;padding:1px 0}
+.kw-sep{color:#d1d5db}
+.ngrid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:22px}
+@media(max-width:1080px){.ngrid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:700px){.ngrid{grid-template-columns:1fr}}
+
+/* ── スマホ最適化 ── */
+@media(max-width:700px){
+  /* サイドバーを非表示にして下部固定エリアに移行 */
+  .side{display:none}
+  .wrap{flex-direction:column}
+  .main{padding:10px 12px 160px}
+
+  /* ヘッダー簡略化 */
+  .hdr-title{font-size:13px}
+  .hdr-sub{display:none}
+
+  /* タブをスクロール可能な横並びに */
+  .tabs{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;
+        padding-bottom:4px;gap:6px;scrollbar-width:none}
+  .tabs::-webkit-scrollbar{display:none}
+  .tab{flex-shrink:0;padding:7px 12px;font-size:12px;white-space:nowrap}
+
+  /* ニュースカードを1列 */
+  .ngrid{grid-template-columns:1fr}
+  .ncard{border-radius:10px}
+  .ntitle{font-size:13px}
+  .nbody{font-size:12px;-webkit-line-clamp:3}
+
+  /* カレンダー */
+  .cal{width:100%}
+  .cal-cell{font-size:10px;padding:4px 1px}
+
+  /* スマホ用：下部固定メディアバー */
+  /* ── モバイルバー ── */
+  .mobile-bar{
+    display:flex;flex-direction:column;
+    position:fixed;bottom:0;left:0;right:0;
+    background:#fff;
+    border-top:1px solid #e5e7eb;
+    box-shadow:0 -2px 14px rgba(0,0,0,.12);
+    z-index:200;
+    padding:8px 10px calc(8px + env(safe-area-inset-bottom,0px));
+    gap:6px;
+  }
+  /* 上段：日付 + 音声 */
+  .mb-top-row{display:flex;gap:8px;align-items:stretch}
+  /* 日付ボタン */
+  .mb-date-btn{
+    flex:1;display:flex;align-items:center;justify-content:center;gap:6px;
+    background:#f0fdf4;border:2px solid #86efac;border-radius:14px;
+    padding:10px 8px;cursor:pointer;min-height:52px;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .mb-date-btn:active{opacity:.8;transform:scale(.97)}
+  .mb-date-ico{font-size:20px}
+  .mb-date-txt{font-size:11px;font-weight:700;color:#15803d;line-height:1.3;text-align:center}
+  /* 音声ボタン */
+  .mb-audio-btn{
+    flex:1;display:flex;align-items:center;justify-content:center;gap:6px;
+    background:#f5f0ff;border:2px solid #c4b5fd;border-radius:14px;
+    padding:10px 8px;cursor:pointer;min-height:52px;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .mb-audio-btn.has-audio{background:#7c3aed;border-color:#7c3aed;}
+  .mb-audio-btn:active{opacity:.8;transform:scale(.97)}
+  .mb-audio-ico{font-size:20px}
+  .mb-audio-txt{font-size:11px;font-weight:700;color:#6d28d9;line-height:1.3;text-align:center}
+  .mb-audio-btn.has-audio .mb-audio-txt{color:#fff}
+  .mb-audio-btn.has-audio .mb-audio-ico{filter:brightness(10)}
+  /* 下段：PDFボタン */
+  .mb-pdf-row{display:flex;gap:6px}
+  .mb-pdf-btn{
+    flex:1;display:flex;align-items:center;justify-content:center;gap:4px;
+    border:none;border-radius:12px;
+    padding:10px 6px;cursor:pointer;min-height:44px;
+    font-size:11px;font-weight:700;color:#fff;text-decoration:none;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .mb-pdf-btn.tech{background:#dc2626}
+  .mb-pdf-btn.pol{background:#2563eb}
+  .mb-pdf-btn.off{background:#d1d5db;pointer-events:none;cursor:not-allowed;color:#9ca3af}
+  .mb-pdf-btn:not(.off):active{opacity:.8}
+  /* カレンダーモーダル */
+  .cal-modal{
+    display:none;position:fixed;inset:0;z-index:300;
+    background:rgba(0,0,0,.55);align-items:flex-end;justify-content:center;
+  }
+  .cal-modal.open{display:flex}
+  .cal-modal-inner{
+    background:#fff;border-radius:20px 20px 0 0;
+    padding:20px 16px calc(24px + env(safe-area-inset-bottom,0px));
+    width:100%;max-width:500px;
+    animation:slideUp .25s ease;
+  }
+  .cal-modal-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+  .cal-modal-ttl{font-size:15px;font-weight:700;color:#1f2937}
+  .cal-modal-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+  .cal-modal-prev,.cal-modal-next{
+    width:36px;height:36px;border-radius:50%;border:1px solid #e5e7eb;
+    background:#f9fafb;cursor:pointer;font-size:18px;display:flex;
+    align-items:center;justify-content:center;color:#374151;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .cal-modal-prev:active,.cal-modal-next:active{background:#e5e7eb}
+  .cal-modal-lbl{font-size:15px;font-weight:700;color:#1f2937}
+  .cal-modal-grid{
+    display:grid!important;grid-template-columns:repeat(7,1fr)!important;
+    gap:4px;padding:4px 0;
+  }
+  .cal-modal-grid .cal-dh{
+    text-align:center;font-size:10px;color:#9ca3af;
+    padding:3px 0;font-weight:600;
+  }
+  .cal-modal-grid .cal-cell{
+    text-align:center;font-size:14px;color:#d1d5db;
+    padding:8px 2px;border-radius:8px;cursor:default;
+    min-height:38px;display:flex;align-items:center;justify-content:center;
+  }
+  .cal-modal-grid .cal-cell.has{
+    color:#1f2937;cursor:pointer;font-weight:700;
+    background:#f9fafb;
+  }
+  .cal-modal-grid .cal-cell.has:active{background:#e5e7eb}
+  .cal-modal-grid .cal-cell.sel{
+    background:#dc2626!important;color:#fff!important;font-weight:700;
+  }
+  .cal-modal-grid .cal-cell.today:not(.sel){
+    outline:2px solid #dc2626;color:#dc2626;font-weight:700;
+  }
+  /* 音声モーダル */
+  .audio-modal{
+    display:none;position:fixed;inset:0;z-index:300;
+    background:rgba(0,0,0,.55);align-items:flex-end;justify-content:center;
+  }
+  .audio-modal.open{display:flex}
+  .audio-modal-inner{
+    background:#fff;border-radius:20px 20px 0 0;
+    padding:20px 16px calc(24px + env(safe-area-inset-bottom,0px));
+    width:100%;max-width:600px;
+    animation:slideUp .25s ease;
+  }
+  @keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+  .audio-modal-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+  .audio-modal-ttl{font-size:15px;font-weight:700;color:#1f2937}
+  .audio-modal-close{width:32px;height:32px;border-radius:50%;background:#f3f4f6;
+                     border:none;cursor:pointer;font-size:16px;display:flex;
+                     align-items:center;justify-content:center;color:#6b7280}
+  .audio-modal iframe{width:100%;height:80px;border:none;border-radius:10px;display:block}
+  .audio-modal audio{width:100%;display:block;accent-color:#7c3aed;
+                     height:44px;border-radius:10px}
+  .audio-modal-drive{
+    display:block;text-align:center;margin-top:12px;
+    padding:12px;background:#f5f0ff;border-radius:10px;
+    font-size:13px;font-weight:600;color:#7c3aed;text-decoration:none;
+  }
+  .audio-modal-none{text-align:center;padding:20px;color:#9ca3af;font-size:13px}
+}
+
+/* PC・タブレットではモバイルバーを非表示 */
+@media(min-width:701px){
+  .mobile-bar{display:none!important}
+  .audio-modal{display:none!important}
+  .cal-modal{display:none!important}
+}
+.ncard{background:var(--white);border:1px solid var(--border);border-radius:11px;overflow:hidden;display:flex;flex-direction:column;transition:box-shadow .15s,transform .15s}
+.ncard:hover{box-shadow:0 4px 18px rgba(0,0,0,.08);transform:translateY(-2px)}
+.ncard-body{padding:13px;flex:1;display:flex;flex-direction:column}
+.ncard-meta{display:flex;align-items:center;justify-content:space-between;margin-bottom:7px}
+.ntag{display:inline-flex;align-items:center;font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px}
+.ntag.t0{background:#fef2f2;color:var(--red)}.ntag.t1{background:#f5f3ff;color:var(--purple)}.ntag.t2{background:#ecfdf5;color:var(--green)}.ntag.t3{background:#eff6ff;color:var(--blue)}
+.nmedia{font-size:10px;color:var(--muted)}
+.ntitle{font-size:13px;font-weight:700;color:var(--text);line-height:1.55;margin-bottom:7px}
+.nbody{font-size:11px;color:#4b5563;line-height:1.8;margin-bottom:8px;flex:1}
+.ninsight{background:#eff6ff;border-left:3px solid var(--blue);border-radius:0 6px 6px 0;padding:7px 9px;margin-bottom:8px;font-size:11px;color:#1e3a8a;line-height:1.7}
+.ninsight::before{content:'☞ ';font-weight:700}
+.nurl{font-size:10px;color:var(--muted);word-break:break-all;margin-top:auto}
+.nurl a{color:var(--muted);text-decoration:none}.nurl a:hover{color:var(--red)}
+.no-news{grid-column:1/-1;text-align:center;padding:52px 20px;color:var(--muted)}
+.no-news-ico{font-size:44px;margin-bottom:10px;opacity:.3}
+.charts-sec{margin-bottom:8px}
+.charts-hd{font-size:13px;font-weight:700;color:var(--text);margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.charts-hd::before{content:'';width:3px;height:14px;background:var(--red);border-radius:2px}
+.chart-card{background:var(--white);border:1px solid var(--border);border-radius:11px;padding:16px;margin-bottom:12px}
+.chart-card-ttl{font-size:12px;font-weight:700;color:#374151;margin-bottom:2px}
+.chart-card-sub{font-size:10px;color:var(--muted);margin-bottom:12px}
+.chart-wrap{height:220px;position:relative}
+</style>
+</head>
+<body>
+<div id="loading"><div class="ld-logo"><div class="ld-logo-txt">sevensix</div></div><div class="ld-text">ニュースを読み込んでいます...</div><div class="ld-bar"><div class="ld-fill"></div></div></div>
+<header class="hdr">
+  <div class="hdr-logo" title="sevensix"><div class="hdr-logo-bar"></div><div class="hdr-logo-txt">sevensix</div></div>
+  <h1>光・宇宙・政治 ニュースポータル</h1>
+  <span class="hdr-sub">光学 / 宇宙・防衛 / 国内政治 / 海外政治</span>
+  <div class="hdr-right"><div class="hdr-live"></div><span>日別ニュース</span></div>
+</header>
+<div class="wrap">
+  <aside class="side"><div class="side-inner">
+    <div>
+      <div class="side-date-lbl">選択中の日付</div>
+      <div class="side-date-val" id="sideDate">—</div>
+      <div class="side-badge" id="sideBadge">レポートあり（<span id="topicCnt">0</span>件）</div>
+      <div class="conn-ok" id="connOk"></div>
+      <div class="conn-err" id="connErr"></div>
+    </div>
+    <div class="cal">
+      <div class="cal-hd"><button class="cal-nav" id="calPrev">‹</button><span class="cal-hd-lbl" id="calLbl"></span><button class="cal-nav" id="calNext">›</button></div>
+      <div class="cal-grid" id="calGrid"><div class="cal-dh">日</div><div class="cal-dh">月</div><div class="cal-dh">火</div><div class="cal-dh">水</div><div class="cal-dh">木</div><div class="cal-dh">金</div><div class="cal-dh">土</div></div>
+      <div class="cal-leg"><span><div class="leg-dot"></div>データあり</span><span><div class="leg-sq"></div>今日</span></div>
+    </div>
+    <div>
+      <div class="sb-lbl">🎙 音声解説</div>
+      <div class="audio-card">
+        <div id="audioWrap"><div class="audio-none">音声なし</div></div>
+      </div>
+    </div>
+    <div>
+      <div class="sb-lbl">📄 PDFダウンロード</div>
+      <div class="pdf-card"><div class="pdf-card-top"><div class="pdf-ico t">📘</div><div class="pdf-name" id="pdfTechName">技術系レポート</div></div><a class="pdf-btn off" id="pdfTechBtn" target="_blank">⬇ ダウンロード</a></div>
+      <div class="pdf-card"><div class="pdf-card-top"><div class="pdf-ico p">📕</div><div class="pdf-name" id="pdfPolName">政治情勢レポートPDF</div></div><a class="pdf-btn off" id="pdfPolBtn" target="_blank">⬇ ダウンロード</a></div>
+    </div>
+  </div></aside>
+  <main class="main">
+    <div class="tabs">
+      <button class="tab act" data-i="0"><span class="tab-ico">☀</span>光学・光アプリケーション<span class="tab-badge" id="b0">0</span></button>
+      <button class="tab" data-i="1"><span class="tab-ico">🛰</span>宇宙・防衛・核融合<span class="tab-badge" id="b1">0</span></button>
+      <button class="tab" data-i="2"><span class="tab-ico">🏛</span>国内政治<span class="tab-badge" id="b2">0</span></button>
+      <button class="tab" data-i="3"><span class="tab-ico">🌐</span>海外政治<span class="tab-badge" id="b3">0</span></button>
+    </div>
+    <div class="panel act" id="p0"><div class="kw-bar"><span class="kw-ico">🔖</span><span id="kw0" style="display:contents"></span></div><div class="ngrid" id="ng0"></div><div class="charts-sec" id="ch0"></div></div>
+    <div class="panel" id="p1"><div class="kw-bar"><span class="kw-ico">🔖</span><span id="kw1" style="display:contents"></span></div><div class="ngrid" id="ng1"></div><div class="charts-sec" id="ch1"></div></div>
+    <div class="panel" id="p2"><div class="kw-bar"><span class="kw-ico">🔖</span><span id="kw2" style="display:contents"></span></div><div class="ngrid" id="ng2"></div><div class="charts-sec" id="ch2"></div></div>
+    <div class="panel" id="p3"><div class="kw-bar"><span class="kw-ico">🔖</span><span id="kw3" style="display:contents"></span></div><div class="ngrid" id="ng3"></div><div class="charts-sec" id="ch3"></div></div>
+  </main>
+</div>
+<script>
+const SHEET_ID='1D5GDqcSrJj6_SGk3OlnTDqoBL0su03t9Yi5McGTb578';
+const BASE=`https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv`;
+const THEMES=[
+  {key:'optics',  label:'光学',    cls:'t0',kws:['フォトニクス','シリコンフォトニクス','光電融合','LiDAR','CPO']},
+  {key:'space',   label:'宇宙',    cls:'t1',kws:['衛星','防衛','核融合','レーザー','宇宙開発']},
+  {key:'domestic',label:'国内政治',cls:'t2',kws:['国会','閣議','与党','野党','経済安保']},
+  {key:'intl',    label:'海外政治',cls:'t3',kws:['米中','欧州','地政学','輸出規制','外交']},
+];
+const PAL=['#dc2626','#2563eb','#059669','#f59e0b','#7c3aed','#0891b2'];
+let curDate=null,availDates=[],calY,calM,allRows=[],allChartRows=[],allMediaRows=[];
+const CI={};
+
+// ── アクセス解析（セッション単位） ─────────────────────────────────
+// client_id: localStorage で永続化（同じブラウザは同じID）
+// session_id: sessionStorage + 最終アクセス時刻で管理（30分無操作で新規発行）
+const ANALYTICS_ENDPOINT = 'https://script.google.com/macros/s/AKfycbwbvl2YjPSwP5BgFa-JINS0Ya8Tdbf8GoABKv49PdIUTkI4nmmPmy1Cvqs5AulutIl8Cg/exec';
+const LS_CLIENT_ID_KEY   = 'np_client_id_v1';
+const SS_SESSION_ID_KEY  = 'np_session_id_v1';
+const SS_SESSION_LAST_KEY= 'np_session_last_v1';
+const SESSION_TIMEOUT_MS = 30 * 60 * 1000;  // 30分
+
+function _genId() {
+  // crypto.randomUUID は古いブラウザにないので簡易版で代替
+  if (window.crypto && crypto.randomUUID) return crypto.randomUUID();
+  return 'id-' + Date.now().toString(36) + '-' +
+         Math.random().toString(36).substring(2, 10) +
+         Math.random().toString(36).substring(2, 10);
+}
+
+function _getClientId() {
+  try {
+    let id = localStorage.getItem(LS_CLIENT_ID_KEY);
+    if (!id) {
+      id = _genId();
+      localStorage.setItem(LS_CLIENT_ID_KEY, id);
+    }
+    return id;
+  } catch(e) {
+    return 'anon-' + _genId();
+  }
+}
+
+function _getSessionInfo() {
+  // sessionStorage は同一タブのみ有効なので、最終アクセス時刻を見て30分以内なら継続
+  let id, last, isNew = false;
+  try {
+    id   = sessionStorage.getItem(SS_SESSION_ID_KEY);
+    last = parseInt(sessionStorage.getItem(SS_SESSION_LAST_KEY) || '0', 10);
+  } catch(e) {}
+  const now = Date.now();
+  if (!id || !last || (now - last) > SESSION_TIMEOUT_MS) {
+    id = _genId();
+    isNew = true;
+  }
+  try {
+    sessionStorage.setItem(SS_SESSION_ID_KEY, id);
+    sessionStorage.setItem(SS_SESSION_LAST_KEY, String(now));
+  } catch(e) {}
+  return { sessionId: id, isNewSession: isNew };
+}
+
+function trackPageview() {
+  if (!ANALYTICS_ENDPOINT) return;
+  try {
+    const clientId = _getClientId();
+    const { sessionId, isNewSession } = _getSessionInfo();
+    const payload = {
+      type: 'pageview',
+      client_id:      clientId,
+      session_id:     sessionId,
+      is_new_session: isNewSession,
+      referrer:       document.referrer || '',
+      user_agent:     navigator.userAgent || ''
+    };
+    // fire-and-forget（既存のいいね送信と同じ no-cors 方式）
+    fetch(ANALYTICS_ENDPOINT, {
+      method: 'POST',
+      mode:   'no-cors',
+      headers:{ 'Content-Type': 'text/plain;charset=utf-8' },
+      body:   JSON.stringify(payload)
+    }).catch(() => {});
+  } catch(e) {
+    console.warn('trackPageview failed:', e);
+  }
+}
+
+// ── グッドボタン ──────────────────────────────────────────────────
+// ▼ Apps ScriptデプロイURLを設定するとスプレッドシートにも記録されます
+const LIKES_ENDPOINT = ANALYTICS_ENDPOINT;
+const LS_LIKES_KEY = 'np_liked_v2';
+let likedSet = new Set();
+let likeCounts = {};
+
+function loadLikedSet() {
+  try { likedSet = new Set(JSON.parse(localStorage.getItem(LS_LIKES_KEY) || '[]')); } catch(e) {}
+}
+function saveLikedSet() {
+  try { localStorage.setItem(LS_LIKES_KEY, JSON.stringify([...likedSet])); } catch(e) {}
+}
+async function fetchLikeCounts() {
+  if (!LIKES_ENDPOINT) return;
+  try {
+    const res = await fetch(LIKES_ENDPOINT);
+    const j = await res.json();
+    if (j.ok) likeCounts = j.data;
+  } catch(e) { console.warn('fetchLikeCounts failed:', e); }
+}
+async function toggleLike(url, btn) {
+  const wasLiked = likedSet.has(url);
+  if (wasLiked) {
+    likedSet.delete(url);
+    likeCounts[url] = Math.max(0, (likeCounts[url] || 1) - 1);
+  } else {
+    likedSet.add(url);
+    likeCounts[url] = (likeCounts[url] || 0) + 1;
+    if (LIKES_ENDPOINT) {
+      fetch(LIKES_ENDPOINT, {
+        method: 'POST',
+        mode: 'no-cors',
+        body: JSON.stringify({ url })
+      }).catch(() => {});
+    }
+  }
+  saveLikedSet();
+  _refreshGoodBtn(url, btn);
+}
+function _refreshGoodBtn(url, btn) {
+  const liked = likedSet.has(url);
+  const cnt = likeCounts[url] || 0;
+  btn.classList.toggle('liked', liked);
+  btn.querySelector('.gbheart').textContent = liked ? '❤️' : '🤍';
+  btn.querySelector('.gbcount').textContent = cnt > 0 ? String(cnt) : '';
+}
+function buildGoodFooter(rawUrl) {
+  if (!rawUrl) return '';
+  const liked = likedSet.has(rawUrl);
+  const cnt = likeCounts[rawUrl] || 0;
+  const safeAttr = rawUrl.replace(/&/g,'&amp;').replace(/"/g,'&quot;');
+  return `<div class="ncard-foot"><button class="good-btn${liked ? ' liked' : ''}" data-like-url="${safeAttr}"><span class="gbheart">${liked ? '❤️' : '🤍'}</span><span class="gbcount">${cnt > 0 ? cnt : ''}</span><span>グッド</span></button></div>`;
+}
+// ─────────────────────────────────────────────────────────────────
+
+// CSV Parser（\r\n対応）
+function parseCSV(text){
+  const lines=text.replace(/\r\n/g,'\n').replace(/\r/g,'\n').trim().split('\n').filter(l=>l.trim());
+  if(lines.length<2)return[];
+  const hdr=csvLine(lines[0]);
+  return lines.slice(1).map(l=>{
+    const f=csvLine(l),o={};
+    hdr.forEach((h,i)=>{o[h]=(f[i]||'').trim();});
+    return o;
+  }).filter(r=>r.date&&/^\d{4}-\d{2}-\d{2}$/.test(r.date));
+}
+function csvLine(l){
+  const f=[];let c='',q=false;
+  for(let i=0;i<l.length;i++){
+    const ch=l[i];
+    if(ch==='"'&&!q){q=true;}
+    else if(ch==='"'&&q&&l[i+1]==='"'){c+='"';i++;}
+    else if(ch==='"'&&q){q=false;}
+    else if(ch===','&&!q){f.push(c);c='';}
+    else{c+=ch;}
+  }
+  f.push(c);return f.map(s=>s.trim());
+}
+
+async function fetchSheet(name){
+  // cache:'no-store'はCORSプリフライトを引き起こすため除去
+  // タイムスタンプパラメータでブラウザキャッシュを回避
+  const url=`${BASE}&sheet=${encodeURIComponent(name)}&_=${Date.now()}`;
+  // タイムアウト付きfetch（10秒）
+  const ctrl=new AbortController();
+  const tid=setTimeout(()=>ctrl.abort(),10000);
+  let r;
+  try{
+    r=await fetch(url,{signal:ctrl.signal});
+  }catch(e){
+    clearTimeout(tid);
+    if(e.name==='AbortError')throw new Error('タイムアウト（10秒）しました');
+    throw e;
+  }
+  clearTimeout(tid);
+  if(!r.ok)throw new Error(`HTTP ${r.status}`);
+  const t=await r.text();
+  if(t.trim().startsWith('<!'))throw new Error('スプレッドシートの共有設定を確認してください');
+  return t;
+}
+
+async function loadAll(){
+  const errEl=document.getElementById('connErr');
+  const okEl=document.getElementById('connOk');
+  // articles
+  try{allRows=parseCSV(await fetchSheet('articles'));}
+  catch(e){
+    allRows=[];
+    errEl.textContent='⚠ '+e.message;
+    errEl.classList.add('on');
+  }
+  // charts
+  try{allChartRows=parseCSV(await fetchSheet('charts'));}catch(e){allChartRows=[];}
+  // media
+  try{allMediaRows=parseCSV(await fetchSheet('media'));}catch(e){allMediaRows=[];}
+
+  // 日付リスト
+  const artDates=allRows.map(r=>r.date).filter(d=>/^\d{4}-\d{2}-\d{2}$/.test(d));
+  const mediaDates=allMediaRows.map(r=>r.date).filter(d=>/^\d{4}-\d{2}-\d{2}$/.test(d));
+  availDates=[...new Set([...artDates,...mediaDates])].sort();
+
+  if(allRows.length>0){
+    okEl.textContent=`✓ ${allRows.length}件 / ${availDates.length}日分`;
+    okEl.classList.add('on');
+  }
+  // カレンダー再描画・最新日付を表示
+  renderCal();
+  if(availDates.length>0)loadDate(availDates[availDates.length-1]);
+}
+
+// Calendar
+function initCal(){const n=new Date();calY=n.getFullYear();calM=n.getMonth();renderCal();}
+function renderCal(){
+  document.getElementById('calLbl').textContent=`${calY}年${calM+1}月`;
+  const first=new Date(calY,calM,1).getDay();
+  const days=new Date(calY,calM+1,0).getDate();
+  const today=new Date();
+  const todayStr=`${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
+  const grid=document.getElementById('calGrid');
+  // 曜日ヘッダー(cal-dh)は残し、日付セル(cal-cell)だけ削除して再生成
+  const oldCells=grid.querySelectorAll('.cal-cell');
+  oldCells.forEach(e=>e.remove());
+  // 月初の空白
+  for(let i=0;i<first;i++){
+    const e=document.createElement('div');
+    e.className='cal-cell';
+    grid.appendChild(e);
+  }
+  // 日付
+  for(let d=1;d<=days;d++){
+    const ds=`${calY}-${String(calM+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const e=document.createElement('div');
+    e.className='cal-cell';
+    e.textContent=String(d);
+    if(availDates.includes(ds)){
+      e.classList.add('has');
+      e.onclick=()=>loadDate(ds);
+    }
+    if(ds===curDate) e.classList.add('sel');
+    if(ds===todayStr) e.classList.add('today');
+    grid.appendChild(e);
+  }
+}
+document.getElementById('calPrev').onclick=()=>{calM--;if(calM<0){calM=11;calY--;}renderCal();};
+document.getElementById('calNext').onclick=()=>{calM++;if(calM>11){calM=0;calY++;}renderCal();};
+
+function loadDate(ds){
+  curDate=ds;
+  // スマホ用日付ボタンのテキストを更新
+  const mbDate=document.getElementById('mbDateTxt');
+  if(mbDate){
+    const [y,m,d]=ds.split('-');
+    mbDate.textContent=`${parseInt(m)}月${parseInt(d)}日`;
+  }renderCal();
+  const d=new Date(ds+'T00:00:00');
+  document.getElementById('sideDate').textContent=`${d.getFullYear()}年${d.getMonth()+1}月${d.getDate()}日`;
+  const dayRows=allRows.filter(r=>r.date===ds);
+  const dayCharts=allChartRows.filter(r=>r.date===ds);
+  const dayMedia=allMediaRows.find(r=>r.date===ds)||null;
+  const data={optics:{items:[],charts:[]},space:{items:[],charts:[]},domestic:{items:[],charts:[]},intl:{items:[],charts:[]}};
+  dayRows.forEach(row=>{
+    const sec=row.section;if(!data[sec])return;
+    data[sec].items.push({tag:row.tag,sourceLabel:row.source_label,title:row.title,detail:row.detail,insight:row.insight,source:row.url});
+  });
+  dayCharts.forEach(row=>{
+    const sec=row.section;if(!data[sec])return;
+    try{
+      const labels=JSON.parse(row.labels_json||'[]');
+      const raw=JSON.parse(row.data_json||'[]');
+      if(Array.isArray(raw)&&raw.length&&typeof raw[0]==='object'){
+        data[sec].charts.push({title:row.title,type:row.type||'bar',dataset_label:row.unit||'',labels,datasets:raw});
+      }else{
+        data[sec].charts.push({title:row.title,type:row.type||'bar',dataset_label:row.unit||'',labels,data:raw});
+      }
+    }catch(e){}
+  });
+  renderAll(data,dayMedia);
+}
+
+function renderAll(data,media){
+  let total=0;
+  THEMES.forEach((t,i)=>{
+    const d=data[t.key],cnt=d?.items?.length||0;total+=cnt;
+    document.getElementById(`b${i}`).textContent=cnt;
+    renderKw(i,t.kws,d?.keywords);
+    renderNews(i,t,d);
+    renderCharts(i,t,d);
+  });
+  document.getElementById('topicCnt').textContent=total;
+  document.getElementById('sideBadge').classList.toggle('on',total>0);
+  renderPDFs(media);
+  renderAudio(media);
+}
+function renderKw(i,defs,extra){
+  const c=document.getElementById(`kw${i}`);c.innerHTML='';
+  (extra?.length?extra:defs).forEach((k,j)=>{
+    if(j){const s=document.createElement('span');s.className='kw-sep';s.textContent='・';c.appendChild(s);}
+    const sp=document.createElement('span');sp.className='kw-tag';sp.textContent=k;c.appendChild(sp);
+  });
+}
+function renderNews(i,theme,data){
+  const grid=document.getElementById(`ng${i}`);grid.innerHTML='';
+  const items=data?.items||[];
+  if(!items.length){grid.innerHTML=`<div class="no-news"><div class="no-news-ico">📭</div><div>この日のニュースはありません</div></div>`;return;}
+  items.forEach(item=>{
+    const card=document.createElement('div');card.className='ncard';
+    const ins=item.insight?`<div class="ninsight">${item.insight}</div>`:'';
+    const url=item.source?`<div class="nurl"><a href="${item.source}" target="_blank" rel="noopener">${item.source.length>55?item.source.slice(0,55)+'…':item.source}</a></div>`:'';
+    const goodFoot = buildGoodFooter(item.source||item.title);
+    card.innerHTML=`<div class="ncard-body"><div class="ncard-meta"><span class="ntag ${theme.cls}">${item.tag||theme.label}</span><span class="nmedia">${item.sourceLabel||''}</span></div><div class="ntitle">${item.title}</div><div class="nbody">${item.detail}</div>${ins}${url}</div>${goodFoot}`;
+    grid.appendChild(card);
+  });
+}
+function renderCharts(i,theme,data){
+  const wrap=document.getElementById(`ch${i}`);wrap.innerHTML='';
+  const charts=data?.charts||[];if(!charts.length)return;
+  const hd=document.createElement('div');hd.className='charts-hd';hd.textContent='市場予測・データチャート';wrap.appendChild(hd);
+  charts.forEach(ch=>{
+    const card=document.createElement('div');card.className='chart-card';
+    const cid='c_'+Math.random().toString(36).slice(2);
+    card.innerHTML=`<div class="chart-card-ttl">${ch.title}</div><div class="chart-card-sub">単位：${ch.dataset_label||''}</div><div class="chart-wrap"><canvas id="${cid}"></canvas></div>`;
+    wrap.appendChild(card);
+    const ctx=document.getElementById(cid).getContext('2d');
+    if(CI[cid])CI[cid].destroy();
+    const isBar=ch.type==='bar';
+    const ds=ch.datasets
+      ?ch.datasets.map((d,j)=>({label:d.label,data:d.data,borderColor:PAL[j%PAL.length],backgroundColor:PAL[j%PAL.length]+(isBar?'55':'18'),borderWidth:2,tension:0.4,fill:!isBar,pointRadius:3,pointBackgroundColor:PAL[j%PAL.length]}))
+      :[{label:ch.dataset_label||'',data:ch.data||[],borderColor:PAL[0],backgroundColor:PAL[0]+(isBar?'55':'18'),borderWidth:2,tension:0.4,fill:!isBar,pointRadius:3,pointBackgroundColor:PAL[0]}];
+    CI[cid]=new Chart(ctx,{type:isBar?'bar':'line',data:{labels:ch.labels,datasets:ds},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:!!ch.datasets,position:'bottom',labels:{font:{size:10,family:'Noto Sans JP'},padding:12,boxWidth:12}},tooltip:{backgroundColor:'#fff',borderColor:'#e5e7eb',borderWidth:1,titleColor:'#374151',bodyColor:'#374151'}},scales:{x:{grid:{color:'#f3f4f6'},ticks:{color:'#6b7280',font:{size:10}},border:{color:'#e5e7eb'}},y:{grid:{color:'#f3f4f6'},ticks:{color:'#6b7280',font:{size:10}},border:{color:'#e5e7eb'}}}}});
+  });
+}
+function renderPDFs(media){
+  // ── PC用サイドバー ──
+  const tBtn=document.getElementById('pdfTechBtn');
+  const pBtn=document.getElementById('pdfPolBtn');
+  const tNm=document.getElementById('pdfTechName');
+  const pNm=document.getElementById('pdfPolName');
+  if(tBtn){tBtn.classList.add('off');tBtn.removeAttribute('href');}
+  if(pBtn){pBtn.classList.add('off');pBtn.removeAttribute('href');}
+  if(tNm)tNm.textContent='技術系レポート';
+  if(pNm)pNm.textContent='政治情勢レポート';
+  // ── スマホ用下部バー ──
+  const mbTech=document.getElementById('mbPdfTech');
+  const mbPol=document.getElementById('mbPdfPol');
+  if(mbTech){mbTech.classList.add('off');mbTech.removeAttribute('href');}
+  if(mbPol){mbPol.classList.add('off');mbPol.removeAttribute('href');}
+  if(!media)return;
+  // 技術系PDF
+  const techUrl=media.pdf_tech_url||'';
+  if(techUrl){
+    if(tBtn){tBtn.classList.remove('off');tBtn.href=techUrl;}
+    if(tNm)tNm.textContent='技術系レポートPDF';
+    if(mbTech){mbTech.classList.remove('off');mbTech.href=techUrl;}
+  }
+  // 政治系PDF
+  const polUrl=media.pdf_pol_url||'';
+  if(polUrl){
+    if(pBtn){pBtn.classList.remove('off');pBtn.href=polUrl;}
+    if(pNm)pNm.textContent='政治情勢レポートPDF';
+    if(mbPol){mbPol.classList.remove('off');mbPol.href=polUrl;}
+  }
+}
+
+
+function parseLine(line){
+  const fields=[];let cur='',inQ=false;
+  for(let i=0;i<line.length;i++){
+    const c=line[i];
+    if(c==='"'&&!inQ){inQ=true;}
+    else if(c==='"'&&inQ&&line[i+1]==='"'){cur+='"';i++;}
+    else if(c==='"'&&inQ){inQ=false;}
+    else if(c===','&&!inQ){fields.push(cur);cur='';}
+    else{cur+=c;}
+  }
+  fields.push(cur);
+  return fields.map(f=>f.trim());
+}
+
+
+
+// シンプルiframeプレイヤーを構築（通常速度再生のみ）
+function buildWaPlayer(fileId, rawUrl, prefix){
+  const wrap=document.createElement('div');
+  if(fileId){
+    const previewUrl='https://drive.google.com/file/d/'+fileId+'/preview';
+    const driveUrl='https://drive.google.com/file/d/'+fileId+'/view';
+    const iframe=document.createElement('iframe');
+    iframe.src=previewUrl;
+    iframe.allow='autoplay';
+    iframe.style.cssText='width:100%;height:72px;border:none;border-radius:8px;display:block;background:#f5f0ff;margin-bottom:6px;';
+    wrap.appendChild(iframe);
+    const lnk=document.createElement('a');
+    lnk.className='adrive-link';
+    lnk.href=driveUrl;
+    lnk.target='_blank';
+    lnk.rel='noopener';
+    lnk.textContent='☁ Google Driveで開く（別タブ）';
+    wrap.appendChild(lnk);
+  } else {
+    const audio=document.createElement('audio');
+    audio.controls=true;
+    audio.preload='metadata';
+    audio.style.cssText='width:100%;height:40px;display:block;accent-color:#7c3aed;';
+    audio.innerHTML='<source src="'+rawUrl+'">';
+    wrap.appendChild(audio);
+  }
+  return wrap;
+}
+
+function renderAudio(media){
+  const wrap=document.getElementById('audioWrap');
+  window._currentAudioMedia=media;
+  const mbBtn=document.getElementById('mbAudioBtn');
+  const mbTxt=document.getElementById('mbAudioTxt');
+  if(mbBtn&&mbTxt){
+    if(media&&media.audio_url){mbBtn.classList.add('has-audio');mbTxt.textContent='音声を再生';}
+    else{mbBtn.classList.remove('has-audio');mbTxt.textContent='音声なし';}
+  }
+  if(!media||!media.audio_url){wrap.innerHTML='<div class="audio-none">この日の音声解説はありません</div>';return;}
+  const rawUrl=media.audio_url;
+  const m=rawUrl.match(/\/file\/d\/([a-zA-Z0-9_-]+)/)||rawUrl.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+  const fileId=m?m[1]:null;
+  const container=document.createElement('div');
+  container.className='aplayer';
+  const title=document.createElement('div');
+  title.className='aplayer-title';
+  title.textContent='🎙 音声ポッドキャスト';
+  container.appendChild(title);
+  container.appendChild(buildWaPlayer(fileId,rawUrl,'sb'));
+  wrap.innerHTML='';
+  wrap.appendChild(container);
+}
+
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+
+
+
+// ── スマホ用 カレンダーモーダル ──────────────────────────
+let calModalY, calModalM;
+function renderCalModal(){
+  const grid=document.getElementById('calModalGrid');
+  const lbl=document.getElementById('calModalLbl');
+  if(!grid||!lbl)return;
+  // calModalY/Mが未初期化の場合は現在日時で初期化
+  if(typeof calModalY==='undefined'||isNaN(calModalY)){
+    const n=new Date();calModalY=n.getFullYear();calModalM=n.getMonth();
+  }
+  lbl.textContent=`${calModalY}年${calModalM+1}月`;
+  grid.querySelectorAll('.cal-cell').forEach(e=>e.remove());
+  const first=new Date(calModalY,calModalM,1).getDay();
+  const days=new Date(calModalY,calModalM+1,0).getDate();
+  const today=new Date();
+  const todayStr=`${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
+  for(let i=0;i<first;i++){
+    const e=document.createElement('div');e.className='cal-cell';grid.appendChild(e);
+  }
+  for(let d=1;d<=days;d++){
+    const ds=`${calModalY}-${String(calModalM+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const e=document.createElement('div');e.className='cal-cell';e.textContent=String(d);
+    if(availDates.includes(ds)){
+      e.classList.add('has');
+      e.onclick=()=>{loadDate(ds);closeCalModal();};
+    }
+    if(ds===curDate)e.classList.add('sel');
+    if(ds===todayStr)e.classList.add('today');
+    grid.appendChild(e);
+  }
+}
+function openCalModal(){
+  const modal=document.getElementById('calModal');
+  if(!modal)return;
+  // 現在表示中の日付の年月を初期値に
+  if(curDate){
+    const [y,m]=curDate.split('-');
+    calModalY=parseInt(y);calModalM=parseInt(m)-1;
+  }else{
+    const n=new Date();calModalY=n.getFullYear();calModalM=n.getMonth();
+  }
+  renderCalModal();
+  modal.classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function closeCalModal(e){
+  if(e&&e.target!==document.getElementById('calModal')&&
+     !e.target.classList.contains('audio-modal-close'))return;
+  document.getElementById('calModal').classList.remove('open');
+  document.body.style.overflow='';
+}
+document.addEventListener('DOMContentLoaded',function(){
+  // アクセス解析: ページ読み込み時に1回だけ送信
+  trackPageview();
+  // タブが30分以上非アクティブだった後に戻ってきたら、新セッションとして再送信
+  document.addEventListener('visibilitychange',function(){
+    if(document.visibilityState==='visible'){
+      try{
+        const last=parseInt(sessionStorage.getItem(SS_SESSION_LAST_KEY)||'0',10);
+        if(!last||(Date.now()-last)>SESSION_TIMEOUT_MS){
+          trackPageview();
+        }
+      }catch(e){}
+    }
+  });
+  const prev=document.getElementById('calModalPrev');
+  const next=document.getElementById('calModalNext');
+  if(prev)prev.onclick=function(){calModalM--;if(calModalM<0){calModalM=11;calModalY--;}renderCalModal();};
+  if(next)next.onclick=function(){calModalM++;if(calModalM>11){calModalM=0;calModalY++;}renderCalModal();};
+});
+
+// ── スマホ用 音声モーダル ─────────────────────────────────
+function openAudioModal(){
+  const modal=document.getElementById('audioModal');
+  const body=document.getElementById('audioModalBody');
+  const media=window._currentAudioMedia;
+  if(!modal||!body)return;
+  body.innerHTML='';
+  if(!media||!media.audio_url){
+    body.innerHTML='<div class="audio-modal-none">この日の音声解説はありません</div>';
+  }else{
+    const rawUrl=media.audio_url;
+    const m=rawUrl.match(/\/file\/d\/([a-zA-Z0-9_-]+)/)||rawUrl.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+    const fileId=m?m[1]:null;
+    // PC版と同じWeb Audio APIプレイヤーを使用（バッファ済みなら即再生）
+    body.appendChild(buildWaPlayer(fileId,rawUrl,'mb'));
+  }
+  modal.classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function closeAudioModal(e){
+  if(e&&e.target!==document.getElementById('audioModal')&&
+     !e.target.classList.contains('audio-modal-close'))return;
+  document.getElementById('audioModal').classList.remove('open');
+  document.body.style.overflow='';
+  // モーダルを閉じても再生は継続（_waは共有）
+}
+// ── タブ切替 ────────────────────────────────────────────
+function switchTab(idx){
+  document.querySelectorAll('.tab').forEach(function(t){
+    t.classList.toggle('act', Number(t.dataset.i) === idx);
+  });
+  document.querySelectorAll('.panel').forEach(function(p,i){
+    p.classList.toggle('act', i === idx);
+  });
+}
+document.querySelectorAll('.tab').forEach(function(t){
+  t.addEventListener('click', function(){
+    switchTab(Number(t.dataset.i));
+  });
+});
+
+// グッドボタン イベント委譲（data-like-url属性を使用）
+document.addEventListener('click', function(e) {
+  const btn = e.target.closest('.good-btn[data-like-url]');
+  if (!btn) return;
+  const url = btn.getAttribute('data-like-url');
+  if (url) toggleLike(url, btn);
+});
+
+// v20260516131202
+(async()=>{
+  loadLikedSet();
+  try{ await fetchLikeCounts(); }catch(e){ console.error('fetchLikeCounts error:',e); }
+  initCal();
+  try{ await loadAll(); }catch(e){ console.error('loadAll error:',e); }
+  // 成功・失敗にかかわらず必ずローディングを非表示
+  const ld=document.getElementById('loading');
+  ld.classList.add('out');
+  ld.style.opacity='0';
+  ld.style.pointerEvents='none';
+  setTimeout(()=>{ld.style.display='none';},600);
+})();
+</script>
+
+<!-- ── スマホ用 下部固定メディアバー ── -->
+<div class="mobile-bar" id="mobileBar">
+  <!-- 上段：日付選択 + 音声 -->
+  <div class="mb-top-row">
+    <button class="mb-date-btn" id="mbDateBtn" onclick="openCalModal()">
+      <span class="mb-date-ico">📅</span>
+      <span class="mb-date-txt" id="mbDateTxt">日付を選択</span>
+    </button>
+    <button class="mb-audio-btn" id="mbAudioBtn" onclick="openAudioModal()">
+      <span class="mb-audio-ico">🎙</span>
+      <span class="mb-audio-txt" id="mbAudioTxt">音声なし</span>
+    </button>
+  </div>
+  <!-- 下段：PDF2ボタン -->
+  <div class="mb-pdf-row">
+    <a class="mb-pdf-btn tech off" id="mbPdfTech" target="_blank" rel="noopener">📘 技術系レポートPDF</a>
+    <a class="mb-pdf-btn pol off" id="mbPdfPol" target="_blank" rel="noopener">📕 政治情勢レポートPDF</a>
+  </div>
+</div>
+
+<!-- ── 音声モーダル（スマホ用） ── -->
+<div class="audio-modal" id="audioModal" onclick="closeAudioModal(event)">
+  <div class="audio-modal-inner">
+    <div class="audio-modal-hd">
+      <span class="audio-modal-ttl">🎙 音声解説</span>
+      <button class="audio-modal-close" onclick="closeAudioModal()">✕</button>
+    </div>
+    <div id="audioModalBody">
+      <div class="audio-modal-none">この日の音声解説はありません</div>
+    </div>
+  </div>
+</div>
+
+<!-- ── カレンダーモーダル（スマホ用） ── -->
+<div class="cal-modal" id="calModal" onclick="closeCalModal(event)">
+  <div class="cal-modal-inner">
+    <div class="cal-modal-hd">
+      <span class="cal-modal-ttl">📅 日付を選択</span>
+      <button class="audio-modal-close" onclick="closeCalModal()">✕</button>
+    </div>
+    <div class="cal-modal-nav">
+      <button class="cal-modal-prev" id="calModalPrev">‹</button>
+      <span class="cal-modal-lbl" id="calModalLbl"></span>
+      <button class="cal-modal-next" id="calModalNext">›</button>
+    </div>
+    <div class="cal-modal-grid" id="calModalGrid">
+      <div class="cal-dh">日</div><div class="cal-dh">月</div>
+      <div class="cal-dh">火</div><div class="cal-dh">水</div>
+      <div class="cal-dh">木</div><div class="cal-dh">金</div>
+      <div class="cal-dh">土</div>
+    </div>
+  </div>
+</div>
+</body>
+</html>
