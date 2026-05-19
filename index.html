@@ -459,6 +459,43 @@ function trackAudioPlay(date) {
   }
 }
 
+// ── PDFダウンロード回数トラッキング ───────────────────────────────
+// 同一セッション・同一日付・同一種別では1回だけカウント
+const SS_PDF_DOWNLOADED_KEY = 'np_pdf_downloaded_v1';
+
+function _getDownloadedKeys() {
+  try {
+    return new Set(JSON.parse(sessionStorage.getItem(SS_PDF_DOWNLOADED_KEY) || '[]'));
+  } catch(e) { return new Set(); }
+}
+function _saveDownloadedKeys(set) {
+  try {
+    sessionStorage.setItem(SS_PDF_DOWNLOADED_KEY, JSON.stringify([...set]));
+  } catch(e) {}
+}
+
+function trackPdfDownload(date, kind) {
+  if (!ANALYTICS_ENDPOINT) return;
+  if (!date || !kind) return;
+  // セッション内重複防止: "YYYY-MM-DD:kind" 単位
+  const key = date + ':' + kind;
+  const downloaded = _getDownloadedKeys();
+  if (downloaded.has(key)) return;
+  downloaded.add(key);
+  _saveDownloadedKeys(downloaded);
+
+  try {
+    fetch(ANALYTICS_ENDPOINT, {
+      method: 'POST',
+      mode:   'no-cors',
+      headers:{ 'Content-Type': 'text/plain;charset=utf-8' },
+      body:   JSON.stringify({ type: 'pdf_download', date: date, kind: kind })
+    }).catch(() => {});
+  } catch(e) {
+    console.warn('trackPdfDownload failed:', e);
+  }
+}
+
 // ── グッドボタン ──────────────────────────────────────────────────
 // ▼ Apps ScriptデプロイURLを設定するとスプレッドシートにも記録されます
 const LIKES_ENDPOINT = ANALYTICS_ENDPOINT;
@@ -727,19 +764,31 @@ function renderPDFs(media){
   if(mbTech){mbTech.classList.add('off');mbTech.removeAttribute('href');}
   if(mbPol){mbPol.classList.add('off');mbPol.removeAttribute('href');}
   if(!media)return;
+  // ── ダウンロード検知用クリックハンドラ（重複登録防止のため一度デタッチしてから付け直す） ──
+  // 'tech'/'pol' をデータ属性で持たせて1つのハンドラで両方処理
+  const _onPdfClick=(ev)=>{
+    const kind=ev.currentTarget.dataset.pdfKind;
+    if(kind) trackPdfDownload(curDate, kind);
+  };
+  [tBtn,pBtn,mbTech,mbPol].forEach(el=>{
+    if(!el)return;
+    if(el._pdfClickHandler) el.removeEventListener('click',el._pdfClickHandler);
+    el._pdfClickHandler=_onPdfClick;
+    el.addEventListener('click',_onPdfClick);
+  });
   // 技術系PDF
   const techUrl=media.pdf_tech_url||'';
   if(techUrl){
-    if(tBtn){tBtn.classList.remove('off');tBtn.href=techUrl;}
+    if(tBtn){tBtn.classList.remove('off');tBtn.href=techUrl;tBtn.dataset.pdfKind='tech';}
     if(tNm)tNm.textContent='技術系レポートPDF';
-    if(mbTech){mbTech.classList.remove('off');mbTech.href=techUrl;}
+    if(mbTech){mbTech.classList.remove('off');mbTech.href=techUrl;mbTech.dataset.pdfKind='tech';}
   }
   // 政治系PDF
   const polUrl=media.pdf_pol_url||'';
   if(polUrl){
-    if(pBtn){pBtn.classList.remove('off');pBtn.href=polUrl;}
+    if(pBtn){pBtn.classList.remove('off');pBtn.href=polUrl;pBtn.dataset.pdfKind='pol';}
     if(pNm)pNm.textContent='政治情勢レポートPDF';
-    if(mbPol){mbPol.classList.remove('off');mbPol.href=polUrl;}
+    if(mbPol){mbPol.classList.remove('off');mbPol.href=polUrl;mbPol.dataset.pdfKind='pol';}
   }
 }
 
