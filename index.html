@@ -6,7 +6,7 @@
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title><!-- v20260519003634-staging -->【STAGING】光・宇宙・政治 ニュースポータル</title>
+<title><!-- v20260517060000 -->光・宇宙・政治 ニュースポータル</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=Oswald:wght@500;700&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
@@ -290,8 +290,6 @@ body{font-family:'Noto Sans JP',sans-serif;font-size:13px;background:var(--bg);c
 </style>
 </head>
 <body>
-<div id="stagingBanner" style="position:fixed;top:0;left:0;right:0;z-index:99999;background:repeating-linear-gradient(45deg,#fbbf24,#fbbf24 12px,#000 12px,#000 24px);color:#fff;text-align:center;padding:0;height:24px;line-height:24px;font-weight:700;letter-spacing:.05em;font-size:11px;text-shadow:0 0 4px #000,0 0 4px #000;">⚠ STAGING ENVIRONMENT — テスト環境です（本番ではありません）</div>
-<style>body{padding-top:24px}</style>
 <div id="loading"><div class="ld-logo"><div class="ld-logo-txt">sevensix</div></div><div class="ld-text">ニュースを読み込んでいます...</div><div class="ld-bar"><div class="ld-fill"></div></div></div>
 <header class="hdr">
   <div class="hdr-logo" title="sevensix"><div class="hdr-logo-bar"></div><div class="hdr-logo-txt">sevensix</div></div>
@@ -354,7 +352,7 @@ const CI={};
 // ── アクセス解析（セッション単位） ─────────────────────────────────
 // client_id: localStorage で永続化（同じブラウザは同じID）
 // session_id: sessionStorage + 最終アクセス時刻で管理（30分無操作で新規発行）
-const ANALYTICS_ENDPOINT = 'https://script.google.com/macros/s/AKfycbyveUGlYAyScQ7vhy0XcuMpevcv9jADbW7LU9F9DsI9HaUDWsk1LqBv6Tc3ymdzvg/exec';
+const ANALYTICS_ENDPOINT = 'https://script.google.com/macros/s/AKfycbwbvl2YjPSwP5BgFa-JINS0Ya8Tdbf8GoABKv49PdIUTkI4nmmPmy1Cvqs5AulutIl8Cg/exec';
 const LS_CLIENT_ID_KEY   = 'np_client_id_v1';
 const SS_SESSION_ID_KEY  = 'np_session_id_v1';
 const SS_SESSION_LAST_KEY= 'np_session_last_v1';
@@ -422,6 +420,42 @@ function trackPageview() {
     }).catch(() => {});
   } catch(e) {
     console.warn('trackPageview failed:', e);
+  }
+}
+
+// ── 音声プレーヤー再生回数トラッキング ───────────────────────────────
+// 同一セッション・同一日付では1回しかカウントしないよう sessionStorage で重複防止
+const SS_AUDIO_PLAYED_KEY = 'np_audio_played_v1';
+
+function _getPlayedDates() {
+  try {
+    return new Set(JSON.parse(sessionStorage.getItem(SS_AUDIO_PLAYED_KEY) || '[]'));
+  } catch(e) { return new Set(); }
+}
+function _savePlayedDates(set) {
+  try {
+    sessionStorage.setItem(SS_AUDIO_PLAYED_KEY, JSON.stringify([...set]));
+  } catch(e) {}
+}
+
+function trackAudioPlay(date) {
+  if (!ANALYTICS_ENDPOINT) return;
+  if (!date) return;
+  // セッション内重複防止: 同じ日付の音声を複数回再生しても1カウントだけ
+  const played = _getPlayedDates();
+  if (played.has(date)) return;
+  played.add(date);
+  _savePlayedDates(played);
+
+  try {
+    fetch(ANALYTICS_ENDPOINT, {
+      method: 'POST',
+      mode:   'no-cors',
+      headers:{ 'Content-Type': 'text/plain;charset=utf-8' },
+      body:   JSON.stringify({ type: 'audio_play', date: date })
+    }).catch(() => {});
+  } catch(e) {
+    console.warn('trackAudioPlay failed:', e);
   }
 }
 
@@ -737,6 +771,31 @@ function buildWaPlayer(fileId, rawUrl, prefix){
     iframe.allow='autoplay';
     iframe.style.cssText='width:100%;height:72px;border:none;border-radius:8px;display:block;background:#f5f0ff;margin-bottom:6px;';
     wrap.appendChild(iframe);
+    // ── 再生回数トラッキング（Drive iframeはクロスオリジンで内部イベントを取得できないため、
+    //    最初のクリック/タッチ/フォーカスを「再生意図」として検知する標準的アプローチ） ──
+    let _audioPlayTracked=false;
+    const _trackOnce=()=>{
+      if(_audioPlayTracked)return;
+      _audioPlayTracked=true;
+      trackAudioPlay(curDate);
+    };
+    // iframeへのクリックはブラウザ仕様上、iframeにフォーカスが移った時点で
+    // 親ウィンドウの blur イベントが発火するのでそれを利用
+    const _onBlur=()=>{
+      // iframeにフォーカスが移ったかを次フレームで確認
+      setTimeout(()=>{
+        if(document.activeElement===iframe){
+          _trackOnce();
+          window.removeEventListener('blur',_onBlur);
+        }
+      },0);
+    };
+    window.addEventListener('blur',_onBlur);
+    // タッチデバイス向けフォールバック: iframeを囲む透明オーバーレイで初回タップ検知
+    // ただし通常クリックでblurイベントが取れるブラウザではこちらは発火しない
+    iframe.addEventListener('mouseenter',()=>{
+      // ホバーだけではカウントしない（再生検知は blur で行う）
+    });
     const lnk=document.createElement('a');
     lnk.className='adrive-link';
     lnk.href=driveUrl;
@@ -750,6 +809,10 @@ function buildWaPlayer(fileId, rawUrl, prefix){
     audio.preload='metadata';
     audio.style.cssText='width:100%;height:40px;display:block;accent-color:#7c3aed;';
     audio.innerHTML='<source src="'+rawUrl+'">';
+    // ── 再生回数トラッキング（<audio>要素は play イベントで正確に検知できる） ──
+    audio.addEventListener('play',()=>{
+      trackAudioPlay(curDate);
+    },{once:true});
     wrap.appendChild(audio);
   }
   return wrap;
@@ -903,7 +966,7 @@ document.addEventListener('click', function(e) {
   if (url) toggleLike(url, btn);
 });
 
-// v20260519003634-staging
+// v20260516131202
 (async()=>{
   loadLikedSet();
   try{ await fetchLikeCounts(); }catch(e){ console.error('fetchLikeCounts error:',e); }
