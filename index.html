@@ -6,7 +6,7 @@
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title><!-- v20260517060000 -->光・宇宙・政治 ニュースポータル</title>
+<title><!-- v20260519003634-staging -->【STAGING】光・宇宙・政治 ニュースポータル</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=Oswald:wght@500;700&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
@@ -290,6 +290,8 @@ body{font-family:'Noto Sans JP',sans-serif;font-size:13px;background:var(--bg);c
 </style>
 </head>
 <body>
+<div id="stagingBanner" style="position:fixed;top:0;left:0;right:0;z-index:99999;background:repeating-linear-gradient(45deg,#fbbf24,#fbbf24 12px,#000 12px,#000 24px);color:#fff;text-align:center;padding:0;height:24px;line-height:24px;font-weight:700;letter-spacing:.05em;font-size:11px;text-shadow:0 0 4px #000,0 0 4px #000;">⚠ STAGING ENVIRONMENT — テスト環境です（本番ではありません）</div>
+<style>body{padding-top:24px}</style>
 <div id="loading"><div class="ld-logo"><div class="ld-logo-txt">sevensix</div></div><div class="ld-text">ニュースを読み込んでいます...</div><div class="ld-bar"><div class="ld-fill"></div></div></div>
 <header class="hdr">
   <div class="hdr-logo" title="sevensix"><div class="hdr-logo-bar"></div><div class="hdr-logo-txt">sevensix</div></div>
@@ -901,7 +903,7 @@ document.addEventListener('click', function(e) {
   if (url) toggleLike(url, btn);
 });
 
-// v20260516131202
+// v20260519003634-staging
 (async()=>{
   loadLikedSet();
   try{ await fetchLikeCounts(); }catch(e){ console.error('fetchLikeCounts error:',e); }
