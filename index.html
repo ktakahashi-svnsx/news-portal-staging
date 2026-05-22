@@ -279,6 +279,9 @@ body{font-family:'Noto Sans JP',sans-serif;font-size:13px;background:var(--bg);c
 .ninsight::before{content:'☞ ';font-weight:700}
 .nurl{font-size:10px;color:var(--muted);word-break:break-all;margin-top:auto}
 .nurl a{color:var(--muted);text-decoration:none}.nurl a:hover{color:var(--red)}
+.origin-badge{display:inline-flex;align-items:center;font-size:10px;font-weight:700;padding:2px 7px;border-radius:9px;margin-left:6px}
+.origin-badge.dom{background:#ecfdf5;color:#059669}
+.origin-badge.intl{background:#eff6ff;color:#2563eb}
 .no-news{grid-column:1/-1;text-align:center;padding:52px 20px;color:var(--muted)}
 .no-news-ico{font-size:44px;margin-bottom:10px;opacity:.3}
 .charts-sec{margin-bottom:8px}
@@ -295,7 +298,7 @@ body{font-family:'Noto Sans JP',sans-serif;font-size:13px;background:var(--bg);c
 <header class="hdr">
   <a class="hdr-logo" href="https://www.sevensix.co.jp/" target="_blank" rel="noopener" title="セブンシックス株式会社"><div class="hdr-logo-bar"></div><div class="hdr-logo-txt">sevensix</div></a>
   <h1>光・宇宙・政治 ニュースポータル</h1>
-  <span class="hdr-sub">光学 / 宇宙・防衛 / 国内政治 / 海外政治</span>
+  <span class="hdr-sub">光学・光アプリケーション / 政治</span>
   <div class="hdr-right"><div class="hdr-live"></div><span>日別ニュース</span></div>
 </header>
 <div class="wrap">
@@ -327,24 +330,18 @@ body{font-family:'Noto Sans JP',sans-serif;font-size:13px;background:var(--bg);c
   <main class="main">
     <div class="tabs">
       <button class="tab act" data-i="0"><span class="tab-ico">☀</span>光学・光アプリケーション<span class="tab-badge" id="b0">0</span></button>
-      <button class="tab" data-i="1"><span class="tab-ico">🛰</span>宇宙・防衛・核融合<span class="tab-badge" id="b1">0</span></button>
-      <button class="tab" data-i="2"><span class="tab-ico">🏛</span>国内政治<span class="tab-badge" id="b2">0</span></button>
-      <button class="tab" data-i="3"><span class="tab-ico">🌐</span>海外政治<span class="tab-badge" id="b3">0</span></button>
+      <button class="tab" data-i="1"><span class="tab-ico">🏛</span>政治（国内・海外）<span class="tab-badge" id="b1">0</span></button>
     </div>
     <div class="panel act" id="p0"><div class="kw-bar"><span class="kw-ico">🔖</span><span id="kw0" style="display:contents"></span></div><div class="ngrid" id="ng0"></div><div class="charts-sec" id="ch0"></div></div>
     <div class="panel" id="p1"><div class="kw-bar"><span class="kw-ico">🔖</span><span id="kw1" style="display:contents"></span></div><div class="ngrid" id="ng1"></div><div class="charts-sec" id="ch1"></div></div>
-    <div class="panel" id="p2"><div class="kw-bar"><span class="kw-ico">🔖</span><span id="kw2" style="display:contents"></span></div><div class="ngrid" id="ng2"></div><div class="charts-sec" id="ch2"></div></div>
-    <div class="panel" id="p3"><div class="kw-bar"><span class="kw-ico">🔖</span><span id="kw3" style="display:contents"></span></div><div class="ngrid" id="ng3"></div><div class="charts-sec" id="ch3"></div></div>
   </main>
 </div>
 <script>
 const SHEET_ID='1D5GDqcSrJj6_SGk3OlnTDqoBL0su03t9Yi5McGTb578';
 const BASE=`https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv`;
 const THEMES=[
-  {key:'optics',  label:'光学',    cls:'t0',kws:['フォトニクス','シリコンフォトニクス','光電融合','LiDAR','CPO']},
-  {key:'space',   label:'宇宙',    cls:'t1',kws:['衛星','防衛','核融合','レーザー','宇宙開発']},
-  {key:'domestic',label:'国内政治',cls:'t2',kws:['国会','閣議','与党','野党','経済安保']},
-  {key:'intl',    label:'海外政治',cls:'t3',kws:['米中','欧州','地政学','輸出規制','外交']},
+  {key:'optics',   label:'光学',    cls:'t0',kws:['フォトニクス','シリコンフォトニクス','光電融合','LiDAR','CPO']},
+  {key:'politics', label:'政治',    cls:'t2',kws:['国会','閣議','与党','野党','経済安保','米中','欧州','地政学','輸出規制','外交']},
 ];
 const PAL=['#dc2626','#2563eb','#059669','#f59e0b','#7c3aed','#0891b2'];
 let curDate=null,availDates=[],calY,calM,allRows=[],allChartRows=[],allMediaRows=[];
@@ -354,6 +351,7 @@ const CI={};
 // client_id: localStorage で永続化（同じブラウザは同じID）
 // session_id: sessionStorage + 最終アクセス時刻で管理（30分無操作で新規発行）
 const ANALYTICS_ENDPOINT = 'https://script.google.com/macros/s/AKfycbwbvl2YjPSwP5BgFa-JINS0Ya8Tdbf8GoABKv49PdIUTkI4nmmPmy1Cvqs5AulutIl8Cg/exec';
+const AUDIENCE = 'ext';  // 社外用サイト
 const LS_CLIENT_ID_KEY   = 'np_client_id_v1';
 const SS_SESSION_ID_KEY  = 'np_session_id_v1';
 const SS_SESSION_LAST_KEY= 'np_session_last_v1';
@@ -406,6 +404,7 @@ function trackPageview() {
     const { sessionId, isNewSession } = _getSessionInfo();
     const payload = {
       type: 'pageview',
+      audience:       AUDIENCE,
       client_id:      clientId,
       session_id:     sessionId,
       is_new_session: isNewSession,
@@ -429,7 +428,6 @@ function trackPageview() {
 let _lastAudioPlayDate = null;
 function trackAudioPlay(dateStr) {
   if (!ANALYTICS_ENDPOINT || !dateStr) return;
-  // 同じ日付は1セッション中1回のみ送信
   if (_lastAudioPlayDate === dateStr) return;
   _lastAudioPlayDate = dateStr;
   try {
@@ -437,10 +435,25 @@ function trackAudioPlay(dateStr) {
       method: 'POST',
       mode: 'no-cors',
       headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-      body: JSON.stringify({ type: 'audio_play', date: dateStr })
+      body: JSON.stringify({ type: 'audio_play', date: dateStr, audience: AUDIENCE })
     }).catch(() => {});
   } catch(e) {
     console.warn('trackAudioPlay failed:', e);
+  }
+}
+
+// ── PDFダウンロード記録 ──────────────────────────────────────────
+function trackPdfDownload(dateStr, kind) {
+  if (!ANALYTICS_ENDPOINT || !dateStr || !kind) return;
+  try {
+    fetch(ANALYTICS_ENDPOINT, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({ type: 'pdf_download', date: dateStr, kind: kind })
+    }).catch(() => {});
+  } catch(e) {
+    console.warn('trackPdfDownload failed:', e);
   }
 }
 // ── グッドボタン ──────────────────────────────────────────────────
@@ -459,7 +472,7 @@ function saveLikedSet() {
 async function fetchLikeCounts() {
   if (!LIKES_ENDPOINT) return;
   try {
-    const res = await fetch(LIKES_ENDPOINT);
+    const res = await fetch(LIKES_ENDPOINT + '?audience=' + encodeURIComponent(AUDIENCE));
     const j = await res.json();
     if (j.ok) likeCounts = j.data;
   } catch(e) { console.warn('fetchLikeCounts failed:', e); }
@@ -476,7 +489,7 @@ async function toggleLike(url, btn) {
       fetch(LIKES_ENDPOINT, {
         method: 'POST',
         mode: 'no-cors',
-        body: JSON.stringify({ url })
+        body: JSON.stringify({ url: url, audience: AUDIENCE })
       }).catch(() => {});
     }
   }
@@ -623,20 +636,29 @@ function loadDate(ds){
   const dayRows=allRows.filter(r=>r.date===ds);
   const dayCharts=allChartRows.filter(r=>r.date===ds);
   const dayMedia=allMediaRows.find(r=>r.date===ds)||null;
-  const data={optics:{items:[],charts:[]},space:{items:[],charts:[]},domestic:{items:[],charts:[]},intl:{items:[],charts:[]}};
+  // 社外用: optics + politics（国内+海外を統合, spaceは除外）
+  const data={optics:{items:[],charts:[]},politics:{items:[],charts:[]}};
+  // section -> bucket key 変換マップ
+  const _secMap={optics:'optics',domestic:'politics',intl:'politics'};
   dayRows.forEach(row=>{
-    const sec=row.section;if(!data[sec])return;
-    data[sec].items.push({tag:row.tag,sourceLabel:row.source_label,title:row.title,detail:row.detail,insight:row.insight,source:row.url});
+    const sec=row.section;
+    const bucket=_secMap[sec]; if(!bucket)return;  // space等は除外
+    data[bucket].items.push({
+      tag:row.tag, sourceLabel:row.source_label, title:row.title,
+      detail:row.detail, insight:row.insight, source:row.url,
+      origSection:sec   // 国内/海外バッジ表示用
+    });
   });
   dayCharts.forEach(row=>{
-    const sec=row.section;if(!data[sec])return;
+    const sec=row.section;
+    const bucket=_secMap[sec]; if(!bucket)return;
     try{
       const labels=JSON.parse(row.labels_json||'[]');
       const raw=JSON.parse(row.data_json||'[]');
       if(Array.isArray(raw)&&raw.length&&typeof raw[0]==='object'){
-        data[sec].charts.push({title:row.title,type:row.type||'bar',dataset_label:row.unit||'',labels,datasets:raw});
+        data[bucket].charts.push({title:row.title,type:row.type||'bar',dataset_label:row.unit||'',labels,datasets:raw});
       }else{
-        data[sec].charts.push({title:row.title,type:row.type||'bar',dataset_label:row.unit||'',labels,data:raw});
+        data[bucket].charts.push({title:row.title,type:row.type||'bar',dataset_label:row.unit||'',labels,data:raw});
       }
     }catch(e){}
   });
@@ -673,7 +695,13 @@ function renderNews(i,theme,data){
     const ins=item.insight?`<div class="ninsight">${item.insight}</div>`:'';
     const url=item.source?`<div class="nurl"><a href="${item.source}" target="_blank" rel="noopener">${item.source.length>55?item.source.slice(0,55)+'…':item.source}</a></div>`:'';
     const goodFoot = buildGoodFooter(item.source||item.title);
-    card.innerHTML=`<div class="ncard-body"><div class="ncard-meta"><span class="ntag ${theme.cls}">${item.tag||theme.label}</span><span class="nmedia">${item.sourceLabel||''}</span></div><div class="ntitle">${item.title}</div><div class="nbody">${item.detail}</div>${ins}${url}</div>${goodFoot}`;
+    // 政治タブの場合は国内/海外バッジを表示
+    let originBadge='';
+    if(theme.key==='politics' && item.origSection){
+      if(item.origSection==='domestic') originBadge='<span class="origin-badge dom">🇯🇵 国内</span>';
+      else if(item.origSection==='intl') originBadge='<span class="origin-badge intl">🌐 海外</span>';
+    }
+    card.innerHTML=`<div class="ncard-body"><div class="ncard-meta"><span class="ntag ${theme.cls}">${item.tag||theme.label}</span>${originBadge}<span class="nmedia">${item.sourceLabel||''}</span></div><div class="ntitle">${item.title}</div><div class="nbody">${item.detail}</div>${ins}${url}</div>${goodFoot}`;
     grid.appendChild(card);
   });
 }
@@ -714,16 +742,20 @@ function renderPDFs(media){
   // 技術系PDF
   const techUrl=media.pdf_tech_url||'';
   if(techUrl){
-    if(tBtn){tBtn.classList.remove('off');tBtn.href=techUrl;}
+    if(tBtn){tBtn.classList.remove('off');tBtn.href=techUrl;
+      tBtn.onclick=function(){ if(curDate) trackPdfDownload(curDate,'tech'); };}
     if(tNm)tNm.textContent='技術系レポートPDF';
-    if(mbTech){mbTech.classList.remove('off');mbTech.href=techUrl;}
+    if(mbTech){mbTech.classList.remove('off');mbTech.href=techUrl;
+      mbTech.onclick=function(){ if(curDate) trackPdfDownload(curDate,'tech'); };}
   }
   // 政治系PDF
   const polUrl=media.pdf_pol_url||'';
   if(polUrl){
-    if(pBtn){pBtn.classList.remove('off');pBtn.href=polUrl;}
+    if(pBtn){pBtn.classList.remove('off');pBtn.href=polUrl;
+      pBtn.onclick=function(){ if(curDate) trackPdfDownload(curDate,'pol'); };}
     if(pNm)pNm.textContent='政治情勢レポートPDF';
-    if(mbPol){mbPol.classList.remove('off');mbPol.href=polUrl;}
+    if(mbPol){mbPol.classList.remove('off');mbPol.href=polUrl;
+      mbPol.onclick=function(){ if(curDate) trackPdfDownload(curDate,'pol'); };}
   }
 }
 
@@ -795,7 +827,6 @@ function renderAudio(media){
   container.appendChild(buildWaPlayer(fileId,rawUrl,'sb'));
   wrap.innerHTML='';
   wrap.appendChild(container);
-  // 音声ウィジェット表示時に再生記録（curDateを使用）
   if (curDate) trackAudioPlay(curDate);
 }
 
@@ -889,7 +920,6 @@ function openAudioModal(){
     const fileId=m?m[1]:null;
     // PC版と同じWeb Audio APIプレイヤーを使用（バッファ済みなら即再生）
     body.appendChild(buildWaPlayer(fileId,rawUrl,'mb'));
-    // スマホ：モーダルを開いた時点で再生記録（curDateを使用）
     if (curDate) trackAudioPlay(curDate);
   }
   modal.classList.add('open');
