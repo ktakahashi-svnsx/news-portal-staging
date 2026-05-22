@@ -25,7 +25,8 @@ body{font-family:'Noto Sans JP',sans-serif;font-size:13px;background:var(--bg);c
 .ld-fill{height:100%;background:var(--red);border-radius:2px;animation:ldf 1.6s ease-in-out infinite}
 @keyframes ldf{0%{width:0;margin-left:0}50%{width:100%;margin-left:0}100%{width:0;margin-left:100%}}
 .hdr{background:var(--white);border-bottom:1px solid var(--border);height:52px;display:flex;align-items:center;padding:0 20px;gap:12px;position:sticky;top:0;z-index:200;box-shadow:0 1px 6px rgba(0,0,0,.06)}
-.hdr-logo{display:flex;align-items:center;gap:7px;flex-shrink:0;padding-right:10px;border-right:1px solid var(--border);height:30px}
+.hdr-logo{display:flex;align-items:center;gap:7px;flex-shrink:0;padding-right:10px;border-right:1px solid var(--border);height:30px;text-decoration:none;cursor:pointer}
+.hdr-logo:hover .hdr-logo-txt{color:var(--red)}.hdr-logo:hover .hdr-logo-bar{background:var(--red)}
 .hdr-logo-bar{width:4px;height:22px;background:var(--red);border-radius:2px}
 .hdr-logo-txt{font-family:'Oswald','Noto Sans JP',sans-serif;font-size:17px;font-weight:700;color:#1a1a1a;letter-spacing:.02em;line-height:1}
 .hdr h1{font-size:15px;font-weight:700;font-family:'Oswald',sans-serif;letter-spacing:.04em}
@@ -292,7 +293,7 @@ body{font-family:'Noto Sans JP',sans-serif;font-size:13px;background:var(--bg);c
 <body>
 <div id="loading"><div class="ld-logo"><div class="ld-logo-txt">sevensix</div></div><div class="ld-text">ニュースを読み込んでいます...</div><div class="ld-bar"><div class="ld-fill"></div></div></div>
 <header class="hdr">
-  <div class="hdr-logo" title="sevensix"><div class="hdr-logo-bar"></div><div class="hdr-logo-txt">sevensix</div></div>
+  <a class="hdr-logo" href="https://www.sevensix.co.jp/" target="_blank" rel="noopener" title="セブンシックス株式会社"><div class="hdr-logo-bar"></div><div class="hdr-logo-txt">sevensix</div></a>
   <h1>光・宇宙・政治 ニュースポータル</h1>
   <span class="hdr-sub">光学 / 宇宙・防衛 / 国内政治 / 海外政治</span>
   <div class="hdr-right"><div class="hdr-live"></div><span>日別ニュース</span></div>
@@ -423,79 +424,25 @@ function trackPageview() {
   }
 }
 
-// ── 音声プレーヤー再生回数トラッキング ───────────────────────────────
-// 同一セッション・同一日付では1回しかカウントしないよう sessionStorage で重複防止
-const SS_AUDIO_PLAYED_KEY = 'np_audio_played_v1';
 
-function _getPlayedDates() {
-  try {
-    return new Set(JSON.parse(sessionStorage.getItem(SS_AUDIO_PLAYED_KEY) || '[]'));
-  } catch(e) { return new Set(); }
-}
-function _savePlayedDates(set) {
-  try {
-    sessionStorage.setItem(SS_AUDIO_PLAYED_KEY, JSON.stringify([...set]));
-  } catch(e) {}
-}
-
-function trackAudioPlay(date) {
-  if (!ANALYTICS_ENDPOINT) return;
-  if (!date) return;
-  // セッション内重複防止: 同じ日付の音声を複数回再生しても1カウントだけ
-  const played = _getPlayedDates();
-  if (played.has(date)) return;
-  played.add(date);
-  _savePlayedDates(played);
-
+// ── 音声再生記録 ──────────────────────────────────────────────────
+let _lastAudioPlayDate = null;
+function trackAudioPlay(dateStr) {
+  if (!ANALYTICS_ENDPOINT || !dateStr) return;
+  // 同じ日付は1セッション中1回のみ送信
+  if (_lastAudioPlayDate === dateStr) return;
+  _lastAudioPlayDate = dateStr;
   try {
     fetch(ANALYTICS_ENDPOINT, {
       method: 'POST',
-      mode:   'no-cors',
-      headers:{ 'Content-Type': 'text/plain;charset=utf-8' },
-      body:   JSON.stringify({ type: 'audio_play', date: date })
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({ type: 'audio_play', date: dateStr })
     }).catch(() => {});
   } catch(e) {
     console.warn('trackAudioPlay failed:', e);
   }
 }
-
-// ── PDFダウンロード回数トラッキング ───────────────────────────────
-// 同一セッション・同一日付・同一種別では1回だけカウント
-const SS_PDF_DOWNLOADED_KEY = 'np_pdf_downloaded_v1';
-
-function _getDownloadedKeys() {
-  try {
-    return new Set(JSON.parse(sessionStorage.getItem(SS_PDF_DOWNLOADED_KEY) || '[]'));
-  } catch(e) { return new Set(); }
-}
-function _saveDownloadedKeys(set) {
-  try {
-    sessionStorage.setItem(SS_PDF_DOWNLOADED_KEY, JSON.stringify([...set]));
-  } catch(e) {}
-}
-
-function trackPdfDownload(date, kind) {
-  if (!ANALYTICS_ENDPOINT) return;
-  if (!date || !kind) return;
-  // セッション内重複防止: "YYYY-MM-DD:kind" 単位
-  const key = date + ':' + kind;
-  const downloaded = _getDownloadedKeys();
-  if (downloaded.has(key)) return;
-  downloaded.add(key);
-  _saveDownloadedKeys(downloaded);
-
-  try {
-    fetch(ANALYTICS_ENDPOINT, {
-      method: 'POST',
-      mode:   'no-cors',
-      headers:{ 'Content-Type': 'text/plain;charset=utf-8' },
-      body:   JSON.stringify({ type: 'pdf_download', date: date, kind: kind })
-    }).catch(() => {});
-  } catch(e) {
-    console.warn('trackPdfDownload failed:', e);
-  }
-}
-
 // ── グッドボタン ──────────────────────────────────────────────────
 // ▼ Apps ScriptデプロイURLを設定するとスプレッドシートにも記録されます
 const LIKES_ENDPOINT = ANALYTICS_ENDPOINT;
@@ -764,31 +711,19 @@ function renderPDFs(media){
   if(mbTech){mbTech.classList.add('off');mbTech.removeAttribute('href');}
   if(mbPol){mbPol.classList.add('off');mbPol.removeAttribute('href');}
   if(!media)return;
-  // ── ダウンロード検知用クリックハンドラ（重複登録防止のため一度デタッチしてから付け直す） ──
-  // 'tech'/'pol' をデータ属性で持たせて1つのハンドラで両方処理
-  const _onPdfClick=(ev)=>{
-    const kind=ev.currentTarget.dataset.pdfKind;
-    if(kind) trackPdfDownload(curDate, kind);
-  };
-  [tBtn,pBtn,mbTech,mbPol].forEach(el=>{
-    if(!el)return;
-    if(el._pdfClickHandler) el.removeEventListener('click',el._pdfClickHandler);
-    el._pdfClickHandler=_onPdfClick;
-    el.addEventListener('click',_onPdfClick);
-  });
   // 技術系PDF
   const techUrl=media.pdf_tech_url||'';
   if(techUrl){
-    if(tBtn){tBtn.classList.remove('off');tBtn.href=techUrl;tBtn.dataset.pdfKind='tech';}
+    if(tBtn){tBtn.classList.remove('off');tBtn.href=techUrl;}
     if(tNm)tNm.textContent='技術系レポートPDF';
-    if(mbTech){mbTech.classList.remove('off');mbTech.href=techUrl;mbTech.dataset.pdfKind='tech';}
+    if(mbTech){mbTech.classList.remove('off');mbTech.href=techUrl;}
   }
   // 政治系PDF
   const polUrl=media.pdf_pol_url||'';
   if(polUrl){
-    if(pBtn){pBtn.classList.remove('off');pBtn.href=polUrl;pBtn.dataset.pdfKind='pol';}
+    if(pBtn){pBtn.classList.remove('off');pBtn.href=polUrl;}
     if(pNm)pNm.textContent='政治情勢レポートPDF';
-    if(mbPol){mbPol.classList.remove('off');mbPol.href=polUrl;mbPol.dataset.pdfKind='pol';}
+    if(mbPol){mbPol.classList.remove('off');mbPol.href=polUrl;}
   }
 }
 
@@ -820,31 +755,6 @@ function buildWaPlayer(fileId, rawUrl, prefix){
     iframe.allow='autoplay';
     iframe.style.cssText='width:100%;height:72px;border:none;border-radius:8px;display:block;background:#f5f0ff;margin-bottom:6px;';
     wrap.appendChild(iframe);
-    // ── 再生回数トラッキング（Drive iframeはクロスオリジンで内部イベントを取得できないため、
-    //    最初のクリック/タッチ/フォーカスを「再生意図」として検知する標準的アプローチ） ──
-    let _audioPlayTracked=false;
-    const _trackOnce=()=>{
-      if(_audioPlayTracked)return;
-      _audioPlayTracked=true;
-      trackAudioPlay(curDate);
-    };
-    // iframeへのクリックはブラウザ仕様上、iframeにフォーカスが移った時点で
-    // 親ウィンドウの blur イベントが発火するのでそれを利用
-    const _onBlur=()=>{
-      // iframeにフォーカスが移ったかを次フレームで確認
-      setTimeout(()=>{
-        if(document.activeElement===iframe){
-          _trackOnce();
-          window.removeEventListener('blur',_onBlur);
-        }
-      },0);
-    };
-    window.addEventListener('blur',_onBlur);
-    // タッチデバイス向けフォールバック: iframeを囲む透明オーバーレイで初回タップ検知
-    // ただし通常クリックでblurイベントが取れるブラウザではこちらは発火しない
-    iframe.addEventListener('mouseenter',()=>{
-      // ホバーだけではカウントしない（再生検知は blur で行う）
-    });
     const lnk=document.createElement('a');
     lnk.className='adrive-link';
     lnk.href=driveUrl;
@@ -858,10 +768,6 @@ function buildWaPlayer(fileId, rawUrl, prefix){
     audio.preload='metadata';
     audio.style.cssText='width:100%;height:40px;display:block;accent-color:#7c3aed;';
     audio.innerHTML='<source src="'+rawUrl+'">';
-    // ── 再生回数トラッキング（<audio>要素は play イベントで正確に検知できる） ──
-    audio.addEventListener('play',()=>{
-      trackAudioPlay(curDate);
-    },{once:true});
     wrap.appendChild(audio);
   }
   return wrap;
@@ -889,6 +795,8 @@ function renderAudio(media){
   container.appendChild(buildWaPlayer(fileId,rawUrl,'sb'));
   wrap.innerHTML='';
   wrap.appendChild(container);
+  // 音声ウィジェット表示時に再生記録（curDateを使用）
+  if (curDate) trackAudioPlay(curDate);
 }
 
 function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
@@ -981,6 +889,8 @@ function openAudioModal(){
     const fileId=m?m[1]:null;
     // PC版と同じWeb Audio APIプレイヤーを使用（バッファ済みなら即再生）
     body.appendChild(buildWaPlayer(fileId,rawUrl,'mb'));
+    // スマホ：モーダルを開いた時点で再生記録（curDateを使用）
+    if (curDate) trackAudioPlay(curDate);
   }
   modal.classList.add('open');
   document.body.style.overflow='hidden';
