@@ -103,11 +103,16 @@ body{font-family:'Noto Sans JP',sans-serif;font-size:13px;background:var(--bg);c
 .kw-ico{color:var(--muted);font-size:12px;flex-shrink:0}
 .kw-marquee{flex:1;min-width:0;overflow:hidden;position:relative;-webkit-mask-image:linear-gradient(90deg,transparent 0,#000 14px,#000 calc(100% - 14px),transparent 100%);mask-image:linear-gradient(90deg,transparent 0,#000 14px,#000 calc(100% - 14px),transparent 100%)}
 .kw-track{display:inline-block;white-space:nowrap;will-change:transform;animation:kwScroll 20s linear infinite}
-.kw-bar:hover .kw-track{animation-play-state:paused}
+.kw-bar:hover .kw-track,.kw-bar:active .kw-track{animation-play-state:paused}
 @keyframes kwScroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 @media(prefers-reduced-motion:reduce){.kw-track{animation:none}}
 .kw-tag{font-size:11px;color:#4b5563;padding:1px 0}
+.kw-tag.lnk{cursor:pointer;color:#374151;transition:color .12s;border-radius:3px;outline:none}
+.kw-tag.lnk:hover,.kw-tag.lnk:focus-visible{color:var(--red);text-decoration:underline;text-underline-offset:2px}
+.kw-tag.lnk:focus-visible{box-shadow:0 0 0 2px rgba(220,38,38,.4)}
 .kw-sep{color:#cbd0d8;padding:0 9px}
+@keyframes ncardFlash{0%{box-shadow:0 0 0 3px rgba(220,38,38,.45)}100%{box-shadow:0 0 0 3px rgba(220,38,38,0)}}
+.ncard.flash{animation:ncardFlash 1.8s ease-out}
 .ngrid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:22px}
 @media(max-width:1080px){.ngrid{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:700px){.ngrid{grid-template-columns:1fr}}
@@ -134,6 +139,11 @@ body{font-family:'Noto Sans JP',sans-serif;font-size:13px;background:var(--bg);c
   .ncard{border-radius:10px}
   .ntitle{font-size:13px}
   .nbody{font-size:12px;-webkit-line-clamp:3}
+
+  /* 流れるタイトル（ティッカー）：タップしやすく拡大 */
+  .kw-bar{padding:9px 10px}
+  .kw-tag{font-size:12.5px;padding:5px 0}
+  .kw-sep{padding:0 8px}
 
   /* カレンダー */
   .cal{width:100%}
@@ -675,8 +685,10 @@ function renderAll(data,media){
   THEMES.forEach((t,i)=>{
     const d=data[t.key],cnt=d?.items?.length||0;total+=cnt;
     document.getElementById(`b${i}`).textContent=cnt;
-    const titles=(d?.items||[]).map(it=>it.title).filter(Boolean);
-    renderKw(i, t.kws, titles.length?titles:d?.keywords);
+    const titleItems=(d?.items||[])
+      .map((it,idx)=>({title:it.title,url:it.source,art:'art-'+i+'-'+idx}))
+      .filter(o=>o.title);
+    renderKw(i, t.kws, titleItems.length?titleItems:d?.keywords);
     renderNews(i,t,d);
     renderCharts(i,t,d);
   });
@@ -702,7 +714,18 @@ function buildMarquee(track){
   const buildUnit=()=>{
     const f=document.createDocumentFragment();
     list.forEach(k=>{
-      const sp=document.createElement('span');sp.className='kw-tag';sp.textContent=k;f.appendChild(sp);
+      const isObj=k&&typeof k==='object';
+      const sp=document.createElement('span');
+      sp.className='kw-tag';
+      sp.textContent=isObj?k.title:k;
+      if(isObj&&k.art){              // クリックで該当記事へジャンプ
+        sp.classList.add('lnk');
+        sp.dataset.art=k.art;
+        if(k.url)sp.dataset.url=k.url;
+        sp.setAttribute('role','link');
+        sp.setAttribute('tabindex','0');
+      }
+      f.appendChild(sp);
       const s=document.createElement('span');s.className='kw-sep';s.textContent='・';f.appendChild(s);
     });
     return f;
@@ -728,8 +751,8 @@ function renderNews(i,theme,data){
   const grid=document.getElementById(`ng${i}`);grid.innerHTML='';
   const items=data?.items||[];
   if(!items.length){grid.innerHTML=`<div class="no-news"><div class="no-news-ico">📭</div><div>この日のニュースはありません</div></div>`;return;}
-  items.forEach(item=>{
-    const card=document.createElement('div');card.className='ncard';
+  items.forEach((item,idx)=>{
+    const card=document.createElement('div');card.className='ncard';card.id='art-'+i+'-'+idx;
     const ins=item.insight?`<div class="ninsight">${item.insight}</div>`:'';
     const url=item.source?`<div class="nurl"><a href="${item.source}" target="_blank" rel="noopener">${item.source.length>55?item.source.slice(0,55)+'…':item.source}</a></div>`:'';
     const goodFoot = buildGoodFooter(item.source||item.title);
@@ -1003,6 +1026,50 @@ document.addEventListener('click', function(e) {
   const url = btn.getAttribute('data-like-url');
   if (url) toggleLike(url, btn);
 });
+
+// 流れるタイトルのクリックで該当記事カードへスクロール＆ハイライト
+function jumpToArticle(artId){
+  const card=document.getElementById(artId);
+  if(!card)return;
+  const panel=card.closest('.panel');
+  if(panel&&!panel.classList.contains('act')){
+    const idx=Number(panel.id.replace('p',''));
+    if(!isNaN(idx))switchTab(idx);
+  }
+  // タブ切替直後のレイアウト確定を待ってからスクロール
+  requestAnimationFrame(function(){
+    card.scrollIntoView({behavior:'smooth',block:'center'});
+    card.classList.remove('flash');void card.offsetWidth;card.classList.add('flash');
+    setTimeout(function(){card.classList.remove('flash');},1800);
+  });
+}
+document.addEventListener('click', function(e){
+  const tag=e.target.closest('.kw-tag.lnk[data-art]');
+  if(!tag)return;
+  jumpToArticle(tag.getAttribute('data-art'));
+});
+document.addEventListener('keydown', function(e){
+  if(e.key!=='Enter'&&e.key!==' ')return;
+  const tag=e.target.closest&&e.target.closest('.kw-tag.lnk[data-art]');
+  if(!tag)return;
+  e.preventDefault();
+  jumpToArticle(tag.getAttribute('data-art'));
+});
+// モバイル: ティッカーに触れている間はスクロールを一時停止し、狙ったタイトルをタップしやすくする
+let _kwTouchResume;
+document.addEventListener('touchstart', function(e){
+  const mq=e.target.closest&&e.target.closest('.kw-marquee');
+  if(!mq)return;
+  clearTimeout(_kwTouchResume);
+  const tr=mq.querySelector('.kw-track');
+  if(tr)tr.style.animationPlayState='paused';
+},{passive:true});
+document.addEventListener('touchend', function(){
+  clearTimeout(_kwTouchResume);
+  _kwTouchResume=setTimeout(function(){
+    document.querySelectorAll('.kw-track').forEach(function(tr){tr.style.animationPlayState='';});
+  },2500);
+},{passive:true});
 
 // v20260516131202
 (async()=>{
