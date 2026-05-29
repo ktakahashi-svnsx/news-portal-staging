@@ -99,10 +99,15 @@ body{font-family:'Noto Sans JP',sans-serif;font-size:13px;background:var(--bg);c
 .tab.act .tab-badge{background:rgba(255,255,255,.28)}
 .panel{display:none}.panel.act{display:block;animation:fin .2s}
 @keyframes fin{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
-.kw-bar{background:#f8f9fb;border:1px solid var(--border);border-radius:8px;padding:8px 12px;margin-bottom:14px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.kw-bar{background:#f8f9fb;border:1px solid var(--border);border-radius:8px;padding:8px 12px;margin-bottom:14px;display:flex;align-items:center;gap:8px;overflow:hidden}
 .kw-ico{color:var(--muted);font-size:12px;flex-shrink:0}
+.kw-marquee{flex:1;min-width:0;overflow:hidden;position:relative;-webkit-mask-image:linear-gradient(90deg,transparent 0,#000 14px,#000 calc(100% - 14px),transparent 100%);mask-image:linear-gradient(90deg,transparent 0,#000 14px,#000 calc(100% - 14px),transparent 100%)}
+.kw-track{display:inline-block;white-space:nowrap;will-change:transform;animation:kwScroll 20s linear infinite}
+.kw-bar:hover .kw-track{animation-play-state:paused}
+@keyframes kwScroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+@media(prefers-reduced-motion:reduce){.kw-track{animation:none}}
 .kw-tag{font-size:11px;color:#4b5563;padding:1px 0}
-.kw-sep{color:#d1d5db}
+.kw-sep{color:#d1d5db;padding:0 1px}
 .ngrid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:22px}
 @media(max-width:1080px){.ngrid{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:700px){.ngrid{grid-template-columns:1fr}}
@@ -332,8 +337,8 @@ body{font-family:'Noto Sans JP',sans-serif;font-size:13px;background:var(--bg);c
       <button class="tab act" data-i="0"><span class="tab-ico">☀</span>光学・光アプリケーション<span class="tab-badge" id="b0">0</span></button>
       <button class="tab" data-i="1"><span class="tab-ico">🏛</span>政治（国内・海外）<span class="tab-badge" id="b1">0</span></button>
     </div>
-    <div class="panel act" id="p0"><div class="kw-bar"><span class="kw-ico">🔖</span><span id="kw0" style="display:contents"></span></div><div class="ngrid" id="ng0"></div><div class="charts-sec" id="ch0"></div></div>
-    <div class="panel" id="p1"><div class="kw-bar"><span class="kw-ico">🔖</span><span id="kw1" style="display:contents"></span></div><div class="ngrid" id="ng1"></div><div class="charts-sec" id="ch1"></div></div>
+    <div class="panel act" id="p0"><div class="kw-bar"><div class="kw-marquee"><div class="kw-track" id="kw0"></div></div></div><div class="ngrid" id="ng0"></div><div class="charts-sec" id="ch0"></div></div>
+    <div class="panel" id="p1"><div class="kw-bar"><div class="kw-marquee"><div class="kw-track" id="kw1"></div></div></div><div class="ngrid" id="ng1"></div><div class="charts-sec" id="ch1"></div></div>
   </main>
 </div>
 <script>
@@ -680,11 +685,43 @@ function renderAll(data,media){
   renderAudio(media);
 }
 function renderKw(i,defs,extra){
-  const c=document.getElementById(`kw${i}`);c.innerHTML='';
-  (extra?.length?extra:defs).forEach((k,j)=>{
-    if(j){const s=document.createElement('span');s.className='kw-sep';s.textContent='・';c.appendChild(s);}
-    const sp=document.createElement('span');sp.className='kw-tag';sp.textContent=k;c.appendChild(sp);
-  });
+  const track=document.getElementById(`kw${i}`);
+  if(!track)return;
+  track._kwList=(extra?.length?extra:defs)||[];
+  buildMarquee(track);
+}
+// キーワードを右→左へ途切れなく流すマーキーを構築
+function buildMarquee(track){
+  if(!track)return;
+  const list=track._kwList||[];
+  track.style.animation='none';
+  track.innerHTML='';
+  if(!list.length)return;
+  // 1セット分（末尾に区切り「・」を付けて連結時も等間隔に）
+  const buildUnit=()=>{
+    const f=document.createDocumentFragment();
+    list.forEach(k=>{
+      const sp=document.createElement('span');sp.className='kw-tag';sp.textContent=k;f.appendChild(sp);
+      const s=document.createElement('span');s.className='kw-sep';s.textContent='・';f.appendChild(s);
+    });
+    return f;
+  };
+  // 表示幅を測り、ビューポートを満たすだけ繰り返す（途切れ防止）
+  const vp=track.parentElement;                       // .kw-marquee
+  const vw=vp?vp.clientWidth:0;
+  track.appendChild(buildUnit());
+  const unitW=track.scrollWidth;
+  let reps=1;
+  if(vw>0&&unitW>0){ while(unitW*reps<vw+60&&reps<60)reps++; }
+  // 1ブロック = reps回分。それを2ブロック並べ、-50%移動でシームレスにループ
+  track.innerHTML='';
+  for(let b=0;b<2;b++){ for(let r=0;r<reps;r++){ track.appendChild(buildUnit()); } }
+  // 速度を内容量に比例させ一定の流速（約55px/秒）に
+  const half=track.scrollWidth/2;
+  if(half>0){
+    track.style.animation='';
+    track.style.animationDuration=Math.max(10,half/55)+'s';
+  }
 }
 function renderNews(i,theme,data){
   const grid=document.getElementById(`ng${i}`);grid.innerHTML='';
@@ -940,7 +977,18 @@ function switchTab(idx){
   document.querySelectorAll('.panel').forEach(function(p,i){
     p.classList.toggle('act', i === idx);
   });
+  // 非表示だったパネルは幅が測れないため、表示時に再構築して途切れを防ぐ
+  const tr=document.getElementById('kw'+idx);
+  if(tr)buildMarquee(tr);
 }
+// ウィンドウ幅の変化に追従してマーキーを再計算
+let _kwResizeTmr;
+window.addEventListener('resize',function(){
+  clearTimeout(_kwResizeTmr);
+  _kwResizeTmr=setTimeout(function(){
+    document.querySelectorAll('.panel.act .kw-track').forEach(buildMarquee);
+  },200);
+});
 document.querySelectorAll('.tab').forEach(function(t){
   t.addEventListener('click', function(){
     switchTab(Number(t.dataset.i));
