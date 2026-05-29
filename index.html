@@ -107,7 +107,7 @@ body{font-family:'Noto Sans JP',sans-serif;font-size:13px;background:var(--bg);c
 @keyframes kwScroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 @media(prefers-reduced-motion:reduce){.kw-track{animation:none}}
 .kw-tag{font-size:11px;color:#4b5563;padding:1px 0}
-.kw-sep{color:#d1d5db;padding:0 1px}
+.kw-sep{color:#cbd0d8;padding:0 9px}
 .ngrid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:22px}
 @media(max-width:1080px){.ngrid{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:700px){.ngrid{grid-template-columns:1fr}}
@@ -675,7 +675,8 @@ function renderAll(data,media){
   THEMES.forEach((t,i)=>{
     const d=data[t.key],cnt=d?.items?.length||0;total+=cnt;
     document.getElementById(`b${i}`).textContent=cnt;
-    renderKw(i,t.kws,d?.keywords);
+    const titles=(d?.items||[]).map(it=>it.title).filter(Boolean);
+    renderKw(i, t.kws, titles.length?titles:d?.keywords);
     renderNews(i,t,d);
     renderCharts(i,t,d);
   });
