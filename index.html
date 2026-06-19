@@ -12,7 +12,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=Oswald:wght@500;700&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <style>
-:root{--red:#dc2626;--red-lt:#fef2f2;--purple:#7c3aed;--green:#059669;--blue:#2563eb;--bg:#f1f3f6;--white:#fff;--border:#e2e5ea;--text:#111827;--muted:#6b7280;--side:210px}
+:root{--red:#cc0000;--red-lt:#fef2f2;--purple:#374151;--green:#4b5563;--blue:#374151;--bg:#f4f5f7;--white:#fff;--border:#e3e5e9;--text:#18181b;--muted:#71717a;--accent:#cc0000;--side:210px}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Noto Sans JP',sans-serif;font-size:13px;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column}
 #loading{position:fixed;inset:0;background:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;transition:opacity .5s}
@@ -68,8 +68,8 @@ body{font-family:'Noto Sans JP',sans-serif;font-size:13px;background:var(--bg);c
 .pdf-card{background:#fafafa;border:1px solid var(--border);border-radius:9px;padding:9px 10px;margin-bottom:7px}
 .pdf-card-top{display:flex;align-items:center;gap:8px;margin-bottom:7px}
 .pdf-ico{width:30px;height:30px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
-.pdf-ico.t{background:#dbeafe}.pdf-ico.p{background:#fce7f3}
-.pdf-ico.c0{background:#fef2f2}.pdf-ico.c1{background:#f5f3ff}.pdf-ico.c2{background:#ecfdf5}.pdf-ico.c3{background:#eff6ff}
+.pdf-ico.t{background:#e4e4e7}.pdf-ico.p{background:#f4f4f5}
+.pdf-ico.c0{background:#f4f4f5}.pdf-ico.c1{background:#f4f4f5}.pdf-ico.c2{background:#f4f4f5}.pdf-ico.c3{background:#f4f4f5}
 .pdf-name{font-size:10px;color:#374151;line-height:1.35;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:118px}
 .pdf-name.full{white-space:normal;max-width:none;overflow:visible}
 .pdf-btn{display:flex;align-items:center;justify-content:center;gap:5px;width:100%;padding:6px;background:var(--red);color:#fff;border:none;border-radius:6px;cursor:pointer;font-size:10px;font-weight:700;font-family:inherit;transition:opacity .15s;text-decoration:none}
@@ -77,14 +77,14 @@ body{font-family:'Noto Sans JP',sans-serif;font-size:13px;background:var(--bg);c
 .pdf-btn.off{background:#d1d5db;cursor:not-allowed;pointer-events:none}
 .audio-card{background:#fafafa;border:1px solid var(--border);border-radius:9px;padding:9px 10px}
 .audio-top{display:flex;align-items:center;gap:8px;margin-bottom:8px}
-.audio-ico{width:30px;height:30px;background:#f3e8ff;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+.audio-ico{width:30px;height:30px;background:#f4f4f5;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
 .audio-name{font-size:10px;color:#374151;line-height:1.4}
-.audio-none{font-size:11px;color:var(--muted);text-align:center;padding:12px 0}.audio-card{background:#fafafa;border:1px solid var(--border);border-radius:9px;padding:10px;margin-bottom:0}.audio-card iframe{width:100%;height:80px;border:none;border-radius:6px;display:block}.aplayer{background:#f5f0ff;border:1.5px solid #c4b5fd;border-radius:10px;padding:12px 10px}.aplayer-title{font-size:10px;color:#6d28d9;font-weight:700;margin-bottom:10px;display:flex;align-items:center;gap:5px}.aplayer-row1{display:flex;align-items:center;gap:8px;margin-bottom:10px}.aplay-btn{width:36px;height:36px;border-radius:50%;background:#7c3aed;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .15s,transform .1s;color:#fff;font-size:15px;box-shadow:0 2px 6px rgba(124,58,237,.4)}.aplay-btn:hover{background:#6d28d9;transform:scale(1.05)}.aplay-btn:active{transform:scale(.95)}.atime-wrap{display:flex;flex-direction:column;flex:1;gap:6px}.abar-wrap{position:relative;height:28px;display:flex;align-items:center;cursor:pointer;border-radius:14px;background:#ede9fe;padding:0 2px}.abar-bg{width:100%;height:6px;background:#ddd6fe;border-radius:3px;pointer-events:none}.abar-fill{position:absolute;left:2px;height:6px;background:linear-gradient(90deg,#7c3aed,#a78bfa);border-radius:3px;width:0%;pointer-events:none;transition:width .1s linear}.abar-thumb{width:16px;height:16px;border-radius:50%;background:#7c3aed;position:absolute;top:50%;transform:translate(-50%,-50%);pointer-events:none;box-shadow:0 1px 4px rgba(124,58,237,.5);transition:left .1s linear}.abar-hit{position:absolute;inset:0;cursor:pointer;border-radius:14px}.atime{font-size:10px;color:#6d28d9;font-weight:600;text-align:right;letter-spacing:.03em}.amute-btn{width:28px;height:28px;border-radius:7px;background:#ede9fe;border:1.5px solid #c4b5fd;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .15s;color:#7c3aed;font-size:13px}.amute-btn:hover{background:#ddd6fe}.adrive-link{display:block;text-align:center;font-size:9px;color:#a78bfa;text-decoration:none;margin-top:6px;padding:3px;border-radius:4px}.adrive-link:hover{color:#7c3aed;background:#f5f3ff}
-.aspeed-row{display:flex;align-items:center;gap:5px;margin-top:8px}.aspeed-lbl{font-size:9px;color:#7c3aed;font-weight:700;white-space:nowrap}.aspeed-btn{flex:1;padding:4px 2px;background:#ede9fe;border:1.5px solid #c4b5fd;border-radius:7px;color:#6d28d9;font-size:10px;font-weight:700;cursor:pointer;transition:all .15s;font-family:inherit;text-align:center}.aspeed-btn:hover{background:#ddd6fe}.aspeed-btn.act{background:#7c3aed;border-color:#7c3aed;color:#fff;box-shadow:0 1px 4px rgba(124,58,237,.4)}
+.audio-none{font-size:11px;color:var(--muted);text-align:center;padding:12px 0}.audio-card{background:#fafafa;border:1px solid var(--border);border-radius:9px;padding:10px;margin-bottom:0}.audio-card iframe{width:100%;height:80px;border:none;border-radius:6px;display:block}.aplayer{background:#f4f5f7;border:1.5px solid #d4d4d8;border-radius:10px;padding:12px 10px}.aplayer-title{font-size:10px;color:#1f2937;font-weight:700;margin-bottom:10px;display:flex;align-items:center;gap:5px}.aplayer-row1{display:flex;align-items:center;gap:8px;margin-bottom:10px}.aplay-btn{width:36px;height:36px;border-radius:50%;background:#27272a;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .15s,transform .1s;color:#fff;font-size:15px;box-shadow:0 2px 6px rgba(0,0,0,.18)}.aplay-btn:hover{background:#1f2937;transform:scale(1.05)}.aplay-btn:active{transform:scale(.95)}.atime-wrap{display:flex;flex-direction:column;flex:1;gap:6px}.abar-wrap{position:relative;height:28px;display:flex;align-items:center;cursor:pointer;border-radius:14px;background:#e8e9ec;padding:0 2px}.abar-bg{width:100%;height:6px;background:#d4d4d8;border-radius:3px;pointer-events:none}.abar-fill{position:absolute;left:2px;height:6px;background:linear-gradient(90deg,#3f3f46,#a1a1aa);border-radius:3px;width:0%;pointer-events:none;transition:width .1s linear}.abar-thumb{width:16px;height:16px;border-radius:50%;background:#27272a;position:absolute;top:50%;transform:translate(-50%,-50%);pointer-events:none;box-shadow:0 1px 4px rgba(0,0,0,.2);transition:left .1s linear}.abar-hit{position:absolute;inset:0;cursor:pointer;border-radius:14px}.atime{font-size:10px;color:#1f2937;font-weight:600;text-align:right;letter-spacing:.03em}.amute-btn{width:28px;height:28px;border-radius:7px;background:#e8e9ec;border:1.5px solid #d4d4d8;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .15s;color:#27272a;font-size:13px}.amute-btn:hover{background:#d4d4d8}.adrive-link{display:block;text-align:center;font-size:9px;color:#9ca3af;text-decoration:none;margin-top:6px;padding:3px;border-radius:4px}.adrive-link:hover{color:#27272a;background:#f4f5f7}
+.aspeed-row{display:flex;align-items:center;gap:5px;margin-top:8px}.aspeed-lbl{font-size:9px;color:#27272a;font-weight:700;white-space:nowrap}.aspeed-btn{flex:1;padding:4px 2px;background:#e8e9ec;border:1.5px solid #d4d4d8;border-radius:7px;color:#1f2937;font-size:10px;font-weight:700;cursor:pointer;transition:all .15s;font-family:inherit;text-align:center}.aspeed-btn:hover{background:#d4d4d8}.aspeed-btn.act{background:#27272a;border-color:#27272a;color:#fff;box-shadow:0 1px 4px rgba(0,0,0,.18)}
 .ncard-foot{display:flex;align-items:center;justify-content:flex-end;padding:6px 12px 10px;border-top:1px solid var(--border);margin-top:4px}
 .good-btn{display:inline-flex;align-items:center;gap:5px;font-size:12px;color:var(--muted);background:none;border:1.5px solid var(--border);border-radius:20px;padding:4px 12px;cursor:pointer;transition:all .15s;user-select:none;font-family:inherit}
-.good-btn:hover{border-color:#f43f5e;color:#f43f5e;background:rgba(244,63,94,.05)}
-.good-btn.liked{border-color:#f43f5e;color:#f43f5e;background:rgba(244,63,94,.07)}
+.good-btn:hover{border-color:#3f3f46;color:#3f3f46;background:rgba(0,0,0,.06)}
+.good-btn.liked{border-color:#3f3f46;color:#3f3f46;background:rgba(0,0,0,.06)}
 .good-btn .gbheart{font-size:14px}.good-btn.liked .gbheart{animation:goodPop .35s ease}
 @keyframes goodPop{0%{transform:scale(1)}40%{transform:scale(1.55)}70%{transform:scale(.88)}100%{transform:scale(1)}}
 
@@ -93,10 +93,10 @@ body{font-family:'Noto Sans JP',sans-serif;font-size:13px;background:var(--bg);c
 .tab{display:flex;align-items:center;gap:6px;padding:7px 14px;border-radius:22px;border:1px solid var(--border);background:var(--white);font-size:12px;font-weight:500;color:#374151;cursor:pointer;transition:all .15s;white-space:nowrap;font-family:inherit}
 .tab:hover{border-color:var(--red);color:var(--red)}
 .tab.act{color:#fff;border-color:transparent}
-.tab[data-i="0"].act{background:var(--red)}
-.tab[data-i="1"].act{background:var(--purple)}
-.tab[data-i="2"].act{background:var(--green)}
-.tab[data-i="3"].act{background:var(--blue)}
+.tab[data-i="0"].act{background:#cc0000}
+.tab[data-i="1"].act{background:#3f3f46}
+.tab[data-i="2"].act{background:#52525b}
+.tab[data-i="3"].act{background:#71717a}
 .tab-ico{font-size:13px}
 .tab-badge{display:inline-flex;align-items:center;justify-content:center;min-width:18px;height:18px;padding:0 4px;border-radius:9px;font-size:10px;font-weight:700;background:rgba(0,0,0,.12)}
 .tab.act .tab-badge{background:rgba(255,255,255,.28)}
@@ -112,30 +112,30 @@ body{font-family:'Noto Sans JP',sans-serif;font-size:13px;background:var(--bg);c
 .kw-tag{font-size:11px;color:#4b5563;padding:1px 0}
 .kw-tag.lnk{cursor:pointer;color:#374151;transition:color .12s;border-radius:3px;outline:none}
 .kw-tag.lnk:hover,.kw-tag.lnk:focus-visible{color:var(--red);text-decoration:underline;text-underline-offset:2px}
-.kw-tag.lnk:focus-visible{box-shadow:0 0 0 2px rgba(220,38,38,.4)}
+.kw-tag.lnk:focus-visible{box-shadow:0 0 0 2px rgba(204,0,0,.4)}
 .kw-sep{color:#cbd0d8;padding:0 9px}
 /* ── 週間ランキング（マーキー型 / 直近7日 TOP5） ── */
 .rank-marquee{gap:10px}
 .rank-hd-inline{display:flex;align-items:center;gap:5px;flex-shrink:0;padding-right:10px;border-right:1px solid var(--border)}
 .rank-hd-ico{font-size:13px}
-.rank-hd-ttl{font-size:11px;font-weight:700;color:#b45309;letter-spacing:.02em;white-space:nowrap}
+.rank-hd-ttl{font-size:11px;font-weight:700;color:#52525b;letter-spacing:.02em;white-space:nowrap}
 /* 流れる各ランキング項目 */
 .kw-tag.rank{display:inline-flex;align-items:center;gap:6px;padding:2px 0}
 .rank-no-chip{display:inline-flex;align-items:center;justify-content:center;min-width:17px;height:17px;border-radius:50%;font-family:'Oswald',sans-serif;font-size:10px;font-weight:700;color:#9ca3af;background:#eef0f4;flex-shrink:0}
-.kw-tag.rank.top1 .rank-no-chip{background:#fde68a;color:#92400e}
-.kw-tag.rank.top2 .rank-no-chip{background:#e5e7eb;color:#4b5563}
-.kw-tag.rank.top3 .rank-no-chip{background:#fed7aa;color:#9a3412}
+.kw-tag.rank.top1 .rank-no-chip{background:#e4e4e7;color:#3f3f46}
+.kw-tag.rank.top2 .rank-no-chip{background:#e4e4e7;color:#4b5563}
+.kw-tag.rank.top3 .rank-no-chip{background:#e4e4e7;color:#52525b}
 .rank-tag-ttl{font-size:11px;color:#374151;font-weight:500}
 .kw-tag.rank.lnk:hover .rank-tag-ttl,.kw-tag.rank.lnk:focus-visible .rank-tag-ttl{color:var(--red);text-decoration:underline;text-underline-offset:2px}
-.rank-tag-metric{font-size:10px;font-weight:700;color:#f43f5e;white-space:nowrap}
-.rank-tag-metric.note{color:#7c3aed}
+.rank-tag-metric{font-size:10px;font-weight:700;color:#3f3f46;white-space:nowrap}
+.rank-tag-metric.note{color:#27272a}
 .rank-empty-tag{font-size:11px;color:var(--muted)}
 @media(max-width:700px){
   .rank-hd-ttl{display:none}
   .rank-hd-inline{padding-right:7px}
   .rank-tag-ttl{font-size:11px}
 }
-@keyframes ncardFlash{0%{box-shadow:0 0 0 3px rgba(220,38,38,.45)}100%{box-shadow:0 0 0 3px rgba(220,38,38,0)}}
+@keyframes ncardFlash{0%{box-shadow:0 0 0 3px rgba(204,0,0,.45)}100%{box-shadow:0 0 0 3px rgba(204,0,0,0)}}
 .ncard.flash{animation:ncardFlash 1.8s ease-out}
 .ngrid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:22px}
 @media(max-width:1080px){.ngrid{grid-template-columns:repeat(2,1fr)}}
@@ -179,7 +179,7 @@ body{font-family:'Noto Sans JP',sans-serif;font-size:13px;background:var(--bg);c
     display:flex;flex-direction:column;
     position:fixed;bottom:0;left:0;right:0;
     background:#fff;
-    border-top:1px solid #e5e7eb;
+    border-top:1px solid #e4e4e7;
     box-shadow:0 -2px 14px rgba(0,0,0,.12);
     z-index:200;
     padding:8px 10px calc(8px + env(safe-area-inset-bottom,0px));
@@ -190,29 +190,29 @@ body{font-family:'Noto Sans JP',sans-serif;font-size:13px;background:var(--bg);c
   /* 日付ボタン */
   .mb-date-btn{
     flex:1;display:flex;align-items:center;justify-content:center;gap:6px;
-    background:#f0fdf4;border:2px solid #86efac;border-radius:14px;
+    background:#f4f4f5;border:2px solid #d4d4d8;border-radius:14px;
     padding:10px 8px;cursor:pointer;min-height:52px;
     -webkit-tap-highlight-color:transparent;
   }
   .mb-date-btn:active{opacity:.8;transform:scale(.97)}
   .mb-date-ico{font-size:20px}
-  .mb-date-txt{font-size:11px;font-weight:700;color:#15803d;line-height:1.3;text-align:center}
+  .mb-date-txt{font-size:11px;font-weight:700;color:#3f3f46;line-height:1.3;text-align:center}
   /* 音声ボタン */
   .mb-audio-btn{
     flex:1;display:flex;align-items:center;justify-content:center;gap:6px;
-    background:#f5f0ff;border:2px solid #c4b5fd;border-radius:14px;
+    background:#f4f5f7;border:2px solid #c4b5fd;border-radius:14px;
     padding:10px 8px;cursor:pointer;min-height:52px;
     -webkit-tap-highlight-color:transparent;
   }
-  .mb-audio-btn.has-audio{background:#7c3aed;border-color:#7c3aed;}
+  .mb-audio-btn.has-audio{background:#27272a;border-color:#27272a;}
   .mb-audio-btn:active{opacity:.8;transform:scale(.97)}
   .mb-audio-ico{font-size:20px}
-  .mb-audio-txt{font-size:11px;font-weight:700;color:#6d28d9;line-height:1.3;text-align:center}
+  .mb-audio-txt{font-size:11px;font-weight:700;color:#18181b;line-height:1.3;text-align:center}
   .mb-audio-btn.has-audio .mb-audio-txt{color:#fff}
   .mb-audio-btn.has-audio .mb-audio-ico{filter:brightness(10)}
-  /* 下段：前月サマリーレポート（4カテゴリ・2×2グリッド） */
-  .mb-pdf-lbl{font-size:10px;font-weight:700;color:#6b7280;padding:0 2px;display:flex;align-items:center;gap:4px}
-  .mb-pdf-row{display:flex;flex-wrap:wrap;gap:6px}
+  /* 下段：前月サマリーレポート（4カテゴリ・2×2グリッド） ※スマホ版では非表示 */
+  .mb-pdf-lbl{display:none!important}
+  .mb-pdf-row{display:none!important}
   .mb-pdf-btn{
     flex:1 1 calc(50% - 3px);display:flex;align-items:center;justify-content:center;gap:4px;
     border:none;border-radius:12px;
@@ -220,10 +220,10 @@ body{font-family:'Noto Sans JP',sans-serif;font-size:13px;background:var(--bg);c
     font-size:11px;font-weight:700;color:#fff;text-decoration:none;
     -webkit-tap-highlight-color:transparent;
   }
-  .mb-pdf-btn.c0{background:#dc2626}
-  .mb-pdf-btn.c1{background:#7c3aed}
-  .mb-pdf-btn.c2{background:#059669}
-  .mb-pdf-btn.c3{background:#2563eb}
+  .mb-pdf-btn.c0{background:#1f2937}
+  .mb-pdf-btn.c1{background:#27272a}
+  .mb-pdf-btn.c2{background:#3f3f46}
+  .mb-pdf-btn.c3{background:#52525b}
   .mb-pdf-btn.off{background:#d1d5db;pointer-events:none;cursor:not-allowed;color:#9ca3af}
   .mb-pdf-btn:not(.off):active{opacity:.8}
   /* カレンダーモーダル */
@@ -242,12 +242,12 @@ body{font-family:'Noto Sans JP',sans-serif;font-size:13px;background:var(--bg);c
   .cal-modal-ttl{font-size:15px;font-weight:700;color:#1f2937}
   .cal-modal-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
   .cal-modal-prev,.cal-modal-next{
-    width:36px;height:36px;border-radius:50%;border:1px solid #e5e7eb;
+    width:36px;height:36px;border-radius:50%;border:1px solid #e4e4e7;
     background:#f9fafb;cursor:pointer;font-size:18px;display:flex;
     align-items:center;justify-content:center;color:#374151;
     -webkit-tap-highlight-color:transparent;
   }
-  .cal-modal-prev:active,.cal-modal-next:active{background:#e5e7eb}
+  .cal-modal-prev:active,.cal-modal-next:active{background:#e4e4e7}
   .cal-modal-lbl{font-size:15px;font-weight:700;color:#1f2937}
   .cal-modal-grid{
     display:grid!important;grid-template-columns:repeat(7,1fr)!important;
@@ -266,12 +266,12 @@ body{font-family:'Noto Sans JP',sans-serif;font-size:13px;background:var(--bg);c
     color:#1f2937;cursor:pointer;font-weight:700;
     background:#f9fafb;
   }
-  .cal-modal-grid .cal-cell.has:active{background:#e5e7eb}
+  .cal-modal-grid .cal-cell.has:active{background:#e4e4e7}
   .cal-modal-grid .cal-cell.sel{
-    background:#dc2626!important;color:#fff!important;font-weight:700;
+    background:#1f2937!important;color:#fff!important;font-weight:700;
   }
   .cal-modal-grid .cal-cell.today:not(.sel){
-    outline:2px solid #dc2626;color:#dc2626;font-weight:700;
+    outline:2px solid #1f2937;color:#1f2937;font-weight:700;
   }
   /* 音声モーダル */
   .audio-modal{
@@ -292,12 +292,12 @@ body{font-family:'Noto Sans JP',sans-serif;font-size:13px;background:var(--bg);c
                      border:none;cursor:pointer;font-size:16px;display:flex;
                      align-items:center;justify-content:center;color:#6b7280}
   .audio-modal iframe{width:100%;height:80px;border:none;border-radius:10px;display:block}
-  .audio-modal audio{width:100%;display:block;accent-color:#7c3aed;
+  .audio-modal audio{width:100%;display:block;accent-color:#27272a;
                      height:44px;border-radius:10px}
   .audio-modal-drive{
     display:block;text-align:center;margin-top:12px;
-    padding:12px;background:#f5f0ff;border-radius:10px;
-    font-size:13px;font-weight:600;color:#7c3aed;text-decoration:none;
+    padding:12px;background:#f4f5f7;border-radius:10px;
+    font-size:13px;font-weight:600;color:#27272a;text-decoration:none;
   }
   .audio-modal-none{text-align:center;padding:20px;color:#9ca3af;font-size:13px}
 }
@@ -313,18 +313,18 @@ body{font-family:'Noto Sans JP',sans-serif;font-size:13px;background:var(--bg);c
 .ncard-body{padding:13px;flex:1;display:flex;flex-direction:column}
 .ncard-meta{display:flex;align-items:center;justify-content:space-between;margin-bottom:7px}
 .ntag{display:inline-flex;align-items:center;font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px}
-.ntag.t0{background:#fef2f2;color:var(--red)}.ntag.t1{background:#f5f3ff;color:var(--purple)}.ntag.t2{background:#ecfdf5;color:var(--green)}.ntag.t3{background:#eff6ff;color:var(--blue)}
+.ntag.t0{background:#f4f4f5;color:var(--red)}.ntag.t1{background:#f4f4f5;color:var(--purple)}.ntag.t2{background:#f4f4f5;color:var(--green)}.ntag.t3{background:#f4f4f5;color:var(--blue)}
 .nmedia{font-size:10px;color:var(--muted)}
 .ntitle{font-size:13px;font-weight:700;color:var(--text);line-height:1.55;margin-bottom:7px}
 .nbody{font-size:11px;color:#4b5563;line-height:1.8;margin-bottom:8px;flex:1}
-.ninsight{background:#eff6ff;border-left:3px solid var(--blue);border-radius:0 6px 6px 0;padding:7px 9px;margin-bottom:8px;font-size:11px;color:#1e3a8a;line-height:1.7}
-.ninsight::before{content:'☞ ';font-weight:700}
+.ninsight{background:#f4f4f5;border-left:3px solid var(--blue);border-radius:0 6px 6px 0;padding:7px 9px;margin-bottom:8px;font-size:11px;color:#3f3f46;line-height:1.7}
+.ninsight::before{content:'POINT ';font-weight:700;font-size:9px;letter-spacing:.08em;color:#71717a}
 .nurl{font-size:10px;color:var(--muted);word-break:break-all;margin-top:auto}
 .nurl a{color:var(--muted);text-decoration:none}.nurl a:hover{color:var(--red)}
 /* 社内限定バッジ / 社外版リンク */
-.hdr-internal-badge{display:inline-flex;align-items:center;gap:3px;padding:3px 9px;border-radius:11px;background:#fef3c7;color:#92400e;font-size:10px;font-weight:700;border:1px solid #fcd34d;white-space:nowrap}
-.hdr-external-link{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:11px;background:#eff6ff;color:#1e40af;font-size:10px;font-weight:600;text-decoration:none;border:1px solid #bfdbfe;transition:background .15s;white-space:nowrap}
-.hdr-external-link:hover{background:#dbeafe}
+.hdr-internal-badge{display:inline-flex;align-items:center;gap:3px;padding:3px 9px;border-radius:11px;background:#f4f4f5;color:#3f3f46;font-size:10px;font-weight:700;border:1px solid #d4d4d8;white-space:nowrap}
+.hdr-external-link{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:11px;background:#f4f4f5;color:#3f3f46;font-size:10px;font-weight:600;text-decoration:none;border:1px solid #d4d4d8;transition:background .15s;white-space:nowrap}
+.hdr-external-link:hover{background:#e4e4e7}
 .hdr-ext-ico{font-size:11px}
 @media(max-width:700px){
   .hdr-internal-badge{font-size:9px;padding:2px 6px}
@@ -334,7 +334,7 @@ body{font-family:'Noto Sans JP',sans-serif;font-size:13px;background:var(--bg);c
 }
 /* メモボタン */
 .note-btn{display:inline-flex;align-items:center;gap:5px;font-size:12px;color:var(--muted);background:none;border:1.5px solid var(--border);border-radius:20px;padding:4px 12px;cursor:pointer;transition:all .15s;user-select:none;font-family:inherit;margin-right:6px}
-.note-btn:hover{border-color:#7c3aed;color:#7c3aed;background:rgba(124,58,237,.05)}
+.note-btn:hover{border-color:#27272a;color:#27272a;background:rgba(0,0,0,.15)}
 .note-ico{font-size:13px}
 .note-count{font-size:11px;font-weight:700;min-width:9px;text-align:center}
 .note-count:empty{display:none}
@@ -346,15 +346,15 @@ body{font-family:'Noto Sans JP',sans-serif;font-size:13px;background:var(--bg);c
 .note-modal-hd{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid var(--border);position:sticky;top:0;background:#fff;z-index:1}
 .note-modal-ttl{font-size:14px;font-weight:700;color:#1f2937;display:flex;align-items:center;gap:7px}
 .note-modal-close{width:30px;height:30px;border-radius:50%;background:#f3f4f6;border:none;cursor:pointer;font-size:14px;color:#6b7280;display:flex;align-items:center;justify-content:center}
-.note-modal-close:hover{background:#e5e7eb}
+.note-modal-close:hover{background:#e4e4e7}
 .note-article{padding:8px 18px;background:#fafafa;border-bottom:1px solid var(--border);font-size:10px;color:#6b7280;word-break:break-all}
 .note-list{padding:14px 18px;flex:1}
 .note-loading,.note-empty{text-align:center;color:var(--muted);padding:20px 0;font-size:12px}
 .note-item{padding:10px 0;border-bottom:1px dashed var(--border)}
 .note-item:last-child{border-bottom:none}
-.note-item-new{background:#fef3c7;margin:-10px -18px 0;padding:10px 18px;border-radius:6px}
+.note-item-new{background:#f4f4f5;margin:-10px -18px 0;padding:10px 18px;border-radius:6px}
 .note-item-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:5px}
-.note-author{font-size:11px;font-weight:700;color:#7c3aed}
+.note-author{font-size:11px;font-weight:700;color:#27272a}
 .note-date{font-size:10px;color:var(--muted)}
 .note-body{font-size:12px;color:#374151;line-height:1.65;white-space:pre-wrap;word-break:break-word}
 .note-form{padding:12px 18px;border-top:1px solid var(--border);background:#fafafa;position:sticky;bottom:0}
@@ -362,9 +362,9 @@ body{font-family:'Noto Sans JP',sans-serif;font-size:13px;background:var(--bg);c
 .note-input,.note-textarea{font-family:inherit;border:1px solid var(--border);border-radius:7px;padding:7px 10px;font-size:12px;color:#1f2937;background:#fff}
 .note-input{flex:0 0 130px}
 .note-textarea{flex:1;width:100%;min-height:68px;resize:vertical;line-height:1.55}
-.note-input:focus,.note-textarea:focus{outline:none;border-color:#7c3aed;box-shadow:0 0 0 2px rgba(124,58,237,.15)}
-.note-submit{display:block;width:100%;padding:8px;background:#7c3aed;color:#fff;border:none;border-radius:7px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;transition:background .15s}
-.note-submit:hover{background:#6d28d9}
+.note-input:focus,.note-textarea:focus{outline:none;border-color:#27272a;box-shadow:0 0 0 2px rgba(0,0,0,.15)}
+.note-submit{display:block;width:100%;padding:8px;background:#27272a;color:#fff;border:none;border-radius:7px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;transition:background .15s}
+.note-submit:hover{background:#18181b}
 .no-news{grid-column:1/-1;text-align:center;padding:52px 20px;color:var(--muted)}
 .no-news-ico{font-size:44px;margin-bottom:10px;opacity:.3}
 .charts-sec{margin-bottom:8px}
@@ -378,8 +378,8 @@ body{font-family:'Noto Sans JP',sans-serif;font-size:13px;background:var(--bg);c
 /* ── タブ＋ダッシュボードボタンの行コンテナ（社内用） ── */
 .tabs-row{display:flex;align-items:center;gap:12px;margin-bottom:14px;flex-wrap:wrap}
 .tabs-row .tabs{margin-bottom:0;flex:1;min-width:0}
-.dash-btn{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:22px;border:1.5px solid #7c3aed;background:linear-gradient(135deg,#f5f3ff 0%,#ede9fe 100%);font-size:12px;font-weight:600;color:#6d28d9;cursor:pointer;transition:all .15s;white-space:nowrap;font-family:inherit;text-decoration:none;box-shadow:0 1px 3px rgba(124,58,237,.15);flex-shrink:0}
-.dash-btn:hover{background:#7c3aed;color:#fff;transform:translateY(-1px);box-shadow:0 3px 8px rgba(124,58,237,.3)}
+.dash-btn{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:22px;border:1.5px solid #27272a;background:linear-gradient(135deg,#f4f4f5 0%,#e8e9ec 100%);font-size:12px;font-weight:600;color:#18181b;cursor:pointer;transition:all .15s;white-space:nowrap;font-family:inherit;text-decoration:none;box-shadow:0 1px 3px rgba(0,0,0,.15);flex-shrink:0}
+.dash-btn:hover{background:#27272a;color:#fff;transform:translateY(-1px);box-shadow:0 3px 8px rgba(0,0,0,.15)}
 .dash-btn-ico{font-size:13px}
 .dash-btn-lbl{line-height:1.1}
 .dash-btn-ext{font-size:10px;opacity:.7;margin-left:1px}
@@ -396,6 +396,19 @@ body{font-family:'Noto Sans JP',sans-serif;font-size:13px;background:var(--bg);c
 /* ── 免責フッター ── */
 .disclaimer-footer{background:var(--bg);border-top:1px solid var(--border);padding:10px 20px;text-align:center;font-size:10px;color:var(--muted);line-height:1.6}
 @media(max-width:700px){.disclaimer-footer{padding:10px 12px 170px;font-size:10px}}
+/* ── モノクロ・シック調整 ── */
+.tab-ico:empty,.dash-btn-ico:empty,.rank-hd-ico:empty{display:none}
+.tab .tab-ico:empty{margin:0}
+.pdf-ico.c0,.pdf-ico.c1,.pdf-ico.c2,.pdf-ico.c3{position:relative;background:#f4f4f5}
+.pdf-ico.c0::after,.pdf-ico.c1::after,.pdf-ico.c2::after,.pdf-ico.c3::after{content:'';position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:11px;height:11px;border-radius:3px}
+.pdf-ico.c0::after{background:#cc0000}
+.pdf-ico.c1::after{background:#3f3f46}
+.pdf-ico.c2::after{background:#71717a}
+.pdf-ico.c3::after{background:#a1a1aa}
+.hdr-logo-bar,.ld-logo-bar{background:var(--red)!important}
+.hdr-internal-badge{background:#fef2f2;color:#cc0000;border-color:#fca5a5}
+.dash-btn{gap:0}
+.rank-hd-inline{gap:0}
 </style>
 </head>
 <body>
@@ -405,9 +418,9 @@ body{font-family:'Noto Sans JP',sans-serif;font-size:13px;background:var(--bg);c
   <h1>光学ビジネス ニュースポータル</h1>
   <span class="hdr-sub">社内版 / 4タブ</span>
   <div class="hdr-right">
-    <span class="hdr-internal-badge">🔒 社内限定</span>
+    <span class="hdr-internal-badge">社内限定</span>
     <a class="hdr-external-link" href="https://ktakahashi-svnsx.github.io/news-portal/" target="_blank" rel="noopener" title="社外版を新しいタブで開く">
-      <span class="hdr-ext-ico">🌐</span><span class="hdr-ext-lbl">社外版を開く</span>
+      <span class="hdr-ext-lbl">社外版を開く</span>
     </a>
     <div class="hdr-live"></div><span class="hdr-live-lbl">日別ニュース</span>
   </div>
@@ -427,37 +440,37 @@ body{font-family:'Noto Sans JP',sans-serif;font-size:13px;background:var(--bg);c
       <div class="cal-leg"><span><div class="leg-dot"></div>データあり</span><span><div class="leg-sq"></div>今日</span></div>
     </div>
     <div>
-      <div class="sb-lbl">🎙 音声解説</div>
+      <div class="sb-lbl">音声解説</div>
       <div class="audio-card">
         <div id="audioWrap"><div class="audio-none">音声なし</div></div>
       </div>
     </div>
     <div>
-      <div class="sb-lbl">📄 前月サマリーレポート<span id="summaryMonthLbl"></span></div>
-      <div class="pdf-card"><div class="pdf-card-top"><div class="pdf-ico c0">☀</div><div class="pdf-name full">光学・光アプリケーション</div></div><a class="pdf-btn off" id="sumBtnOptics" target="_blank" rel="noopener">⬇ ダウンロード</a></div>
-      <div class="pdf-card"><div class="pdf-card-top"><div class="pdf-ico c1">🛰</div><div class="pdf-name full">宇宙・防衛・核融合</div></div><a class="pdf-btn off" id="sumBtnSpace" target="_blank" rel="noopener">⬇ ダウンロード</a></div>
-      <div class="pdf-card"><div class="pdf-card-top"><div class="pdf-ico c2">🏛</div><div class="pdf-name full">国内政治</div></div><a class="pdf-btn off" id="sumBtnDomestic" target="_blank" rel="noopener">⬇ ダウンロード</a></div>
-      <div class="pdf-card"><div class="pdf-card-top"><div class="pdf-ico c3">🌐</div><div class="pdf-name full">海外政治</div></div><a class="pdf-btn off" id="sumBtnIntl" target="_blank" rel="noopener">⬇ ダウンロード</a></div>
+      <div class="sb-lbl">前月サマリーレポート<span id="summaryMonthLbl"></span></div>
+      <div class="pdf-card"><div class="pdf-card-top"><div class="pdf-ico c0"></div><div class="pdf-name full">光学・光アプリケーション</div></div><a class="pdf-btn off" id="sumBtnOptics" target="_blank" rel="noopener">ダウンロード</a></div>
+      <div class="pdf-card"><div class="pdf-card-top"><div class="pdf-ico c1"></div><div class="pdf-name full">宇宙・防衛・核融合</div></div><a class="pdf-btn off" id="sumBtnSpace" target="_blank" rel="noopener">ダウンロード</a></div>
+      <div class="pdf-card"><div class="pdf-card-top"><div class="pdf-ico c2"></div><div class="pdf-name full">国内政治</div></div><a class="pdf-btn off" id="sumBtnDomestic" target="_blank" rel="noopener">ダウンロード</a></div>
+      <div class="pdf-card"><div class="pdf-card-top"><div class="pdf-ico c3"></div><div class="pdf-name full">海外政治</div></div><a class="pdf-btn off" id="sumBtnIntl" target="_blank" rel="noopener">ダウンロード</a></div>
     </div>
   </div></aside>
   <main class="main">
     <div class="tabs-row">
       <div class="tabs">
-        <button class="tab act" data-i="0"><span class="tab-ico">☀</span>光学・光アプリケーション<span class="tab-badge" id="b0">0</span></button>
-        <button class="tab" data-i="1"><span class="tab-ico">🛰</span>宇宙・防衛・核融合<span class="tab-badge" id="b1">0</span></button>
-        <button class="tab" data-i="2"><span class="tab-ico">🏛</span>国内政治<span class="tab-badge" id="b2">0</span></button>
-        <button class="tab" data-i="3"><span class="tab-ico">🌐</span>海外政治<span class="tab-badge" id="b3">0</span></button>
+        <button class="tab act" data-i="0">光学・光アプリケーション<span class="tab-badge" id="b0">0</span></button>
+        <button class="tab" data-i="1">宇宙・防衛・核融合<span class="tab-badge" id="b1">0</span></button>
+        <button class="tab" data-i="2">国内政治<span class="tab-badge" id="b2">0</span></button>
+        <button class="tab" data-i="3">海外政治<span class="tab-badge" id="b3">0</span></button>
       </div>
       <a class="dash-btn disabled" id="dashBtn" href="#" target="_blank" rel="noopener noreferrer" aria-disabled="true" title="ダッシュボード未登録">
-        <span class="dash-btn-ico">📊</span>
+        
         <span class="dash-btn-lbl">為替動向 / 経済トピック / 税務会計情報 ダッシュボード</span>
         <span class="dash-btn-ext">↗</span>
       </a>
     </div>
-    <div class="panel act" id="p0"><div class="kw-bar rank-marquee"><div class="rank-hd-inline"><span class="rank-hd-ico">🏆</span><span class="rank-hd-ttl">週間TOP5</span></div><div class="kw-marquee"><div class="kw-track" id="kw0"></div></div></div><div class="ngrid" id="ng0"></div><div class="charts-sec" id="ch0"></div></div>
-    <div class="panel" id="p1"><div class="kw-bar rank-marquee"><div class="rank-hd-inline"><span class="rank-hd-ico">🏆</span><span class="rank-hd-ttl">週間TOP5</span></div><div class="kw-marquee"><div class="kw-track" id="kw1"></div></div></div><div class="ngrid" id="ng1"></div><div class="charts-sec" id="ch1"></div></div>
-    <div class="panel" id="p2"><div class="kw-bar rank-marquee"><div class="rank-hd-inline"><span class="rank-hd-ico">🏆</span><span class="rank-hd-ttl">週間TOP5</span></div><div class="kw-marquee"><div class="kw-track" id="kw2"></div></div></div><div class="ngrid" id="ng2"></div><div class="charts-sec" id="ch2"></div></div>
-    <div class="panel" id="p3"><div class="kw-bar rank-marquee"><div class="rank-hd-inline"><span class="rank-hd-ico">🏆</span><span class="rank-hd-ttl">週間TOP5</span></div><div class="kw-marquee"><div class="kw-track" id="kw3"></div></div></div><div class="ngrid" id="ng3"></div><div class="charts-sec" id="ch3"></div></div>
+    <div class="panel act" id="p0"><div class="kw-bar rank-marquee"><div class="rank-hd-inline"><span class="rank-hd-ttl">週間TOP5</span></div><div class="kw-marquee"><div class="kw-track" id="kw0"></div></div></div><div class="ngrid" id="ng0"></div><div class="charts-sec" id="ch0"></div></div>
+    <div class="panel" id="p1"><div class="kw-bar rank-marquee"><div class="rank-hd-inline"><span class="rank-hd-ttl">週間TOP5</span></div><div class="kw-marquee"><div class="kw-track" id="kw1"></div></div></div><div class="ngrid" id="ng1"></div><div class="charts-sec" id="ch1"></div></div>
+    <div class="panel" id="p2"><div class="kw-bar rank-marquee"><div class="rank-hd-inline"><span class="rank-hd-ttl">週間TOP5</span></div><div class="kw-marquee"><div class="kw-track" id="kw2"></div></div></div><div class="ngrid" id="ng2"></div><div class="charts-sec" id="ch2"></div></div>
+    <div class="panel" id="p3"><div class="kw-bar rank-marquee"><div class="rank-hd-inline"><span class="rank-hd-ttl">週間TOP5</span></div><div class="kw-marquee"><div class="kw-track" id="kw3"></div></div></div><div class="ngrid" id="ng3"></div><div class="charts-sec" id="ch3"></div></div>
   </main>
 </div>
 <script>
@@ -469,7 +482,7 @@ const THEMES=[
   {key:'domestic',label:'国内政治',cls:'t2',kws:['国会','閣議','与党','野党','経済安保']},
   {key:'intl',    label:'海外政治',cls:'t3',kws:['米中','欧州','地政学','輸出規制','外交']},
 ];
-const PAL=['#dc2626','#2563eb','#059669','#f59e0b','#7c3aed','#0891b2'];
+const PAL=['#18181b','#52525b','#a1a1aa','#3f3f46','#71717a','#d4d4d8'];
 let curDate=null,availDates=[],calY,calM,allRows=[],allChartRows=[],allMediaRows=[],allMonthlyRows=[];
 let allDailyLinks={};  // { 'YYYY-MM-DD': {dashboard_url}, ... }
 const CI={};
@@ -744,7 +757,7 @@ function buildNoteFooter(rawUrl) {
   const cnt = _noteCountsCache[rawUrl] || 0;
   const safeAttr = rawUrl.replace(/&/g,'&amp;').replace(/"/g,'&quot;');
   return '<button class="note-btn" data-note-url="'+safeAttr+'">' +
-         '<span class="note-ico">💬</span>' +
+         '<span class="note-ico">✉</span>' +
          '<span class="note-count">'+(cnt>0?cnt:'')+'</span>' +
          '<span>メモ</span></button>';
 }
@@ -792,7 +805,7 @@ function _refreshGoodBtn(url, btn) {
   const liked = likedSet.has(url);
   const cnt = likeCounts[url] || 0;
   btn.classList.toggle('liked', liked);
-  btn.querySelector('.gbheart').textContent = liked ? '❤️' : '🤍';
+  btn.querySelector('.gbheart').textContent = liked ? '♥' : '♡';
   btn.querySelector('.gbcount').textContent = cnt > 0 ? String(cnt) : '';
 }
 function buildGoodFooter(rawUrl) {
@@ -800,7 +813,7 @@ function buildGoodFooter(rawUrl) {
   const liked = likedSet.has(rawUrl);
   const cnt = likeCounts[rawUrl] || 0;
   const safeAttr = rawUrl.replace(/&/g,'&amp;').replace(/"/g,'&quot;');
-  return `<div class="ncard-foot"><button class="good-btn${liked ? ' liked' : ''}" data-like-url="${safeAttr}"><span class="gbheart">${liked ? '❤️' : '🤍'}</span><span class="gbcount">${cnt > 0 ? cnt : ''}</span><span>グッド</span></button></div>`;
+  return `<div class="ncard-foot"><button class="good-btn${liked ? ' liked' : ''}" data-like-url="${safeAttr}"><span class="gbheart">${liked ? '♥' : '♡'}</span><span class="gbcount">${cnt > 0 ? cnt : ''}</span><span>グッド</span></button></div>`;
 }
 // ─────────────────────────────────────────────────────────────────
 
@@ -1027,13 +1040,13 @@ function buildMarquee(track){
         if(k.likes>0){
           const ml=document.createElement('span');
           ml.className='rank-tag-metric';
-          ml.textContent='❤️'+k.likes;
+          ml.textContent='♥ '+k.likes;
           sp.appendChild(ml);
         }
         if(k.notes>0){
           const mn=document.createElement('span');
           mn.className='rank-tag-metric note';
-          mn.textContent='💬'+k.notes;
+          mn.textContent='✉ '+k.notes;
           sp.appendChild(mn);
         }
         // サイト内記事へジャンプ（別日付なら自動で日付読み込み）
@@ -1088,7 +1101,7 @@ function buildMarquee(track){
 function renderNews(i,theme,data){
   const grid=document.getElementById(`ng${i}`);grid.innerHTML='';
   const items=data?.items||[];
-  if(!items.length){grid.innerHTML=`<div class="no-news"><div class="no-news-ico">📭</div><div>この日のニュースはありません</div></div>`;return;}
+  if(!items.length){grid.innerHTML=`<div class="no-news"><div class="no-news-ico">—</div><div>この日のニュースはありません</div></div>`;return;}
   items.forEach((item,idx)=>{
     const card=document.createElement('div');card.className='ncard';card.id='art-'+i+'-'+idx;
     const ins=item.insight?`<div class="ninsight">${item.insight}</div>`:'';
@@ -1179,7 +1192,7 @@ function renderCharts(i,theme,data){
     const ds=ch.datasets
       ?ch.datasets.map((d,j)=>({label:d.label,data:d.data,borderColor:PAL[j%PAL.length],backgroundColor:PAL[j%PAL.length]+(isBar?'55':'18'),borderWidth:2,tension:0.4,fill:!isBar,pointRadius:3,pointBackgroundColor:PAL[j%PAL.length]}))
       :[{label:ch.dataset_label||'',data:ch.data||[],borderColor:PAL[0],backgroundColor:PAL[0]+(isBar?'55':'18'),borderWidth:2,tension:0.4,fill:!isBar,pointRadius:3,pointBackgroundColor:PAL[0]}];
-    CI[cid]=new Chart(ctx,{type:isBar?'bar':'line',data:{labels:ch.labels,datasets:ds},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:!!ch.datasets,position:'bottom',labels:{font:{size:10,family:'Noto Sans JP'},padding:12,boxWidth:12}},tooltip:{backgroundColor:'#fff',borderColor:'#e5e7eb',borderWidth:1,titleColor:'#374151',bodyColor:'#374151'}},scales:{x:{grid:{color:'#f3f4f6'},ticks:{color:'#6b7280',font:{size:10}},border:{color:'#e5e7eb'}},y:{grid:{color:'#f3f4f6'},ticks:{color:'#6b7280',font:{size:10}},border:{color:'#e5e7eb'}}}}});
+    CI[cid]=new Chart(ctx,{type:isBar?'bar':'line',data:{labels:ch.labels,datasets:ds},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:!!ch.datasets,position:'bottom',labels:{font:{size:10,family:'Noto Sans JP'},padding:12,boxWidth:12}},tooltip:{backgroundColor:'#fff',borderColor:'#e4e4e7',borderWidth:1,titleColor:'#374151',bodyColor:'#374151'}},scales:{x:{grid:{color:'#f3f4f6'},ticks:{color:'#6b7280',font:{size:10}},border:{color:'#e4e4e7'}},y:{grid:{color:'#f3f4f6'},ticks:{color:'#6b7280',font:{size:10}},border:{color:'#e4e4e7'}}}}});
   });
 }
 // ── 前月サマリーレポート（4カテゴリ）──
@@ -1254,20 +1267,20 @@ function buildWaPlayer(fileId, rawUrl, prefix){
     const iframe=document.createElement('iframe');
     iframe.src=previewUrl;
     iframe.allow='autoplay';
-    iframe.style.cssText='width:100%;height:72px;border:none;border-radius:8px;display:block;background:#f5f0ff;margin-bottom:6px;';
+    iframe.style.cssText='width:100%;height:72px;border:none;border-radius:8px;display:block;background:#f4f5f7;margin-bottom:6px;';
     wrap.appendChild(iframe);
     const lnk=document.createElement('a');
     lnk.className='adrive-link';
     lnk.href=driveUrl;
     lnk.target='_blank';
     lnk.rel='noopener';
-    lnk.textContent='☁ Google Driveで開く（別タブ）';
+    lnk.textContent='Google Driveで開く（別タブ）';
     wrap.appendChild(lnk);
   } else {
     const audio=document.createElement('audio');
     audio.controls=true;
     audio.preload='metadata';
-    audio.style.cssText='width:100%;height:40px;display:block;accent-color:#7c3aed;';
+    audio.style.cssText='width:100%;height:40px;display:block;accent-color:#27272a;';
     audio.innerHTML='<source src="'+rawUrl+'">';
     wrap.appendChild(audio);
   }
@@ -1291,7 +1304,7 @@ function renderAudio(media){
   container.className='aplayer';
   const title=document.createElement('div');
   title.className='aplayer-title';
-  title.textContent='🎙 音声ポッドキャスト';
+  title.textContent='音声ポッドキャスト';
   container.appendChild(title);
   container.appendChild(buildWaPlayer(fileId,rawUrl,'sb'));
   wrap.innerHTML='';
@@ -1528,21 +1541,21 @@ document.addEventListener('touchend', function(){
   <!-- 上段：日付選択 + 音声 -->
   <div class="mb-top-row">
     <button class="mb-date-btn" id="mbDateBtn" onclick="openCalModal()">
-      <span class="mb-date-ico">📅</span>
+      
       <span class="mb-date-txt" id="mbDateTxt">日付を選択</span>
     </button>
     <button class="mb-audio-btn" id="mbAudioBtn" onclick="openAudioModal()">
-      <span class="mb-audio-ico">🎙</span>
+      
       <span class="mb-audio-txt" id="mbAudioTxt">音声なし</span>
     </button>
   </div>
   <!-- 下段：前月サマリーレポート（4カテゴリ） -->
-  <div class="mb-pdf-lbl">📄 前月サマリー<span id="mbSummaryMonthLbl"></span></div>
+  <div class="mb-pdf-lbl">前月サマリー<span id="mbSummaryMonthLbl"></span></div>
   <div class="mb-pdf-row">
-    <a class="mb-pdf-btn c0 off" id="mbSumOptics" target="_blank" rel="noopener">☀ 光学</a>
-    <a class="mb-pdf-btn c1 off" id="mbSumSpace" target="_blank" rel="noopener">🛰 宇宙・防衛</a>
-    <a class="mb-pdf-btn c2 off" id="mbSumDomestic" target="_blank" rel="noopener">🏛 国内政治</a>
-    <a class="mb-pdf-btn c3 off" id="mbSumIntl" target="_blank" rel="noopener">🌐 海外政治</a>
+    <a class="mb-pdf-btn c0 off" id="mbSumOptics" target="_blank" rel="noopener">光学</a>
+    <a class="mb-pdf-btn c1 off" id="mbSumSpace" target="_blank" rel="noopener">宇宙・防衛</a>
+    <a class="mb-pdf-btn c2 off" id="mbSumDomestic" target="_blank" rel="noopener">国内政治</a>
+    <a class="mb-pdf-btn c3 off" id="mbSumIntl" target="_blank" rel="noopener">海外政治</a>
   </div>
 </div>
 
@@ -1550,7 +1563,7 @@ document.addEventListener('touchend', function(){
 <div class="note-modal" id="noteModal" onclick="closeNoteModal(event)">
   <div class="note-modal-inner" onclick="event.stopPropagation()">
     <div class="note-modal-hd">
-      <span class="note-modal-ttl">💬 社内メモ</span>
+      <span class="note-modal-ttl">社内メモ</span>
       <button class="note-modal-close" onclick="closeNoteModal()" title="閉じる">✕</button>
     </div>
     <div class="note-article">
@@ -1564,7 +1577,7 @@ document.addEventListener('touchend', function(){
       <div class="note-form-row">
         <textarea class="note-textarea" id="noteBody" placeholder="メモを入力（社内のみ閲覧）" maxlength="2000"></textarea>
       </div>
-      <button class="note-submit" onclick="submitNote()">📝 メモを投稿</button>
+      <button class="note-submit" onclick="submitNote()">メモを投稿</button>
     </div>
   </div>
 </div>
@@ -1573,7 +1586,7 @@ document.addEventListener('touchend', function(){
 <div class="audio-modal" id="audioModal" onclick="closeAudioModal(event)">
   <div class="audio-modal-inner">
     <div class="audio-modal-hd">
-      <span class="audio-modal-ttl">🎙 音声解説</span>
+      <span class="audio-modal-ttl">音声解説</span>
       <button class="audio-modal-close" onclick="closeAudioModal()">✕</button>
     </div>
     <div id="audioModalBody">
@@ -1586,7 +1599,7 @@ document.addEventListener('touchend', function(){
 <div class="cal-modal" id="calModal" onclick="closeCalModal(event)">
   <div class="cal-modal-inner">
     <div class="cal-modal-hd">
-      <span class="cal-modal-ttl">📅 日付を選択</span>
+      <span class="cal-modal-ttl">日付を選択</span>
       <button class="audio-modal-close" onclick="closeCalModal()">✕</button>
     </div>
     <div class="cal-modal-nav">
