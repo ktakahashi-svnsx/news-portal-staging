@@ -83,8 +83,8 @@ body{font-family:'Noto Sans JP',sans-serif;font-size:13px;background:var(--bg);c
 .aspeed-row{display:flex;align-items:center;gap:5px;margin-top:8px}.aspeed-lbl{font-size:9px;color:#27272a;font-weight:700;white-space:nowrap}.aspeed-btn{flex:1;padding:4px 2px;background:#e8e9ec;border:1.5px solid #d4d4d8;border-radius:7px;color:#1f2937;font-size:10px;font-weight:700;cursor:pointer;transition:all .15s;font-family:inherit;text-align:center}.aspeed-btn:hover{background:#d4d4d8}.aspeed-btn.act{background:#27272a;border-color:#27272a;color:#fff;box-shadow:0 1px 4px rgba(0,0,0,.18)}
 .ncard-foot{display:flex;align-items:center;justify-content:flex-end;padding:6px 12px 10px;border-top:1px solid var(--border);margin-top:4px}
 .good-btn{display:inline-flex;align-items:center;gap:5px;font-size:12px;color:var(--muted);background:none;border:1.5px solid var(--border);border-radius:20px;padding:4px 12px;cursor:pointer;transition:all .15s;user-select:none;font-family:inherit}
-.good-btn:hover{border-color:#3f3f46;color:#3f3f46;background:rgba(0,0,0,.06)}
-.good-btn.liked{border-color:#3f3f46;color:#3f3f46;background:rgba(0,0,0,.06)}
+.good-btn:hover{border-color:#f43f5e;color:#f43f5e;background:rgba(244,63,94,.05)}
+.good-btn.liked{border-color:#f43f5e;color:#f43f5e;background:rgba(244,63,94,.07)}
 .good-btn .gbheart{font-size:14px}.good-btn.liked .gbheart{animation:goodPop .35s ease}
 @keyframes goodPop{0%{transform:scale(1)}40%{transform:scale(1.55)}70%{transform:scale(.88)}100%{transform:scale(1)}}
 
@@ -805,7 +805,7 @@ function _refreshGoodBtn(url, btn) {
   const liked = likedSet.has(url);
   const cnt = likeCounts[url] || 0;
   btn.classList.toggle('liked', liked);
-  btn.querySelector('.gbheart').textContent = liked ? '♥' : '♡';
+  btn.querySelector('.gbheart').textContent = liked ? '❤️' : '🤍';
   btn.querySelector('.gbcount').textContent = cnt > 0 ? String(cnt) : '';
 }
 function buildGoodFooter(rawUrl) {
@@ -813,7 +813,7 @@ function buildGoodFooter(rawUrl) {
   const liked = likedSet.has(rawUrl);
   const cnt = likeCounts[rawUrl] || 0;
   const safeAttr = rawUrl.replace(/&/g,'&amp;').replace(/"/g,'&quot;');
-  return `<div class="ncard-foot"><button class="good-btn${liked ? ' liked' : ''}" data-like-url="${safeAttr}"><span class="gbheart">${liked ? '♥' : '♡'}</span><span class="gbcount">${cnt > 0 ? cnt : ''}</span><span>グッド</span></button></div>`;
+  return `<div class="ncard-foot"><button class="good-btn${liked ? ' liked' : ''}" data-like-url="${safeAttr}"><span class="gbheart">${liked ? '❤️' : '🤍'}</span><span class="gbcount">${cnt > 0 ? cnt : ''}</span><span>グッド</span></button></div>`;
 }
 // ─────────────────────────────────────────────────────────────────
 
