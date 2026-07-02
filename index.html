@@ -155,6 +155,18 @@ body{font-family:'Noto Sans JP',sans-serif;font-size:13px;background:var(--bg);c
 .chip-group .chips{display:flex;flex-wrap:wrap;gap:6px;flex:1;min-width:0}
 /* ── 統合ニュースグリッド（ジャンル間の余白なしで連続表示） ── */
 #ngAll{animation:fin .2s}
+/* ── 日曜：メインジャンル別ブロック（連続グリッドをやめ、ブロックごとに区切る） ── */
+.wk-flow{animation:fin .2s}
+.wk-block{margin-bottom:28px}
+.wk-block:last-child{margin-bottom:0}
+.wk-block-hd{display:flex;align-items:center;gap:10px;margin:0 0 13px;padding-bottom:9px;border-bottom:1px solid var(--border)}
+.wk-block-ttl{font-size:15px;font-weight:700;color:var(--text);position:relative;padding-left:12px;letter-spacing:.01em}
+.wk-block-ttl::before{content:'';position:absolute;left:0;top:2px;bottom:1px;width:3px;border-radius:2px;background:var(--muted)}
+.wk-block.t0 .wk-block-ttl::before{background:var(--red)}
+.wk-block.t1 .wk-block-ttl::before{background:var(--purple)}
+.wk-block.t2 .wk-block-ttl::before{background:var(--green)}
+.wk-block-tag{font-size:11px;font-weight:700;color:#b45309;background:#fef3c7;border:1px solid #fcd34d;border-radius:10px;padding:2px 9px}
+.wk-block .ngrid{margin-bottom:0}
 .charts-flow{margin-top:8px}
 .charts-flow .charts-sec{margin-bottom:16px}
 .charts-flow .charts-sec:last-child{margin-bottom:0}
@@ -510,7 +522,7 @@ body{font-family:'Noto Sans JP',sans-serif;font-size:13px;background:var(--bg);c
       <span class="wk-ico">🏆</span>
       <div class="wk-txt">
         <span class="wk-ttl">今週グッドが多かった記事</span>
-        <span class="wk-sub">日曜日は、この1週間（<span class="wk-range"></span>）で反応の多かった記事をジャンル別にまとめて表示しています。</span>
+        <span class="wk-sub">日曜日は、この1週間（<span class="wk-range"></span>）で反応の多かった記事を、メインジャンル別に上位5件ずつ表示しています。</span>
       </div>
     </div>
     <div class="ngrid" id="ngAll"></div>
@@ -554,6 +566,14 @@ const VIEWS=[
 ];
 const VIEW_BY_KEY={};VIEWS.forEach(v=>{VIEW_BY_KEY[v.key]=v;});
 const OTHER_KEY={optics:'opt_other',space:'spc_other'};
+// メインジャンル（日曜の週間ランキングの集計単位）。政治は国内＋海外をまとめる
+const MAIN_GENRES=[
+  {key:'optics',label:'光学',              parents:['optics'],           cls:'t0'},
+  {key:'space', label:'宇宙・防衛・核融合',parents:['space'],            cls:'t1'},
+  {key:'pol',   label:'政治',              parents:['domestic','intl'],  cls:'t2'},
+];
+const MAIN_BY_KEY={};MAIN_GENRES.forEach(m=>{MAIN_BY_KEY[m.key]=m;});
+function _mainOf(parent){ return (parent==='domestic'||parent==='intl')?'pol':parent; }
 // section と tag からサブジャンルkeyを判定（optics/space のみ。politicsは親key）
 function _subKey(section,tag){
   if(section==='domestic')return 'domestic';
@@ -1164,24 +1184,27 @@ function renderFlow(){
   _refreshFilterUI();
   if(!selectedViews.length){empty.style.display='block';return;}
   empty.style.display='none';
+  if(_curWeekly){
+    // 日曜：メインジャンルごとにブロック分割し、各ジャンル上位5件を表示
+    renderWeeklyBlocks(grid,data);
+    return;
+  }
+  grid.className='ngrid';
   let cardCount=0;
-  const WEEKLY_TOP_N=5;   // 日曜の週間ランキングは各ジャンル5位まで
-  // ニュース：選択順に、各サブジャンルの記事を1グリッドへ連続で流し込む
+  // 平日：選択順に、各サブジャンルの記事を1グリッドへ連続で流し込む
   selectedViews.forEach(key=>{
     const view=VIEW_BY_KEY[key];if(!view)return;
     const p=view.parent;
     let items;
     if(p==='domestic'||p==='intl') items=(data[p]?.items||[]);
     else items=(data[p]?.items||[]).filter(it=>_subKey(p,it.tag)===key);
-    if(_curWeekly) items=items.slice(0,WEEKLY_TOP_N);   // 週間は各ジャンル上位5件のみ
-    items.forEach((item,j)=>{grid.appendChild(buildNewsCard(view,item,j,_curWeekly));cardCount++;});
+    items.forEach((item,j)=>{grid.appendChild(buildNewsCard(view,item,j,false));cardCount++;});
   });
   if(cardCount===0){
-    const msg=_curWeekly?'選択した項目で今週グッドが付いた記事はまだありません':'選択した項目のニュースはこの日ありません';
-    grid.innerHTML=`<div class="no-news"><div class="no-news-ico">📭</div><div>${msg}</div></div>`;
+    grid.innerHTML=`<div class="no-news"><div class="no-news-ico">📭</div><div>選択した項目のニュースはこの日ありません</div></div>`;
   }
-  // チャート：週間ビューでは非表示。平日は選択された親ジャンルのチャートを選択順にまとめて表示
-  if(!_curWeekly){
+  // チャート：平日は選択された親ジャンルのチャートを選択順にまとめて表示
+  {
     const doneParents={};
     selectedViews.forEach(key=>{
       const view=VIEW_BY_KEY[key];if(!view)return;
@@ -1191,6 +1214,44 @@ function renderFlow(){
       if(theme&&charts.length)renderChartsInto(chWrap,theme,charts);
     });
   }
+}
+
+// 日曜の週間ランキング：メインジャンル（光学／宇宙・防衛／政治）ごとに
+// ブロックを分けて表示。各ブロックはグッド数上位5件。
+function renderWeeklyBlocks(grid,data){
+  grid.className='wk-flow';
+  data=data||{};
+  const WEEKLY_TOP_N=5;
+  // 表示するメインジャンルを、選択されたサブジャンルの登場順で決定
+  const order=[];
+  selectedViews.forEach(k=>{
+    const v=VIEW_BY_KEY[k];if(!v)return;
+    const mg=_mainOf(v.parent);
+    if(order.indexOf(mg)<0)order.push(mg);
+  });
+  order.forEach(mgKey=>{
+    const mg=MAIN_BY_KEY[mgKey];if(!mg)return;
+    // メインジャンル内の記事を全サブから集約し、グッド数→日付で降順ソート
+    let recs=[];
+    mg.parents.forEach(p=>{ (data[p]?.items||[]).forEach(it=>recs.push({it,p})); });
+    recs.sort((a,b)=> (b.it.likes||0)-(a.it.likes||0) || ((b.it.date>a.it.date)?1:(b.it.date<a.it.date?-1:0)));
+    recs=recs.slice(0,WEEKLY_TOP_N);
+    const block=document.createElement('div');block.className='wk-block '+mg.cls;
+    const hd=document.createElement('div');hd.className='wk-block-hd';
+    hd.innerHTML=`<span class="wk-block-ttl">${mg.label}</span><span class="wk-block-tag">週間TOP5</span>`;
+    block.appendChild(hd);
+    const g=document.createElement('div');g.className='ngrid';
+    if(recs.length){
+      recs.forEach((rec,j)=>{
+        const view=VIEW_BY_KEY[_subKey(rec.p,rec.it.tag)]||{key:mg.key,label:mg.label,cls:mg.cls};
+        g.appendChild(buildNewsCard(view,rec.it,j,true));
+      });
+    }else{
+      g.innerHTML=`<div class="no-news"><div class="no-news-ico">📭</div><div>${mg.label}：今週グッドが付いた記事はまだありません</div></div>`;
+    }
+    block.appendChild(g);
+    grid.appendChild(block);
+  });
 }
 
 // 共有チャート領域へ、ジャンル名付きヘッダーでチャート群を追加
