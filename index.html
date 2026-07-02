@@ -123,11 +123,15 @@ body{font-family:'Noto Sans JP',sans-serif;font-size:13px;background:var(--bg);c
 .filter-panel:not(.collapsed) .filter-toggle .ft-chev{transform:rotate(90deg)}
 .filter-summary{font-size:11px;color:var(--muted);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .filter-panel:not(.collapsed) .filter-summary{display:none}
-/* 折りたたみ時：サブチップは隠し、グループ一括ボタンだけ横並びで残す */
-.filter-panel.collapsed .filter-body{display:flex;flex-wrap:wrap;gap:8px;margin-top:2px}
+/* 展開時：グループ行を縦積み。為替ダッシュボードは右下に配置 */
+.filter-body{display:flex;flex-direction:column}
+.filter-body .dash-btn{align-self:flex-end;margin-top:2px}
+/* 折りたたみ時：サブチップは隠し、グループ一括ボタン＋為替ボタンを1行で表示 */
+.filter-panel.collapsed .filter-body{flex-direction:row;flex-wrap:wrap;align-items:center;gap:8px;margin-top:2px}
 .filter-panel.collapsed .chip-group{margin-bottom:0}
 .filter-panel.collapsed .chip-group .chips{display:none}
 .filter-panel.collapsed .grp-toggle{width:auto}
+.filter-panel.collapsed .filter-body .dash-btn{align-self:auto;margin-top:0;margin-left:auto}
 .filter-actions{display:flex;gap:6px;flex-shrink:0}
 .filter-mini{font-size:10.5px;font-weight:600;color:var(--muted);background:var(--white);border:1px solid var(--border);border-radius:12px;padding:3px 10px;cursor:pointer;font-family:inherit;transition:all .12s}
 .filter-mini:hover{border-color:var(--red);color:var(--red)}
@@ -416,7 +420,8 @@ body{font-family:'Noto Sans JP',sans-serif;font-size:13px;background:var(--bg);c
 /* ── タブ＋ダッシュボードボタンの行コンテナ（社内用） ── */
 .tabs-row{display:flex;align-items:center;gap:12px;margin-bottom:14px;flex-wrap:wrap}
 .tabs-row .tabs{margin-bottom:0;flex:1;min-width:0}
-.dash-btn{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:22px;border:1.5px solid #7c3aed;background:linear-gradient(135deg,#f5f3ff 0%,#ede9fe 100%);font-size:12px;font-weight:600;color:#6d28d9;cursor:pointer;transition:all .15s;white-space:nowrap;font-family:inherit;text-decoration:none;box-shadow:0 1px 3px rgba(124,58,237,.15);flex-shrink:0}
+.dash-btn{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:8px;border:1px solid #7c3aed;background:linear-gradient(135deg,#f5f3ff 0%,#ede9fe 100%);font-size:11px;font-weight:700;color:#6d28d9;cursor:pointer;transition:all .15s;white-space:nowrap;font-family:inherit;text-decoration:none;box-shadow:0 1px 2px rgba(124,58,237,.12);flex-shrink:0;max-width:100%}
+.dash-btn .dash-btn-lbl{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .dash-btn:hover{background:#7c3aed;color:#fff;transform:translateY(-1px);box-shadow:0 3px 8px rgba(124,58,237,.3)}
 .dash-btn-ico{font-size:13px}
 .dash-btn-lbl{line-height:1.1}
@@ -489,16 +494,16 @@ body{font-family:'Noto Sans JP',sans-serif;font-size:13px;background:var(--bg);c
           <button class="filter-mini" id="fltAll" type="button">すべて選択</button>
           <button class="filter-mini" id="fltClear" type="button">すべて解除</button>
         </div>
-        <a class="dash-btn disabled" id="dashBtn" href="#" target="_blank" rel="noopener noreferrer" aria-disabled="true" title="ダッシュボード未登録">
-          <span class="dash-btn-ico">📊</span>
-          <span class="dash-btn-lbl">為替動向 / 経済トピック / 税務会計情報 ダッシュボード</span>
-          <span class="dash-btn-ext">↗</span>
-        </a>
       </div>
       <div class="filter-body" id="filterBody">
         <div class="chip-group cg-optics"><button class="grp-toggle" type="button" data-grp="optics" title="光学をまとめて選択／解除">光学</button><div class="chips" id="chips-optics" role="group" aria-label="光学のサブジャンル選択"></div></div>
         <div class="chip-group cg-space"><button class="grp-toggle" type="button" data-grp="space" title="宇宙・防衛をまとめて選択／解除">宇宙・防衛</button><div class="chips" id="chips-space" role="group" aria-label="宇宙・防衛・核融合のサブジャンル選択"></div></div>
         <div class="chip-group cg-pol"><button class="grp-toggle" type="button" data-grp="pol" title="政治をまとめて選択／解除">政治</button><div class="chips" id="chips-pol" role="group" aria-label="政治ジャンルの選択"></div></div>
+        <a class="dash-btn disabled" id="dashBtn" href="#" target="_blank" rel="noopener noreferrer" aria-disabled="true" title="ダッシュボード未登録">
+          <span class="dash-btn-ico">📊</span>
+          <span class="dash-btn-lbl">為替動向 / 経済トピック / 税務会計情報 ダッシュボード</span>
+          <span class="dash-btn-ext">↗</span>
+        </a>
       </div>
     </div>
     <div class="weekly-banner" id="weeklyBanner" style="display:none">
@@ -1160,6 +1165,7 @@ function renderFlow(){
   if(!selectedViews.length){empty.style.display='block';return;}
   empty.style.display='none';
   let cardCount=0;
+  const WEEKLY_TOP_N=5;   // 日曜の週間ランキングは各ジャンル5位まで
   // ニュース：選択順に、各サブジャンルの記事を1グリッドへ連続で流し込む
   selectedViews.forEach(key=>{
     const view=VIEW_BY_KEY[key];if(!view)return;
@@ -1167,6 +1173,7 @@ function renderFlow(){
     let items;
     if(p==='domestic'||p==='intl') items=(data[p]?.items||[]);
     else items=(data[p]?.items||[]).filter(it=>_subKey(p,it.tag)===key);
+    if(_curWeekly) items=items.slice(0,WEEKLY_TOP_N);   // 週間は各ジャンル上位5件のみ
     items.forEach((item,j)=>{grid.appendChild(buildNewsCard(view,item,j,_curWeekly));cardCount++;});
   });
   if(cardCount===0){
