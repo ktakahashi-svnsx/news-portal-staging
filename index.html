@@ -108,10 +108,13 @@ body{font-family:'Noto Sans JP',sans-serif;font-size:13px;background:var(--bg);c
 .tab.act .tab-check{opacity:1}
 .tab:not(.act){opacity:.72}
 .tab:not(.act):hover{opacity:1}
-.panel{display:none}.panel.show{display:block;animation:fin .2s;margin-bottom:26px}
-.panel.show:last-child{margin-bottom:0}
+/* ── 統合ニュースグリッド（ジャンル間の余白なしで連続表示） ── */
+#ngAll{animation:fin .2s}
+.charts-flow{margin-top:8px}
+.charts-flow .charts-sec{margin-bottom:16px}
+.charts-flow .charts-sec:last-child{margin-bottom:0}
 @keyframes fin{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
-/* ── ジャンル別の空状態プレースホルダ ── */
+/* ── 空状態プレースホルダ ── */
 .filter-empty{text-align:center;padding:60px 20px;color:var(--muted)}
 .filter-empty-ico{font-size:44px;margin-bottom:12px;opacity:.3}
 /* ── 日曜：週間グッドランキング案内バナー ── */
@@ -453,10 +456,8 @@ body{font-family:'Noto Sans JP',sans-serif;font-size:13px;background:var(--bg);c
         <span class="wk-sub">日曜日は、この1週間（<span class="wk-range"></span>）で反応の多かった記事をジャンル別にまとめて表示しています。</span>
       </div>
     </div>
-    <div class="panel show" id="p0" data-i="0"><div class="ngrid" id="ng0"></div><div class="charts-sec" id="ch0"></div></div>
-    <div class="panel show" id="p1" data-i="1"><div class="ngrid" id="ng1"></div><div class="charts-sec" id="ch1"></div></div>
-    <div class="panel show" id="p2" data-i="2"><div class="ngrid" id="ng2"></div><div class="charts-sec" id="ch2"></div></div>
-    <div class="panel show" id="p3" data-i="3"><div class="ngrid" id="ng3"></div><div class="charts-sec" id="ch3"></div></div>
+    <div class="ngrid" id="ngAll"></div>
+    <div class="charts-flow" id="chAll"></div>
     <div class="filter-empty" id="filterEmpty" style="display:none"><div class="filter-empty-ico">🗂️</div><div>表示するジャンルが選択されていません。<br>上のタグから見たいジャンルを選択してください。</div></div>
   </main>
 </div>
@@ -1007,59 +1008,85 @@ function loadDate(ds){
   renderDailyLinks(ds);
 }
 
+let _curData=null,_curWeekly=false;
 function renderAll(data,media,weekly){
+  _curData=data;_curWeekly=!!weekly;
   let total=0;
   THEMES.forEach((t,i)=>{
-    const d=data[t.key],cnt=d?.items?.length||0;total+=cnt;
+    const cnt=data[t.key]?.items?.length||0;total+=cnt;
     document.getElementById(`b${i}`).textContent=cnt;
-    renderNews(i,t,d,weekly);
-    renderCharts(i,t,d);
   });
   document.getElementById('topicCnt').textContent=total;
   document.getElementById('sideBadge').classList.toggle('on',total>0);
   renderAudio(media);
-}
-function renderNews(i,theme,data,weekly){
-  const grid=document.getElementById(`ng${i}`);grid.innerHTML='';
-  const genreName=theme.name||theme.label;
-  const items=data?.items||[];
-  if(!items.length){
-    const msg=weekly?`${genreName}：今週グッドが付いた記事はまだありません`:`${genreName}：この日のニュースはありません`;
-    grid.innerHTML=`<div class="no-news"><div class="no-news-ico">📭</div><div>${msg}</div></div>`;return;
-  }
-  items.forEach((item,idx)=>{
-    const card=document.createElement('div');card.className='ncard';card.id='art-'+i+'-'+idx;
-    const ins=item.insight?`<div class="ninsight">${item.insight}</div>`:'';
-    const url=item.source?`<div class="nurl"><a href="${item.source}" target="_blank" rel="noopener">${item.source.length>55?item.source.slice(0,55)+'…':item.source}</a></div>`:'';
-    const articleKey = item.source || item.title;
-    const goodFoot = buildGoodFooter(articleKey);
-    const noteFoot = buildNoteFooter(articleKey);
-    // 社内用は good + note を並べる
-    const foot = `<div class="ncard-foot">${noteFoot}${goodFoot.replace('<div class="ncard-foot">','').replace('</div>','')}</div>`;
-    // ジャンルをカード内に明示（先頭のジャンルバッジ）。記事固有タグがあれば副タグとして併記
-    const subTag=(item.tag && item.tag!==genreName)?`<span class="ntag sub">${item.tag}</span>`:'';
-    // 週間ビュー：順位・グッド数・掲載日をメタ先頭に表示
-    let weeklyMeta='';
-    if(weekly){
-      const rc=idx===0?'r1':idx===1?'r2':idx===2?'r3':'';
-      const dstr=item.date?_mmdd(item.date):'';
-      weeklyMeta=`<span class="nrank ${rc}">${idx+1}</span><span class="nlikes">❤️ ${item.likes}</span>`+(dstr?`<span class="ndate">${dstr}</span>`:'');
-    }
-    card.innerHTML=`<div class="ncard-body"><div class="ncard-meta">${weeklyMeta}<span class="ngenre ${theme.cls}">${genreName}</span>${subTag}<span class="nmedia">${item.sourceLabel||''}</span></div><div class="ntitle">${item.title}</div><div class="nbody">${item.detail}</div>${ins}${url}</div>${foot}`;
-    grid.appendChild(card);
-  });
+  renderFlow();
 }
 
-function renderCharts(i,theme,data){
-  const wrap=document.getElementById(`ch${i}`);wrap.innerHTML='';
-  const charts=data?.charts||[];if(!charts.length)return;
-  const hd=document.createElement('div');hd.className='charts-hd';hd.textContent='市場予測・データチャート';wrap.appendChild(hd);
+// 1枚のニュースカードDOMを生成（週間ビューでは順位・グッド数・掲載日を付与）
+function buildNewsCard(i,theme,item,idx,weekly){
+  const genreName=theme.name||theme.label;
+  const card=document.createElement('div');card.className='ncard';card.id='art-'+i+'-'+idx;
+  const ins=item.insight?`<div class="ninsight">${item.insight}</div>`:'';
+  const url=item.source?`<div class="nurl"><a href="${item.source}" target="_blank" rel="noopener">${item.source.length>55?item.source.slice(0,55)+'…':item.source}</a></div>`:'';
+  const articleKey=item.source||item.title;
+  const goodFoot=buildGoodFooter(articleKey);
+  const noteFoot=buildNoteFooter(articleKey);
+  const foot=`<div class="ncard-foot">${noteFoot}${goodFoot.replace('<div class="ncard-foot">','').replace('</div>','')}</div>`;
+  const subTag=(item.tag && item.tag!==genreName)?`<span class="ntag sub">${item.tag}</span>`:'';
+  let weeklyMeta='';
+  if(weekly){
+    const rc=idx===0?'r1':idx===1?'r2':idx===2?'r3':'';
+    const dstr=item.date?_mmdd(item.date):'';
+    weeklyMeta=`<span class="nrank ${rc}">${idx+1}</span><span class="nlikes">❤️ ${item.likes}</span>`+(dstr?`<span class="ndate">${dstr}</span>`:'');
+  }
+  card.innerHTML=`<div class="ncard-body"><div class="ncard-meta">${weeklyMeta}<span class="ngenre ${theme.cls}">${genreName}</span>${subTag}<span class="nmedia">${item.sourceLabel||''}</span></div><div class="ntitle">${item.title}</div><div class="nbody">${item.detail}</div>${ins}${url}</div>${foot}`;
+  return card;
+}
+
+// 選択したジャンルの順番で、単一グリッドに連続表示（ジャンル間の余白なし）
+function renderFlow(){
+  const grid=document.getElementById('ngAll');
+  const chWrap=document.getElementById('chAll');
+  const empty=document.getElementById('filterEmpty');
+  if(!grid||!chWrap)return;
+  // 既存チャートインスタンスを破棄してから再構築
+  Object.keys(CI).forEach(k=>{try{CI[k].destroy();}catch(e){}delete CI[k];});
+  grid.innerHTML='';chWrap.innerHTML='';
+  if(!selectedGenres.length){empty.style.display='block';return;}
+  empty.style.display='none';
+  const data=_curData||{};
+  let cardCount=0;
+  // ニュース：選択順に全カードを1つのグリッドへ流し込む
+  selectedGenres.forEach(idx=>{
+    const theme=THEMES[idx];if(!theme)return;
+    const items=data[theme.key]?.items||[];
+    items.forEach((item,j)=>{grid.appendChild(buildNewsCard(idx,theme,item,j,_curWeekly));cardCount++;});
+  });
+  if(cardCount===0){
+    const msg=_curWeekly?'選択したジャンルで今週グッドが付いた記事はまだありません':'選択したジャンルのニュースはこの日ありません';
+    grid.innerHTML=`<div class="no-news"><div class="no-news-ico">📭</div><div>${msg}</div></div>`;
+  }
+  // チャート：週間ビューでは非表示。平日は選択順にニュースの下へまとめて表示
+  if(!_curWeekly){
+    selectedGenres.forEach(idx=>{
+      const theme=THEMES[idx];if(!theme)return;
+      const charts=data[theme.key]?.charts||[];
+      if(charts.length)renderChartsInto(chWrap,theme,charts);
+    });
+  }
+}
+
+// 共有チャート領域へ、ジャンル名付きヘッダーでチャート群を追加
+function renderChartsInto(container,theme,charts){
+  const genreName=theme.name||theme.label;
+  const sec=document.createElement('div');sec.className='charts-sec';
+  const hd=document.createElement('div');hd.className='charts-hd';hd.textContent=`市場予測・データチャート（${genreName}）`;sec.appendChild(hd);
   charts.forEach(ch=>{
     const card=document.createElement('div');card.className='chart-card';
     const cid='c_'+Math.random().toString(36).slice(2);
     card.innerHTML=`<div class="chart-card-ttl">${ch.title}</div><div class="chart-card-sub">単位：${ch.dataset_label||''}</div><div class="chart-wrap"><canvas id="${cid}"></canvas></div>`;
-    wrap.appendChild(card);
-    const ctx=document.getElementById(cid).getContext('2d');
+    sec.appendChild(card);
+    const ctx=card.querySelector('canvas').getContext('2d');
     if(CI[cid])CI[cid].destroy();
     const isBar=ch.type==='bar';
     const ds=ch.datasets
@@ -1067,7 +1094,9 @@ function renderCharts(i,theme,data){
       :[{label:ch.dataset_label||'',data:ch.data||[],borderColor:PAL[0],backgroundColor:PAL[0]+(isBar?'55':'18'),borderWidth:2,tension:0.4,fill:!isBar,pointRadius:3,pointBackgroundColor:PAL[0]}];
     CI[cid]=new Chart(ctx,{type:isBar?'bar':'line',data:{labels:ch.labels,datasets:ds},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:!!ch.datasets,position:'bottom',labels:{font:{size:10,family:'Noto Sans JP'},padding:12,boxWidth:12}},tooltip:{backgroundColor:'#fff',borderColor:'#e5e7eb',borderWidth:1,titleColor:'#374151',bodyColor:'#374151'}},scales:{x:{grid:{color:'#f3f4f6'},ticks:{color:'#6b7280',font:{size:10}},border:{color:'#e5e7eb'}},y:{grid:{color:'#f3f4f6'},ticks:{color:'#6b7280',font:{size:10}},border:{color:'#e5e7eb'}}}}});
   });
+  container.appendChild(sec);
 }
+
 // ── 前月サマリーレポート（4カテゴリ）──
 // monthly シート想定列: month(YYYY-MM), optics_url, space_url, domestic_url, intl_url
 const SUMMARY_DEFS=[
@@ -1287,59 +1316,50 @@ function closeAudioModal(e){
   document.body.style.overflow='';
   // モーダルを閉じても再生は継続（_waは共有）
 }
-// ── ジャンル表示フィルタ（複数選択トグル） ──────────────────
-// タグ切替（排他）を廃止し、見たいジャンルを複数選択して同時表示する方式。
-// 選択状態はブラウザに保存し、次回訪問・日付移動をまたいでも維持する。
-const GENRE_PREF_KEY = 'newsPortalGenrePref_v1';
+// ── ジャンル表示フィルタ（複数選択・選択順を保持） ──────────────
+// タグ切替（排他）を廃止。選択したジャンルを、選択した順番で連続表示する。
+// 選択（順序含む）はブラウザに保存し、次回訪問・日付移動をまたいでも維持する。
+const GENRE_PREF_KEY = 'newsPortalGenrePref_v2';
+let selectedGenres = [0,1,2,3];   // 既定：全ジャンルを既定順で表示
 function _loadGenrePref(){
   try{
     const raw=localStorage.getItem(GENRE_PREF_KEY);
     if(!raw)return null;
     const arr=JSON.parse(raw);
-    return Array.isArray(arr)?arr.map(Number).filter(n=>n>=0&&n<=3):null;
+    if(!Array.isArray(arr))return null;
+    // 重複除去＋範囲チェックしつつ順序は保持
+    const seen={},out=[];
+    arr.map(Number).forEach(function(n){
+      if(n>=0&&n<=3&&!seen[n]){seen[n]=1;out.push(n);}
+    });
+    return out;
   }catch(e){ return null; }
 }
 function _saveGenrePref(){
-  try{
-    const sel=[];
-    document.querySelectorAll('.tab').forEach(function(t){
-      if(t.classList.contains('act'))sel.push(Number(t.dataset.i));
-    });
-    localStorage.setItem(GENRE_PREF_KEY, JSON.stringify(sel));
-  }catch(e){}
+  try{ localStorage.setItem(GENRE_PREF_KEY, JSON.stringify(selectedGenres)); }catch(e){}
 }
-// 選択状態を各パネルの表示/非表示へ反映し、空状態プレースホルダを切り替える
-function applyGenreFilter(){
-  let anyShown=false;
+// タグチップの選択状態（見た目）を selectedGenres に同期
+function _syncGenreChips(){
   document.querySelectorAll('.tab').forEach(function(t){
     const idx=Number(t.dataset.i);
-    const on=t.classList.contains('act');
+    const on=selectedGenres.indexOf(idx)>=0;
+    t.classList.toggle('act', on);
     t.setAttribute('aria-pressed', on?'true':'false');
-    const panel=document.getElementById('p'+idx);
-    if(panel){
-      panel.classList.toggle('show', on);
-      if(on)anyShown=true;
-    }
   });
-  const empty=document.getElementById('filterEmpty');
-  if(empty)empty.style.display=anyShown?'none':'block';
 }
 function toggleGenre(idx){
-  const tab=document.querySelector('.tab[data-i="'+idx+'"]');
-  if(!tab)return;
-  tab.classList.toggle('act');
-  applyGenreFilter();
+  const pos=selectedGenres.indexOf(idx);
+  if(pos>=0) selectedGenres.splice(pos,1);   // 解除
+  else       selectedGenres.push(idx);        // 選択（末尾に追加＝選択順）
+  _syncGenreChips();
   _saveGenrePref();
+  renderFlow();   // 選択順で再描画
 }
-// 保存済みの選択があれば復元（無ければ全ジャンル表示のまま）
+// 保存済みの選択があれば順序ごと復元（無ければ全ジャンル既定順）
 (function initGenreFilter(){
   const pref=_loadGenrePref();
-  if(pref){
-    document.querySelectorAll('.tab').forEach(function(t){
-      t.classList.toggle('act', pref.includes(Number(t.dataset.i)));
-    });
-  }
-  applyGenreFilter();
+  if(pref) selectedGenres=pref;
+  _syncGenreChips();
 })();
 document.querySelectorAll('.tab').forEach(function(t){
   t.addEventListener('click', function(){
