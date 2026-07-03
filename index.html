@@ -188,9 +188,18 @@ body{font-family:'Noto Sans JP',sans-serif;font-size:13px;background:var(--bg);c
 .weekly-banner.quiz-banner .qz-range{font-weight:700}
 .quiz-flow{display:flex;flex-direction:column;gap:14px;margin-bottom:22px}
 .qz-card{background:#fff;border:1px solid var(--border);border-radius:12px;padding:16px 18px;animation:fin .3s ease}
-.qz-head{display:flex;align-items:flex-start;gap:10px;margin-bottom:12px}
+.qz-head{display:flex;align-items:flex-start;gap:9px;margin-bottom:12px;flex-wrap:wrap}
 .qz-no{display:inline-flex;align-items:center;justify-content:center;min-width:34px;height:22px;padding:0 7px;border-radius:11px;background:#4338ca;color:#fff;font-family:'Oswald',sans-serif;font-size:12px;font-weight:700;flex-shrink:0;margin-top:1px}
-.qz-q{font-size:14px;font-weight:700;color:var(--text);line-height:1.65;min-width:0}
+.qz-cat{display:inline-flex;align-items:center;height:22px;padding:0 10px;border-radius:11px;font-size:11px;font-weight:700;flex-shrink:0;margin-top:1px}
+.qz-cat.tech{background:#fee2e2;color:#b91c1c;border:1px solid #fca5a5}
+.qz-cat.pol{background:#dcfce7;color:#15803d;border:1px solid #86efac}
+.qz-q{font-size:14px;font-weight:700;color:var(--text);line-height:1.65;min-width:0;flex-basis:100%}
+.qz-exp-text{margin:2px 0 4px;color:#334155}
+.qz-loading{text-align:center;padding:50px 20px;color:#4338ca}
+.qz-spinner{width:34px;height:34px;margin:0 auto 16px;border:3px solid #e0e7ff;border-top-color:#4338ca;border-radius:50%;animation:qzspin .8s linear infinite}
+@keyframes qzspin{to{transform:rotate(360deg)}}
+.qz-loading-txt{font-size:14px;font-weight:700;color:#3730a3}
+.qz-loading-sub{font-size:11.5px;color:#6366f1;margin-top:6px}
 .qz-choices{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 @media(max-width:700px){.qz-choices{grid-template-columns:1fr}}
 .qz-choice{display:flex;align-items:flex-start;gap:9px;text-align:left;background:#f8fafc;border:1px solid var(--border);border-radius:10px;padding:10px 12px;font-size:12.5px;line-height:1.6;color:var(--text);cursor:pointer;transition:background .12s,border-color .12s;font-family:inherit}
@@ -565,7 +574,7 @@ body{font-family:'Noto Sans JP',sans-serif;font-size:13px;background:var(--bg);c
       <span class="wk-ico">📝</span>
       <div class="wk-txt">
         <span class="wk-ttl">今週のニュースクイズ</span>
-        <span class="wk-sub">日曜日は、今週の平日（<span class="qz-range"></span>）のニュースから4択クイズを5問出題しています。全問正解を目指しましょう！</span>
+        <span class="wk-sub">日曜日は、今週の平日（<span class="qz-range"></span>）のニュースから、技術系と政治・安保系の内容を問う4択クイズを5問出題しています。全問正解を目指しましょう！</span>
       </div>
     </div>
     <div class="ngrid" id="ngAll"></div>
@@ -1171,16 +1180,15 @@ function setQuizBanner(ds,on){
 // ============================================================
 // 日曜：週間ニュースクイズ（4択×5問）
 // ============================================================
-// 同じ日付なら誰が開いても同じ問題になるよう、日付シードの乱数を使用
-function _qhash(s){let h=2166136261;for(let i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619);}return h>>>0;}
-function _qrand(seed){let a=seed>>>0;return function(){a|=0;a=(a+0x6D2B79F5)|0;let t=Math.imul(a^(a>>>15),1|a);t=(t+Math.imul(t^(t>>>7),61|t))^t;return((t^(t>>>14))>>>0)/4294967296;};}
-function _qshuffle(arr,rnd){for(let i=arr.length-1;i>0;i--){const j=Math.floor(rnd()*(i+1));[arr[i],arr[j]]=[arr[j],arr[i]];}return arr;}
+// 生成済み設問は日付ごとにキャッシュされ、同じ日曜なら誰が開いても同じ問題になる
 function _qclip(s,n){s=String(s||'').replace(/\s+/g,' ').trim();return s.length>n?s.slice(0,n)+'…':s;}
 function _qSectionName(sec){const t=THEMES.find(t=>t.key===sec);return t?t.name:'その他';}
 
 const QUIZ_N=5;
 const LS_QUIZ_KEY_PREF='np_quiz_ans_v1_';
+const LS_QUIZ_CACHE_PREF='np_quiz_gen_v2_'; // 生成済み設問のキャッシュ（日付ごと）
 let _quizState=null;
+let _quizLoading=false;
 
 function _loadQuizAnswers(ds,n){
   try{
@@ -1199,57 +1207,165 @@ function _clearQuizAnswers(){
   try{localStorage.removeItem(LS_QUIZ_KEY_PREF+_quizState.ds);}catch(e){}
 }
 
-// 月〜金の記事から4択クイズを最大5問生成
-function buildQuizState(ds){
+// 生成済みクイズのキャッシュ読み書き（同じ日曜なら誰でも同じ問題）
+function _loadQuizCache(ds){
+  try{
+    const c=JSON.parse(localStorage.getItem(LS_QUIZ_CACHE_PREF+ds)||'null');
+    if(c&&Array.isArray(c.questions)&&c.questions.length)return c;
+  }catch(e){}
+  return null;
+}
+function _saveQuizCache(ds,questions){
+  try{localStorage.setItem(LS_QUIZ_CACHE_PREF+ds,JSON.stringify({questions,ts:Date.now()}));}catch(e){}
+}
+
+// 記事から技術系／政治系を判定
+function _isPolSection(sec){return sec==='domestic'||sec==='intl';}
+
+// その週（月〜金）の記事から、技術・政治の内容を問う4択クイズをClaudeで生成
+async function buildQuizState(ds){
   const {start,end}=_weekdayWindow(ds);
   const rows=allRows.filter(r=>r.date>=start&&r.date<=end&&r.title&&r.detail);
-  const rnd=_qrand(_qhash('quiz-'+ds));
-  const questions=[];
-  if(rows.length>=4){
-    const pool=_qshuffle([...rows],rnd);
-    const picked=pool.slice(0,QUIZ_N);
-    const labelsAll=[...new Set(rows.map(r=>r.source_label).filter(Boolean))];
-    const typeCycle=['content','media','genre','content','media'];
-    picked.forEach((art,i)=>{
-      let type=typeCycle[i%typeCycle.length];
-      if(type==='media'&&(labelsAll.length<4||!art.source_label))type='content';
-      let q=null;
-      if(type==='content'){
-        const correct=_qclip(art.detail,90);
-        const others=_qshuffle(rows.filter(r=>r!==art&&_qclip(r.detail,90)!==correct),rnd)
-          .filter((r,idx,arr)=>arr.findIndex(x=>_qclip(x.detail,90)===_qclip(r.detail,90))===idx)
-          .slice(0,3);
-        if(others.length>=3){
-          const choices=_qshuffle([correct,...others.map(o=>_qclip(o.detail,90))],rnd);
-          q={question:`「${_qclip(art.title,60)}」——このニュースの内容として正しいものはどれ？`,
-             choices,answer:choices.indexOf(correct)};
-        }
-      }else if(type==='media'){
-        const correct=art.source_label;
-        const others=_qshuffle(labelsAll.filter(l=>l!==correct),rnd).slice(0,3);
-        if(others.length>=3){
-          const choices=_qshuffle([correct,...others],rnd);
-          q={question:`「${_qclip(art.title,60)}」——このニュースを報じたメディアはどれ？`,
-             choices,answer:choices.indexOf(correct)};
-        }
-      }
-      if(!q){ // genre（フォールバック兼用）：4ジャンルがそのまま4択になる
-        const correct=_qSectionName(art.section);
-        const choices=_qshuffle(THEMES.map(t=>t.name),rnd);
-        q={question:`「${_qclip(art.title,60)}」——このニュースはどのジャンル？`,
-           choices,answer:choices.indexOf(correct)};
-      }
-      q.art=art;
-      questions.push(q);
-    });
+
+  // 1) キャッシュがあれば即利用
+  const cached=_loadQuizCache(ds);
+  if(cached){
+    const qs=cached.questions.map(q=>_reattachArt(q,rows));
+    _quizState={ds,start,end,questions:qs,answers:_loadQuizAnswers(ds,qs.length),error:''};
+    return;
   }
-  _quizState={ds,start,end,questions,answers:_loadQuizAnswers(ds,questions.length)};
+
+  if(rows.length<4){
+    _quizState={ds,start,end,questions:[],answers:[],error:''};
+    return;
+  }
+
+  // 2) Claudeで生成（技術・政治の内容を問う設問）
+  _quizLoading=true;
+  _quizState={ds,start,end,questions:[],answers:[],error:'',loading:true};
+  try{
+    const qs=await _generateQuizWithClaude(rows,ds);
+    if(qs&&qs.length){
+      _saveQuizCache(ds,qs);
+      const qs2=qs.map(q=>_reattachArt(q,rows));
+      _quizState={ds,start,end,questions:qs2,answers:_loadQuizAnswers(ds,qs2.length),error:''};
+    }else{
+      _quizState={ds,start,end,questions:[],answers:[],error:'クイズの生成に失敗しました。時間をおいて再読み込みしてください。'};
+    }
+  }catch(e){
+    console.error('quiz gen error',e);
+    _quizState={ds,start,end,questions:[],answers:[],error:'クイズの生成中にエラーが発生しました。'};
+  }finally{
+    _quizLoading=false;
+  }
+}
+
+// 生成された設問に、出典記事（title/source_label/date/url）を突き合わせて付与
+function _reattachArt(q,rows){
+  let art=null;
+  if(q.source_url)art=rows.find(r=>r.url===q.source_url);
+  if(!art&&q.source_title)art=rows.find(r=>r.title===q.source_title);
+  if(!art&&q.source_title){
+    const key=String(q.source_title).slice(0,16);
+    art=rows.find(r=>r.title&&r.title.indexOf(key)>=0);
+  }
+  return Object.assign({},q,{art:art||{title:q.source_title||'',source_label:q.source_label||'',date:q.source_date||'',url:q.source_url||''}});
+}
+
+// Claude（Sonnet）に、その週の記事から技術・政治クイズを作らせる
+async function _generateQuizWithClaude(rows,ds){
+  // 技術系・政治系をバランスよく抽出（各最大8本）
+  const tech=rows.filter(r=>!_isPolSection(r.section)).slice(0,8);
+  const pol =rows.filter(r=> _isPolSection(r.section)).slice(0,8);
+  const pick=[...tech,...pol];
+  // 記事素材を番号付きで整形
+  const src=pick.map((r,i)=>{
+    const genre=_qSectionName(r.section);
+    return `【記事${i+1}】ジャンル:${genre}／メディア:${r.source_label||'不明'}／日付:${r.date}\nタイトル: ${_qclip(r.title,80)}\n本文: ${_qclip(r.detail,220)}${r.insight?'\n示唆: '+_qclip(r.insight,120):''}\nURL: ${r.url||''}`;
+  }).join('\n\n');
+
+  const nTech=Math.min(3,tech.length>0?3:0);
+  const prompt=`あなたはBtoB光学・フォトニクス業界の社内ニュースクイズ作成者です。以下は今週（${ds}の週）の平日ニュース記事です。これらの記事の「内容の理解」を問う4択クイズを${QUIZ_N}問作成してください。
+
+# 出題方針
+- 技術系（光学・光電融合・半導体・レーザー・宇宙・防衛・核融合など）を${nTech}問、政治・経済安全保障系（国内政治・海外政治・輸出規制・地政学など）を${QUIZ_N-nTech}問。
+- 各問は必ず1つの記事に基づき、その記事の「具体的な事実・数値・技術的ポイント・政策の要点」を問うこと。単なる「どのメディアが報じたか」「どのジャンルか」といった中身と無関係な問題は禁止。
+- 選択肢は4つ。正解1つ＋もっともらしい誤答3つ。誤答は同じ分野の紛らわしい内容にし、明らかに不自然なものにしないこと。
+- 問題文・選択肢は日本語。専門的だが社員が読めば分かる難易度に。
+- 各問に、なぜその答えになるかの簡潔な解説（1〜2文）を付けること。
+
+# 出力形式（厳守）
+前置きやMarkdownのコードフェンスを一切付けず、以下のJSON配列**のみ**を出力してください:
+[
+  {
+    "question": "問題文",
+    "choices": ["選択肢A","選択肢B","選択肢C","選択肢D"],
+    "answer": 0,
+    "explanation": "解説文",
+    "category": "tech" または "pol",
+    "source_title": "根拠にした記事のタイトル",
+    "source_url": "根拠にした記事のURL"
+  }
+]
+"answer"は正解の選択肢のインデックス(0-3)。
+
+# 今週の記事
+${src}`;
+
+  const res=await fetch("https://api.anthropic.com/v1/messages",{
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({
+      model:"claude-sonnet-4-6",
+      max_tokens:2500,
+      messages:[{role:"user",content:prompt}]
+    })
+  });
+  const data=await res.json();
+  let text=(data.content||[]).filter(b=>b.type==='text').map(b=>b.text).join('\n');
+  text=text.replace(/```json/gi,'').replace(/```/g,'').trim();
+  // JSON配列部分だけ抽出
+  const s=text.indexOf('['),eIdx=text.lastIndexOf(']');
+  if(s>=0&&eIdx>s)text=text.slice(s,eIdx+1);
+  let arr;
+  try{arr=JSON.parse(text);}catch(e){console.error('quiz JSON parse失敗',e,text.slice(0,300));return null;}
+  if(!Array.isArray(arr))return null;
+  // バリデーション
+  const out=[];
+  arr.forEach(q=>{
+    if(!q||typeof q.question!=='string')return;
+    if(!Array.isArray(q.choices)||q.choices.length!==4)return;
+    if(!q.choices.every(c=>typeof c==='string'&&c.trim()))return;
+    let ans=Number(q.answer);
+    if(!Number.isInteger(ans)||ans<0||ans>3)return;
+    if(new Set(q.choices.map(c=>c.trim())).size!==4)return;
+    out.push({
+      question:q.question.trim(),
+      choices:q.choices.map(c=>c.trim()),
+      answer:ans,
+      explanation:String(q.explanation||'').trim(),
+      category:q.category==='pol'?'pol':'tech',
+      source_title:String(q.source_title||''),
+      source_url:String(q.source_url||'')
+    });
+  });
+  return out.slice(0,QUIZ_N);
 }
 
 // クイズ画面の描画
 function renderQuizBlock(grid){
   grid.className='quiz-flow';
   const st=_quizState;
+  // 生成中
+  if(st&&st.loading){
+    grid.innerHTML=`<div class="qz-loading"><div class="qz-spinner"></div><div class="qz-loading-txt">今週のニュースから技術・政治クイズを作成中です…</div><div class="qz-loading-sub">初回は少し時間がかかります（生成後はキャッシュされます）</div></div>`;
+    return;
+  }
+  // エラー
+  if(st&&st.error){
+    grid.innerHTML=`<div class="no-news"><div class="no-news-ico">⚠️</div><div>${st.error}</div></div>`;
+    return;
+  }
   if(!st||!st.questions.length){
     grid.innerHTML=`<div class="no-news"><div class="no-news-ico">📝</div><div>この週（${_mmdd(st?st.start:'')} 〜 ${_mmdd(st?st.end:'')}）はクイズを作成できる記事がありません</div></div>`;
     return;
@@ -1258,6 +1374,8 @@ function renderQuizBlock(grid){
     const answered=st.answers[qi]!=null;
     const card=document.createElement('div');card.className='qz-card';
     const letters=['A','B','C','D'];
+    const catCls=q.category==='pol'?'pol':'tech';
+    const catLbl=q.category==='pol'?'政治・安保':'技術';
     let choicesHtml='';
     q.choices.forEach((c,ci)=>{
       let cls='qz-choice';
@@ -1270,16 +1388,18 @@ function renderQuizBlock(grid){
     });
     let expHtml='';
     if(answered){
-      const art=q.art;
+      const art=q.art||{};
       const ok=st.answers[qi]===q.answer;
       const link=art.url&&/^https?:\/\//.test(art.url)
-        ?`<a href="${art.url.replace(/"/g,'&quot;')}" target="_blank" rel="noopener">出典記事を読む ↗</a>`:'';
+        ?`<a href="${String(art.url).replace(/"/g,'&quot;')}" target="_blank" rel="noopener">出典記事を読む ↗</a>`:'';
+      const expText=q.explanation?`<div class="qz-exp-text">${q.explanation}</div>`:'';
+      const srcLine=(art.title)?`<div class="qz-exp-src">📰 ${_qclip(art.title,80)}${art.source_label?'（'+art.source_label+(art.date?'、'+_mmdd(art.date):'')+'）':''}${link?' ｜ '+link:''}</div>`:'';
       expHtml=`<div class="qz-exp ${ok?'ok':'ng'}">
         <div class="qz-exp-judge">${ok?'⭕ 正解！':'❌ 不正解…'} 正解は <b>${letters[q.answer]}</b></div>
-        <div class="qz-exp-src">📰 ${_qclip(art.title,80)}（${art.source_label||''}、${_mmdd(art.date)}）${link?' ｜ '+link:''}</div>
+        ${expText}${srcLine}
       </div>`;
     }
-    card.innerHTML=`<div class="qz-head"><span class="qz-no">Q${qi+1}</span><div class="qz-q">${q.question}</div></div>
+    card.innerHTML=`<div class="qz-head"><span class="qz-no">Q${qi+1}</span><span class="qz-cat ${catCls}">${catLbl}</span><div class="qz-q">${q.question}</div></div>
       <div class="qz-choices">${choicesHtml}</div>${expHtml}`;
     grid.appendChild(card);
   });
@@ -1330,10 +1450,18 @@ function loadDate(ds){
     setWeeklyBanner(ds,true);
     setQuizBanner(ds,false);
   }else if(mode==='quiz'){
-    // 日曜：その週の平日（月〜金）のニュースから4択クイズを出題
-    buildQuizState(ds);
+    // 日曜：その週の平日（月〜金）のニュースからClaudeが技術・政治クイズを生成
     setWeeklyBanner(ds,false);
     setQuizBanner(ds,true);
+    // まずローディング状態を表示し、生成完了後に同じ日付なら再描画
+    const w=_weekdayWindow(ds);
+    _quizState={ds,start:w.start,end:w.end,questions:[],answers:[],error:'',loading:true};
+    renderAll(data,dayMedia,mode);
+    renderDailyLinks(ds);
+    buildQuizState(ds).then(()=>{
+      if(curDate===ds&&_dayMode(ds)==='quiz')renderAll(_curData||data,dayMedia,'quiz');
+    });
+    return;
   }else{
     // 平日：その日のニュースを表示
     const dayRows=allRows.filter(r=>r.date===ds);
