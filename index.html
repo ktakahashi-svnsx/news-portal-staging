@@ -650,7 +650,7 @@ function _subKey(section,tag){
   }
   return OTHER_KEY[section];
 }
-let curDate=null,availDates=[],calY,calM,allRows=[],allChartRows=[],allMediaRows=[],allMonthlyRows=[];
+let curDate=null,availDates=[],calY,calM,allRows=[],allChartRows=[],allMediaRows=[],allMonthlyRows=[],allQuizRows=[];
 let allDailyLinks={};  // { 'YYYY-MM-DD': {dashboard_url}, ... }
 const CI={};
 
@@ -1033,12 +1033,13 @@ async function fetchSheet(name){
 async function loadAll(){
   const errEl=document.getElementById('connErr');
   const okEl=document.getElementById('connOk');
-  // articles / charts / media / monthly を並列取得
-  const [articlesResult,chartsResult,mediaResult,monthlyResult]=await Promise.allSettled([
+  // articles / charts / media / monthly / quiz を並列取得
+  const [articlesResult,chartsResult,mediaResult,monthlyResult,quizResult]=await Promise.allSettled([
     fetchSheet('articles'),
     fetchSheet('charts'),
     fetchSheet('media'),
     fetchSheet('monthly'),
+    fetchSheet('quiz'),
   ]);
   if(articlesResult.status==='fulfilled'){
     allRows=parseCSV(articlesResult.value);
@@ -1050,6 +1051,8 @@ async function loadAll(){
   allChartRows=chartsResult.status==='fulfilled'?parseCSV(chartsResult.value):[];
   allMediaRows=mediaResult.status==='fulfilled'?parseCSV(mediaResult.value):[];
   allMonthlyRows=monthlyResult.status==='fulfilled'?parseMonthlyCSV(monthlyResult.value):[];
+  // quizシート（date, questions_json）。シート未作成でもエラーにしない
+  allQuizRows=quizResult.status==='fulfilled'?parseCSV(quizResult.value):[];
 
   // 前月サマリーレポート（日次データとは独立して一度だけ描画）
   renderMonthly();
@@ -1116,9 +1119,11 @@ const WEEKEND_RELEASE_HOUR=7;
 // 現在のローカル日付・時刻
 function _nowDateStr(){return _dateStr(new Date());}
 function _nowHour(){return new Date().getHours();}
-// 指定日付が「今日」で、かつ現在時刻が公開時刻前か（=まだ公開前）
+// 指定日付の公開時刻（その日の7:00）にまだ達していないか（未来日も公開前扱い）
 function _isBeforeRelease(ds){
-  return ds===_nowDateStr() && _nowHour()<WEEKEND_RELEASE_HOUR;
+  const rel=new Date(ds+'T00:00:00');
+  rel.setHours(WEEKEND_RELEASE_HOUR,0,0,0);
+  return Date.now()<rel.getTime();
 }
 
 // ── 週の集計ウィンドウ（その週の平日：月曜〜金曜） ──
@@ -1158,7 +1163,7 @@ let _pendingTimer=null;
 function _schedulePendingRelease(ds){
   if(_pendingTimer){clearTimeout(_pendingTimer);_pendingTimer=null;}
   const now=new Date();
-  const release=new Date(now.getFullYear(),now.getMonth(),now.getDate(),WEEKEND_RELEASE_HOUR,0,0,0);
+  const release=new Date(ds+'T00:00:00');release.setHours(WEEKEND_RELEASE_HOUR,0,0,0);
   let ms=release.getTime()-now.getTime();
   if(ms<0)ms=0;
   // setTimeoutの上限対策（最大約24日）だが、当日中なので問題なし。念のため上限を設ける。
@@ -1170,11 +1175,11 @@ function _schedulePendingRelease(ds){
   },ms);
 }
 // 土日特別表示（ランキング/クイズ/公開前案内）が可能か
-// pending（公開前の当日土日）もカレンダーで選択可能にする
+// pending（公開前）は「当日」のみ選択可。未来の土日はカレンダーから開けない。
 function _isWeekendSpecial(ds){
   const mode=_dayMode(ds);
   if(mode==='daily')return false;
-  if(mode==='pending')return true; // 当日土日の公開前：案内を出すため選択可
+  if(mode==='pending')return ds===_nowDateStr(); // 当日の公開前のみ案内表示のため選択可
   const {start,end}=_weekdayWindow(ds);
   return availDates.some(d=>d>=start&&d<=end);
 }
@@ -1266,12 +1271,54 @@ function _saveQuizCache(ds,questions){
 // 記事から技術系／政治系を判定
 function _isPolSection(sec){return sec==='domestic'||sec==='intl';}
 
-// その週（月〜金）の記事から、技術・政治の内容を問う4択クイズをClaudeで生成
+// 設問配列のバリデーション（quizシート由来・API由来で共通）
+function _validateQuizArr(arr){
+  if(!Array.isArray(arr))return [];
+  const out=[];
+  arr.forEach(q=>{
+    if(!q||typeof q.question!=='string')return;
+    if(!Array.isArray(q.choices)||q.choices.length!==4)return;
+    if(!q.choices.every(c=>typeof c==='string'&&c.trim()))return;
+    const ans=Number(q.answer);
+    if(!Number.isInteger(ans)||ans<0||ans>3)return;
+    if(new Set(q.choices.map(c=>c.trim())).size!==4)return;
+    out.push({
+      question:q.question.trim(),
+      choices:q.choices.map(c=>c.trim()),
+      answer:ans,
+      explanation:String(q.explanation||'').trim(),
+      category:q.category==='pol'?'pol':'tech',
+      source_title:String(q.source_title||''),
+      source_url:String(q.source_url||'')
+    });
+  });
+  return out.slice(0,QUIZ_N);
+}
+
+// quizシート（date, questions_json）から該当日の設問を取得
+function _loadQuizFromSheet(ds){
+  const row=allQuizRows.find(r=>r.date===ds&&r.questions_json);
+  if(!row)return null;
+  try{
+    const qs=_validateQuizArr(JSON.parse(row.questions_json));
+    return qs.length?qs:null;
+  }catch(e){console.warn('quizシートのJSON解析失敗',e);return null;}
+}
+
+// その日のクイズを取得：①quizシート（事前生成・保存済み）→②ローカルキャッシュ→③Claudeでその場生成
 async function buildQuizState(ds){
   const {start,end}=_weekdayWindow(ds);
   const rows=allRows.filter(r=>r.date>=start&&r.date<=end&&r.title&&r.detail);
 
-  // 1) キャッシュがあれば即利用
+  // 1) quizシートに公開済みの設問があれば最優先で利用（推奨運用）
+  const published=_loadQuizFromSheet(ds);
+  if(published){
+    const qs=published.map(q=>_reattachArt(q,rows));
+    _quizState={ds,start,end,questions:qs,answers:_loadQuizAnswers(ds,qs.length),error:''};
+    return;
+  }
+
+  // 2) ローカルキャッシュ（過去にこの端末で生成済み）
   const cached=_loadQuizCache(ds);
   if(cached){
     const qs=cached.questions.map(q=>_reattachArt(q,rows));
@@ -1284,7 +1331,7 @@ async function buildQuizState(ds){
     return;
   }
 
-  // 2) Claudeで生成（技術・政治の内容を問う設問）。1回失敗したらもう1回試す
+  // 3) フォールバック：Claudeでその場生成（1回失敗したらもう1回試す）
   _quizLoading=true;
   _quizState={ds,start,end,questions:[],answers:[],error:'',loading:true};
   let lastErr='';
@@ -1304,7 +1351,7 @@ async function buildQuizState(ds){
       _quizState={ds,start,end,questions:qs2,answers:_loadQuizAnswers(ds,qs2.length),error:''};
     }else{
       _quizState={ds,start,end,questions:[],answers:[],
-        error:'クイズの生成に失敗しました。時間をおいて再読み込みしてください。'+(lastErr?'（詳細: '+lastErr+'）':'')};
+        error:'この日のクイズがまだ公開されていません（quizシート未登録）。その場での生成も失敗しました。'+(lastErr?'（詳細: '+lastErr+'）':'')};
     }
   }catch(e){
     console.error('quiz gen error',e);
@@ -1392,27 +1439,7 @@ ${src}`;
   if(s>=0&&eIdx>s)text=text.slice(s,eIdx+1);
   let arr;
   try{arr=JSON.parse(text);}catch(e){console.error('quiz JSON parse失敗',e,text.slice(0,300));return null;}
-  if(!Array.isArray(arr))return null;
-  // バリデーション
-  const out=[];
-  arr.forEach(q=>{
-    if(!q||typeof q.question!=='string')return;
-    if(!Array.isArray(q.choices)||q.choices.length!==4)return;
-    if(!q.choices.every(c=>typeof c==='string'&&c.trim()))return;
-    let ans=Number(q.answer);
-    if(!Number.isInteger(ans)||ans<0||ans>3)return;
-    if(new Set(q.choices.map(c=>c.trim())).size!==4)return;
-    out.push({
-      question:q.question.trim(),
-      choices:q.choices.map(c=>c.trim()),
-      answer:ans,
-      explanation:String(q.explanation||'').trim(),
-      category:q.category==='pol'?'pol':'tech',
-      source_title:String(q.source_title||''),
-      source_url:String(q.source_url||'')
-    });
-  });
-  return out.slice(0,QUIZ_N);
+  return _validateQuizArr(arr);
 }
 
 // 当日土日の公開前（7時前）に表示する公開予告ブロック（カウントダウン付き）
@@ -1442,7 +1469,7 @@ function _startPendingCountdown(ds){
   const el=()=>document.getElementById('pendingCd');
   const tick=()=>{
     const now=new Date();
-    const release=new Date(now.getFullYear(),now.getMonth(),now.getDate(),WEEKEND_RELEASE_HOUR,0,0,0);
+    const release=new Date(ds+'T00:00:00');release.setHours(WEEKEND_RELEASE_HOUR,0,0,0);
     let diff=Math.floor((release.getTime()-now.getTime())/1000);
     const e=el();
     if(diff<=0){
