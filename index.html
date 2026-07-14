@@ -105,15 +105,9 @@ body{font-family:'Noto Sans JP',sans-serif;font-size:13px;background:var(--bg);c
 .tab-ico{font-size:13px}
 .tab-badge{display:inline-flex;align-items:center;justify-content:center;min-width:18px;height:18px;padding:0 4px;border-radius:9px;font-size:10px;font-weight:700;background:rgba(0,0,0,.12)}
 .tab.act .tab-badge{background:rgba(255,255,255,.28)}
-/* ── ジャンル選択フィルタ（サブジャンル・グループ表示） ── */
+/* ── ジャンルフィルタ（大ジャンル=タブ切替 / サブジャンル=選択式） ── */
 .tabs-lbl{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:700;color:var(--muted);flex-shrink:0;white-space:nowrap}
 .tabs-lbl::before{content:'▾';font-size:10px}
-.tab{position:relative}
-.tab.sub{padding:6px 12px;font-size:11.5px}
-.tab .tab-check{font-size:11px;font-weight:700;opacity:0;margin-right:-2px;transition:opacity .12s}
-.tab.act .tab-check{opacity:1}
-.tab:not(.act){opacity:.78}
-.tab:not(.act):hover{opacity:1}
 .filter-panel{margin-bottom:14px}
 .filter-head{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 .filter-panel:not(.collapsed) .filter-head{margin-bottom:9px}
@@ -123,36 +117,51 @@ body{font-family:'Noto Sans JP',sans-serif;font-size:13px;background:var(--bg);c
 .filter-panel:not(.collapsed) .filter-toggle .ft-chev{transform:rotate(90deg)}
 .filter-summary{font-size:11px;color:var(--muted);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .filter-panel:not(.collapsed) .filter-summary{display:none}
-/* 展開時：グループ行を縦積み。為替ダッシュボードは右下に配置 */
-.filter-body{display:flex;flex-direction:column}
-.filter-body .dash-btn{align-self:flex-end;margin-top:2px}
-/* 折りたたみ時：サブチップは隠し、グループ一括ボタン＋為替ボタンを1行で表示 */
-.filter-panel.collapsed .filter-body{flex-direction:row;flex-wrap:wrap;align-items:center;gap:8px;margin-top:2px}
-.filter-panel.collapsed .chip-group{margin-bottom:0}
-.filter-panel.collapsed .chip-group .chips{display:none}
-.filter-panel.collapsed .grp-toggle{width:auto}
-.filter-panel.collapsed .filter-body .dash-btn{align-self:auto;margin-top:0;margin-left:auto}
 .filter-actions{display:flex;gap:6px;flex-shrink:0}
 .filter-mini{font-size:10.5px;font-weight:600;color:var(--muted);background:var(--white);border:1px solid var(--border);border-radius:12px;padding:3px 10px;cursor:pointer;font-family:inherit;transition:all .12s}
 .filter-mini:hover{border-color:var(--red);color:var(--red)}
-.chip-group{display:flex;align-items:flex-start;gap:9px;margin-bottom:7px}
-.chip-group:last-child{margin-bottom:0}
-/* グループ一括選択ボタン（左側） */
-.grp-toggle{flex-shrink:0;width:118px;text-align:left;font-size:11px;font-weight:700;color:var(--text);background:var(--white);border:1px solid var(--border);border-radius:8px;padding:6px 9px 6px 17px;cursor:pointer;font-family:inherit;position:relative;line-height:1.3;transition:all .12s}
-.grp-toggle::before{content:'';position:absolute;left:8px;top:50%;transform:translateY(-50%);width:6px;height:6px;border-radius:2px;background:var(--muted)}
-.chip-group.cg-optics .grp-toggle::before{background:var(--red)}
-.chip-group.cg-space .grp-toggle::before{background:var(--purple)}
-.chip-group.cg-pol .grp-toggle::before{background:var(--green)}
-.grp-toggle:hover{border-color:#9ca3af}
-.chip-group.cg-optics .grp-toggle.some{background:#fef2f2;border-color:var(--red);color:var(--red)}
-.chip-group.cg-space .grp-toggle.some{background:#f5f3ff;border-color:var(--purple);color:var(--purple)}
-.chip-group.cg-pol .grp-toggle.some{background:#ecfdf5;border-color:var(--green);color:var(--green)}
-.grp-toggle.all{color:#fff;border-color:transparent}
-.chip-group.cg-optics .grp-toggle.all{background:var(--red)}
-.chip-group.cg-space .grp-toggle.all{background:var(--purple)}
-.chip-group.cg-pol .grp-toggle.all{background:var(--green)}
-.grp-toggle.all::before{background:#fff}
-.chip-group .chips{display:flex;flex-wrap:wrap;gap:6px;flex:1;min-width:0}
+.filter-body{display:flex;flex-direction:column;gap:10px}
+.filter-body .dash-btn{align-self:flex-end;margin-top:2px}
+/* 折りたたみ時：サブ行は隠し、大タブ＋為替ボタンだけ表示 */
+.filter-panel.collapsed .sub-row{display:none}
+.filter-panel.collapsed .filter-body{gap:8px}
+.filter-panel.collapsed .filter-body .dash-btn{align-self:flex-start}
+/* 大ジャンルタブ */
+.main-tabs{display:flex;gap:8px}
+.main-tab{position:relative;display:inline-flex;align-items:center;gap:7px;font-size:13px;font-weight:700;color:var(--muted);background:var(--white);border:1px solid var(--border);border-radius:9px;padding:8px 16px;cursor:pointer;font-family:inherit;transition:all .12s;white-space:nowrap}
+.main-tab::before{content:'';width:8px;height:8px;border-radius:2px;background:var(--muted);flex-shrink:0}
+.main-tab.cg-optics::before{background:var(--red)}
+.main-tab.cg-space::before{background:var(--purple)}
+.main-tab.cg-pol::before{background:var(--green)}
+.main-tab.cg-domestic::before{background:var(--green)}
+.main-tab.cg-intl::before{background:var(--blue)}
+.main-tab:hover{border-color:#9ca3af}
+.main-tab .main-tab-badge{font-size:10.5px;font-weight:700;background:#f1f5f9;color:var(--muted);border-radius:9px;padding:1px 7px;min-width:18px;text-align:center}
+.main-tab.act{color:#fff;border-color:transparent}
+.main-tab.act::before{background:#fff}
+.main-tab.act .main-tab-badge{background:rgba(255,255,255,.28);color:#fff}
+.main-tab.act.cg-optics{background:var(--red)}
+.main-tab.act.cg-space{background:var(--purple)}
+.main-tab.act.cg-pol{background:var(--green)}
+.main-tab.act.cg-domestic{background:var(--green)}
+.main-tab.act.cg-intl{background:var(--blue)}
+/* サブジャンル選択行 */
+.sub-row{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.sub-chip{position:relative;display:inline-flex;align-items:center;gap:5px;font-size:11.5px;font-weight:600;color:var(--muted);background:var(--white);border:1px solid var(--border);border-radius:14px;padding:5px 11px;cursor:pointer;font-family:inherit;transition:all .12s;white-space:nowrap}
+.sub-chip .sub-check{font-size:10px;font-weight:700;opacity:0;width:0;margin-right:-5px;transition:opacity .12s}
+.sub-chip.act .sub-check{opacity:1;width:auto;margin-right:0}
+.sub-chip .sub-badge{font-size:10px;font-weight:700;background:#f1f5f9;color:var(--muted);border-radius:8px;padding:0 6px;min-width:16px;text-align:center}
+.sub-chip:not(.act):hover{border-color:#9ca3af;color:var(--text)}
+.sr-optics .sub-chip.act{background:#fef2f2;border-color:var(--red);color:var(--red)}
+.sr-optics .sub-chip.act .sub-badge{background:var(--red);color:#fff}
+.sr-space .sub-chip.act{background:#f5f3ff;border-color:var(--purple);color:var(--purple)}
+.sr-space .sub-chip.act .sub-badge{background:var(--purple);color:#fff}
+.sr-pol .sub-chip.act{background:#ecfdf5;border-color:var(--green);color:var(--green)}
+.sr-pol .sub-chip.act .sub-badge{background:var(--green);color:#fff}
+.sr-domestic .sub-chip.act{background:#ecfdf5;border-color:var(--green);color:var(--green)}
+.sr-domestic .sub-chip.act .sub-badge{background:var(--green);color:#fff}
+.sr-intl .sub-chip.act{background:#eff6ff;border-color:var(--blue);color:var(--blue)}
+.sr-intl .sub-chip.act .sub-badge{background:var(--blue);color:#fff}
 /* ── 統合ニュースグリッド（ジャンル間の余白なしで連続表示） ── */
 #ngAll{animation:fin .2s}
 /* ── 日曜：メインジャンル別ブロック（連続グリッドをやめ、ブロックごとに区切る） ── */
@@ -165,6 +174,7 @@ body{font-family:'Noto Sans JP',sans-serif;font-size:13px;background:var(--bg);c
 .wk-block.t0 .wk-block-ttl::before{background:var(--red)}
 .wk-block.t1 .wk-block-ttl::before{background:var(--purple)}
 .wk-block.t2 .wk-block-ttl::before{background:var(--green)}
+.wk-block.t3 .wk-block-ttl::before{background:var(--blue)}
 .wk-block-tag{font-size:11px;font-weight:700;color:#b45309;background:#fef3c7;border:1px solid #fcd34d;border-radius:10px;padding:2px 9px}
 .wk-block .ngrid{margin-bottom:0}
 .charts-flow{margin-top:8px}
@@ -256,14 +266,12 @@ body{font-family:'Noto Sans JP',sans-serif;font-size:13px;background:var(--bg);c
   .hdr-title{font-size:13px}
   .hdr-sub{display:none}
 
-  /* タブ／サブチップ行をスクロール可能な横並びに */
-  .tabs,.chip-group .chips{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;
+  /* 大タブ・サブ行をスクロール可能な横並びに */
+  .main-tabs,.sub-row{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;
         padding-bottom:4px;gap:6px;scrollbar-width:none}
-  .tabs::-webkit-scrollbar,.chip-group .chips::-webkit-scrollbar{display:none}
-  .tab{flex-shrink:0;padding:7px 12px;font-size:12px;white-space:nowrap}
-  .tab.sub{padding:6px 11px;font-size:11px}
-  .chip-group{gap:7px}
-  .grp-toggle{width:96px;font-size:10px;padding:6px 7px 6px 15px}
+  .main-tabs::-webkit-scrollbar,.sub-row::-webkit-scrollbar{display:none}
+  .main-tab{flex-shrink:0;padding:7px 13px;font-size:12.5px}
+  .sub-chip{flex-shrink:0}
 
   /* ニュースカードを1列 */
   .ngrid{grid-template-columns:1fr}
@@ -393,7 +401,7 @@ body{font-family:'Noto Sans JP',sans-serif;font-size:13px;background:var(--bg);c
   .audio-modal-close{width:32px;height:32px;border-radius:50%;background:#f3f4f6;
                      border:none;cursor:pointer;font-size:16px;display:flex;
                      align-items:center;justify-content:center;color:#6b7280}
-  .audio-modal iframe{width:100%;height:80px;border:none;border-radius:10px;display:block}
+  .audio-modal iframe{width:100%;height:120px;border:none;border-radius:10px;display:block}
   .audio-modal audio{width:100%;display:block;accent-color:#7c3aed;
                      height:44px;border-radius:10px}
   .audio-modal-drive{
@@ -514,7 +522,7 @@ body{font-family:'Noto Sans JP',sans-serif;font-size:13px;background:var(--bg);c
   <span class="hdr-sub">社内版 / 4タブ</span>
   <div class="hdr-right">
     <span class="hdr-internal-badge">🔒 社内限定</span>
-    <a class="hdr-external-link" href="https://ktakahashi-svnsx.github.io/news-portal/" target="_blank" rel="noopener" title="社外版を新しいタブで開く">
+    <a class="hdr-external-link" href="https://www.sevensix.co.jp/newsportal/" target="_blank" rel="noopener" title="社外版を新しいタブで開く">
       <span class="hdr-ext-ico">🌐</span><span class="hdr-ext-lbl">社外版を開く</span>
     </a>
     <div class="hdr-live"></div><span class="hdr-live-lbl">日別ニュース</span>
@@ -561,9 +569,13 @@ body{font-family:'Noto Sans JP',sans-serif;font-size:13px;background:var(--bg);c
         </div>
       </div>
       <div class="filter-body" id="filterBody">
-        <div class="chip-group cg-optics"><button class="grp-toggle" type="button" data-grp="optics" title="光学をまとめて選択／解除">光学</button><div class="chips" id="chips-optics" role="group" aria-label="光学のサブジャンル選択"></div></div>
-        <div class="chip-group cg-space"><button class="grp-toggle" type="button" data-grp="space" title="宇宙・防衛をまとめて選択／解除">宇宙・防衛</button><div class="chips" id="chips-space" role="group" aria-label="宇宙・防衛・核融合のサブジャンル選択"></div></div>
-        <div class="chip-group cg-pol"><button class="grp-toggle" type="button" data-grp="pol" title="政治をまとめて選択／解除">政治</button><div class="chips" id="chips-pol" role="group" aria-label="政治ジャンルの選択"></div></div>
+        <div class="main-tabs" id="mainTabs" role="tablist" aria-label="ジャンル切り替え">
+          <button class="main-tab cg-optics" type="button" data-main="optics" role="tab">光学<span class="main-tab-badge" id="mcnt_optics">0</span></button>
+          <button class="main-tab cg-space" type="button" data-main="space" role="tab">宇宙・防衛<span class="main-tab-badge" id="mcnt_space">0</span></button>
+          <button class="main-tab cg-domestic" type="button" data-main="domestic" role="tab">国内政治<span class="main-tab-badge" id="mcnt_domestic">0</span></button>
+          <button class="main-tab cg-intl" type="button" data-main="intl" role="tab">海外政治<span class="main-tab-badge" id="mcnt_intl">0</span></button>
+        </div>
+        <div class="sub-row" id="subRow" role="group" aria-label="サブジャンル選択"></div>
         <a class="dash-btn disabled" id="dashBtn" href="#" target="_blank" rel="noopener noreferrer" aria-disabled="true" title="ダッシュボード未登録">
           <span class="dash-btn-ico">📊</span>
           <span class="dash-btn-lbl">為替動向 / 経済トピック / 税務会計情報 ダッシュボード</span>
@@ -587,7 +599,7 @@ body{font-family:'Noto Sans JP',sans-serif;font-size:13px;background:var(--bg);c
     </div>
     <div class="ngrid" id="ngAll"></div>
     <div class="charts-flow" id="chAll"></div>
-    <div class="filter-empty" id="filterEmpty" style="display:none"><div class="filter-empty-ico">🗂️</div><div>表示するジャンルが選択されていません。<br>上のタグから見たいジャンルを選択してください。</div></div>
+    <div class="filter-empty" id="filterEmpty" style="display:none"><div class="filter-empty-ico">🗂️</div><div>このジャンルのサブジャンルが選択されていません。<br>上のサブジャンルから見たいものを選択してください。</div></div>
   </main>
 </div>
 <script>
@@ -626,14 +638,15 @@ const VIEWS=[
 ];
 const VIEW_BY_KEY={};VIEWS.forEach(v=>{VIEW_BY_KEY[v.key]=v;});
 const OTHER_KEY={optics:'opt_other',space:'spc_other'};
-// メインジャンル（土曜の週間ランキングの集計単位）。政治は国内＋海外をまとめる
+// メインジャンル（土曜の週間ランキングの集計単位）。国内政治と海外政治は別ジャンル
 const MAIN_GENRES=[
-  {key:'optics',label:'光学',              parents:['optics'],           cls:'t0'},
-  {key:'space', label:'宇宙・防衛・核融合',parents:['space'],            cls:'t1'},
-  {key:'pol',   label:'政治',              parents:['domestic','intl'],  cls:'t2'},
+  {key:'optics',  label:'光学',              parents:['optics'],  cls:'t0'},
+  {key:'space',   label:'宇宙・防衛・核融合',parents:['space'],   cls:'t1'},
+  {key:'domestic',label:'国内政治',          parents:['domestic'],cls:'t2'},
+  {key:'intl',    label:'海外政治',          parents:['intl'],    cls:'t3'},
 ];
 const MAIN_BY_KEY={};MAIN_GENRES.forEach(m=>{MAIN_BY_KEY[m.key]=m;});
-function _mainOf(parent){ return (parent==='domestic'||parent==='intl')?'pol':parent; }
+function _mainOf(parent){ return parent; }
 // section と tag からサブジャンルkeyを判定（optics/space のみ。politicsは親key）
 function _subKey(section,tag){
   if(section==='domestic')return 'domestic';
@@ -659,7 +672,7 @@ const CI={};
 // session_id: sessionStorage + 最終アクセス時刻で管理（30分無操作で新規発行）
 const ANALYTICS_ENDPOINT = 'https://script.google.com/macros/s/AKfycbwbvl2YjPSwP5BgFa-JINS0Ya8Tdbf8GoABKv49PdIUTkI4nmmPmy1Cvqs5AulutIl8Cg/exec';
 const AUDIENCE = 'int';  // 社内用サイト
-const EXTERNAL_SITE_URL = 'https://ktakahashi-svnsx.github.io/news-portal/';
+const EXTERNAL_SITE_URL = 'https://www.sevensix.co.jp/newsportal/';
 const LS_CLIENT_ID_KEY   = 'np_client_id_v1';
 const SS_SESSION_ID_KEY  = 'np_session_id_v1';
 const SS_SESSION_LAST_KEY= 'np_session_last_v1';
@@ -1707,13 +1720,14 @@ function renderFlow(){
     renderQuizBlock(grid);
     return;
   }
-  if(!selectedViews.length){empty.style.display='block';return;}
-  empty.style.display='none';
   if(_curMode==='ranking'){
-    // 土曜：メインジャンルごとにブロック分割し、各ジャンル上位5件を表示
+    // 土曜：メインジャンルごとにブロック分割し、各ジャンル上位5件を表示（フィルタ非依存）
+    empty.style.display='none';
     renderWeeklyBlocks(grid,data);
     return;
   }
+  if(!selectedViews.length){empty.style.display='block';return;}
+  empty.style.display='none';
   grid.className='ngrid';
   let cardCount=0;
   // 平日：選択順に、各サブジャンルの記事を1グリッドへ連続で流し込む
@@ -1872,7 +1886,7 @@ function buildWaPlayer(fileId, rawUrl, prefix){
     const iframe=document.createElement('iframe');
     iframe.src=previewUrl;
     iframe.allow='autoplay';
-    iframe.style.cssText='width:100%;height:72px;border:none;border-radius:8px;display:block;background:#f5f0ff;margin-bottom:6px;';
+    iframe.style.cssText='width:100%;height:120px;border:none;border-radius:8px;display:block;background:#f5f0ff;margin-bottom:6px;';
     wrap.appendChild(iframe);
     const lnk=document.createElement('a');
     lnk.className='adrive-link';
@@ -2019,122 +2033,147 @@ function closeAudioModal(e){
   document.body.style.overflow='';
   // モーダルを閉じても再生は継続（_waは共有）
 }
-// ── サブジャンル表示フィルタ（複数選択・選択順を保持） ──────────────
-// 各サブジャンル（光学7＋その他 / 宇宙5＋その他 / 国内政治 / 海外政治）を選択単位とし、
-// 選択した順番で連続表示する。選択（順序含む）はブラウザに保存して次回訪問でも維持。
-const GENRE_PREF_KEY = 'newsPortalSubPref_v3';
-let selectedViews = VIEWS.map(v=>v.key);   // 既定：全項目を既定順で表示
+// ── ジャンルフィルタ（大ジャンル=タブ切替 / サブジャンル=選択式） ──────────────
+// 大ジャンル（optics/space/pol）をタブで1つだけアクティブにし、その中のサブジャンルを複数選択。
+// 選択状態（アクティブタブ・各大ジャンルの選択サブ）はブラウザに保存し次回訪問でも維持。
+const GENRE_PREF_KEY = 'newsPortalGenrePref_v4';
+// 大ジャンル → 属するサブジャンルkey配列（VIEWS由来、定義順）
+const MAIN_SUBS={
+  optics:   VIEWS.filter(v=>v.parent==='optics').map(v=>v.key),
+  space:    VIEWS.filter(v=>v.parent==='space').map(v=>v.key),
+  domestic: VIEWS.filter(v=>v.parent==='domestic').map(v=>v.key),
+  intl:     VIEWS.filter(v=>v.parent==='intl').map(v=>v.key),
+};
+const MAIN_ORDER=['optics','space','domestic','intl'];
+let activeMain='optics';                     // 現在アクティブな大ジャンルタブ
+// 各大ジャンルの選択中サブジャンル（既定は全選択、選択順を保持）
+let subSel={optics:[...MAIN_SUBS.optics], space:[...MAIN_SUBS.space], domestic:[...MAIN_SUBS.domestic], intl:[...MAIN_SUBS.intl]};
+// 既存の描画ロジック（renderFlow以降）が参照する派生値：アクティブタブの選択サブ配列
+let selectedViews=[];
+function _syncSelectedViews(){ selectedViews=[...subSel[activeMain]]; }
+_syncSelectedViews();
+
 function _loadGenrePref(){
   try{
     const raw=localStorage.getItem(GENRE_PREF_KEY);
-    if(!raw)return null;
-    const arr=JSON.parse(raw);
-    if(!Array.isArray(arr))return null;
-    const seen={},out=[];
-    arr.forEach(function(k){ if(VIEW_BY_KEY[k]&&!seen[k]){seen[k]=1;out.push(k);} });
-    return out;
-  }catch(e){ return null; }
+    if(!raw)return;
+    const o=JSON.parse(raw);
+    if(o&&MAIN_ORDER.includes(o.activeMain))activeMain=o.activeMain;
+    if(o&&o.subSel){
+      MAIN_ORDER.forEach(m=>{
+        if(Array.isArray(o.subSel[m])){
+          const seen={},out=[];
+          o.subSel[m].forEach(k=>{ if(MAIN_SUBS[m].includes(k)&&!seen[k]){seen[k]=1;out.push(k);} });
+          subSel[m]=out;
+        }
+      });
+    }
+  }catch(e){}
+  _syncSelectedViews();
 }
 function _saveGenrePref(){
-  try{ localStorage.setItem(GENRE_PREF_KEY, JSON.stringify(selectedViews)); }catch(e){}
+  try{ localStorage.setItem(GENRE_PREF_KEY, JSON.stringify({activeMain,subSel})); }catch(e){}
 }
-// チップ生成（グループ別コンテナへ）
-function renderChips(){
-  const cont={optics:document.getElementById('chips-optics'),space:document.getElementById('chips-space'),pol:document.getElementById('chips-pol')};
-  if(!cont.optics||!cont.space||!cont.pol)return;
-  cont.optics.innerHTML='';cont.space.innerHTML='';cont.pol.innerHTML='';
-  VIEWS.forEach(function(v){
-    const on=selectedViews.indexOf(v.key)>=0;
-    const btn=document.createElement('button');
-    btn.type='button';
-    btn.className='tab sub '+v.cls+(on?' act':'');
-    btn.dataset.key=v.key;
-    btn.setAttribute('aria-pressed',on?'true':'false');
-    btn.innerHTML='<span class="tab-check">✓</span>'+v.label+'<span class="tab-badge" id="cnt_'+v.key+'">0</span>';
-    btn.addEventListener('click',function(){toggleView(v.key);});
-    const target=(v.parent==='optics')?cont.optics:(v.parent==='space')?cont.space:cont.pol;
-    target.appendChild(btn);
+
+// 大ジャンルタブの生成（HTMLに静的に置いているので、状態同期のみ）
+function _syncMainTabs(){
+  document.querySelectorAll('.main-tab').forEach(function(t){
+    const on=t.dataset.main===activeMain;
+    t.classList.toggle('act',on);
+    t.setAttribute('aria-selected',on?'true':'false');
   });
 }
-// チップの選択状態を selectedViews に同期
+// アクティブタブのサブジャンルchipを生成
+function renderSubRow(){
+  const row=document.getElementById('subRow');
+  if(!row)return;
+  row.className='sub-row sr-'+activeMain;
+  row.innerHTML='';
+  MAIN_SUBS[activeMain].forEach(function(key){
+    const v=VIEW_BY_KEY[key];if(!v)return;
+    const on=subSel[activeMain].indexOf(key)>=0;
+    const btn=document.createElement('button');
+    btn.type='button';
+    btn.className='sub-chip'+(on?' act':'');
+    btn.dataset.key=key;
+    btn.setAttribute('aria-pressed',on?'true':'false');
+    btn.innerHTML='<span class="sub-check">✓</span>'+v.label+'<span class="sub-badge" id="cnt_'+key+'">0</span>';
+    btn.addEventListener('click',function(){toggleView(key);});
+    row.appendChild(btn);
+  });
+}
+// サブchipの選択状態を同期
 function _syncChips(){
-  document.querySelectorAll('.tab.sub').forEach(function(t){
-    const on=selectedViews.indexOf(t.dataset.key)>=0;
+  document.querySelectorAll('.sub-chip').forEach(function(t){
+    const on=subSel[activeMain].indexOf(t.dataset.key)>=0;
     t.classList.toggle('act',on);
     t.setAttribute('aria-pressed',on?'true':'false');
   });
 }
-// チップの件数バッジを更新
+// 件数バッジ更新（サブchip＋大タブ）
 function updateChipCounts(counts){
   VIEWS.forEach(function(v){
     const el=document.getElementById('cnt_'+v.key);
     if(el)el.textContent=counts[v.key]||0;
   });
-}
-function toggleView(key){
-  if(!VIEW_BY_KEY[key])return;
-  const pos=selectedViews.indexOf(key);
-  if(pos>=0) selectedViews.splice(pos,1);   // 解除
-  else       selectedViews.push(key);        // 選択（末尾に追加＝選択順）
-  _saveGenrePref();
-  renderFlow();   // UI同期（チップ/グループ/サマリ）＋再描画はrenderFlowで一括
-}
-function _setAllViews(on){
-  selectedViews = on ? VIEWS.map(v=>v.key) : [];
-  _saveGenrePref();
-  renderFlow();
-}
-// グループ（光学 / 宇宙・防衛 / 政治）をまとめて選択・解除
-const GROUP_PARENTS={optics:['optics'],space:['space'],pol:['domestic','intl']};
-function _groupKeys(grp){
-  const ps=GROUP_PARENTS[grp]||[];
-  return VIEWS.filter(v=>ps.includes(v.parent)).map(v=>v.key);
-}
-function toggleGroup(grp){
-  const keys=_groupKeys(grp);if(!keys.length)return;
-  const allOn=keys.every(k=>selectedViews.indexOf(k)>=0);
-  if(allOn){
-    selectedViews=selectedViews.filter(k=>keys.indexOf(k)<0);   // 全解除
-  }else{
-    keys.forEach(function(k){ if(selectedViews.indexOf(k)<0)selectedViews.push(k); }); // 不足分を選択順に追加
-  }
-  _saveGenrePref();
-  renderFlow();
-}
-// グループボタンの状態（all/some/none）を反映
-function _syncGroupToggles(){
-  document.querySelectorAll('.grp-toggle').forEach(function(b){
-    const keys=_groupKeys(b.dataset.grp);
-    const on=keys.filter(k=>selectedViews.indexOf(k)>=0).length;
-    b.classList.toggle('all', on===keys.length && keys.length>0);
-    b.classList.toggle('some', on>0 && on<keys.length);
-    b.setAttribute('aria-pressed', on>0?'true':'false');
+  // 大タブのバッジ＝その大ジャンルの全サブ件数合計
+  MAIN_ORDER.forEach(function(m){
+    const el=document.getElementById('mcnt_'+m);
+    if(el){ el.textContent=MAIN_SUBS[m].reduce((s,k)=>s+(counts[k]||0),0); }
   });
 }
-// 折りたたみ時のサマリ文言を更新
+// 大ジャンルタブの切り替え
+function switchMain(m){
+  if(!MAIN_ORDER.includes(m)||m===activeMain)return;
+  activeMain=m;
+  _syncSelectedViews();
+  _saveGenrePref();
+  renderSubRow();
+  renderFlow();
+}
+// サブジャンルの選択・解除（アクティブタブ内）
+function toggleView(key){
+  if(!MAIN_SUBS[activeMain].includes(key))return;
+  const arr=subSel[activeMain];
+  const pos=arr.indexOf(key);
+  if(pos>=0) arr.splice(pos,1);   // 解除
+  else       arr.push(key);        // 選択（末尾＝選択順）
+  _syncSelectedViews();
+  _saveGenrePref();
+  renderFlow();
+}
+// アクティブタブ内のサブを全選択／全解除
+function _setAllViews(on){
+  subSel[activeMain]= on ? [...MAIN_SUBS[activeMain]] : [];
+  _syncSelectedViews();
+  _saveGenrePref();
+  renderFlow();
+}
+// 折りたたみ時のサマリ文言
 function _updateFilterSummary(){
   const el=document.getElementById('filterSummary');if(!el)return;
-  const n=selectedViews.length, total=VIEWS.length;
+  const mainLbl=(MAIN_BY_KEY[activeMain]||{}).label||'';
+  const n=subSel[activeMain].length, total=MAIN_SUBS[activeMain].length;
   let txt;
-  if(n===0) txt='表示ジャンル未選択（タップして選択）';
-  else if(n===total) txt='すべての項目を表示中';
-  else txt=`${n} / ${total} 項目を表示中`;
+  if(n===0) txt=`${mainLbl}：サブジャンル未選択（タップして選択）`;
+  else if(n===total) txt=`${mainLbl}：すべて表示中`;
+  else txt=`${mainLbl}：${n} / ${total} サブジャンル表示中`;
   el.textContent=txt;
 }
-// チップ生成・件数以外のフィルタUIをまとめて同期（renderFlowから呼ぶ）
-function _refreshFilterUI(){ _syncChips();_syncGroupToggles();_updateFilterSummary(); }
-// 初期化：保存済みの選択があれば順序ごと復元、チップ生成
+// チップ・件数以外のフィルタUIをまとめて同期（renderFlowから呼ぶ）
+function _refreshFilterUI(){ _syncMainTabs();_syncChips();_updateFilterSummary(); }
+// 初期化：保存済み選択を復元し、タブ・サブ行を生成
 (function initGenreFilter(){
-  const pref=_loadGenrePref();
-  if(pref) selectedViews=pref;
-  renderChips();
+  _loadGenrePref();
+  _syncMainTabs();
+  renderSubRow();
 })();
 {
   const a=document.getElementById('fltAll'),c=document.getElementById('fltClear');
   if(a)a.addEventListener('click',function(){_setAllViews(true);});
   if(c)c.addEventListener('click',function(){_setAllViews(false);});
-  document.querySelectorAll('.grp-toggle').forEach(function(b){
-    b.addEventListener('click',function(){toggleGroup(b.dataset.grp);});
+  document.querySelectorAll('.main-tab').forEach(function(t){
+    t.addEventListener('click',function(){switchMain(t.dataset.main);});
   });
   // 折りたたみ（格納）トグル。状態はブラウザに保存（既定＝格納）
   const FILTER_COLLAPSE_KEY='newsPortalFilterCollapsed_v1';
