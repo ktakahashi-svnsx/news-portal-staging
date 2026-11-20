@@ -236,11 +236,58 @@ body{font-family:'Noto Sans JP',sans-serif;font-size:13px;background:var(--bg);c
 .pending-cd{display:inline-block;font-family:'Oswald',sans-serif;font-size:20px;font-weight:700;color:#4338ca;background:#e0e7ff;border-radius:10px;padding:8px 18px;letter-spacing:.03em}
 .pending-note{font-size:11px;color:#94a3b8;margin-top:14px;line-height:1.6}
 /* ── 日曜：週間ニュースクイズ ── */
-.weekly-banner.special-banner{background:linear-gradient(135deg,#fef2f2 0%,#fff7ed 100%);border-color:#fca5a5;text-decoration:none;cursor:pointer;transition:box-shadow .15s}
-.weekly-banner.special-banner:hover{box-shadow:0 2px 10px rgba(220,38,38,.15)}
+/* ── 祝日特別企画：特別総集編（11/23） ── */
+.sp-wrap{--c:var(--red);font-size:14px;line-height:1.75;max-width:980px;animation:fin .3s ease}
+.sp-wrap a{color:inherit}
+.sp-wrap .hero{background:var(--white);border:1px solid var(--border);border-radius:14px;padding:26px 28px 22px;margin-bottom:14px;position:relative;overflow:hidden}
+.sp-wrap .hero::before{content:'';position:absolute;left:0;top:0;bottom:0;width:6px;background:linear-gradient(180deg,var(--red),var(--purple),var(--green),var(--blue))}
+.sp-wrap .hero-kicker{font-size:12px;font-weight:700;color:var(--red);letter-spacing:.06em}
+.sp-wrap .hero h2{font-size:24px;line-height:1.4;margin:6px 0 4px}
+.sp-wrap .hero-period{font-size:12px;color:var(--muted)}
+.sp-wrap .hero p.msg{margin-top:12px}
+.sp-wrap .stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:16px}
+.sp-wrap .stat{background:#fafafa;border:1px solid var(--border);border-radius:10px;padding:10px 14px}
+.sp-wrap .stat b{display:block;font-family:'Oswald',sans-serif;font-size:24px;line-height:1.2}
+.sp-wrap .stat span{font-size:11px;color:var(--muted)}
+.sp-nav{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 14px}
+.sp-nav a{font-size:12px;font-weight:700;text-decoration:none;padding:5px 13px;border-radius:999px;background:#fff;border:1px solid var(--border)}
+.sp-nav a:hover{border-color:currentColor}
+.sp-nav .n-optics{color:var(--red)}.sp-nav .n-space{color:var(--purple)}.sp-nav .n-domestic{color:var(--green)}.sp-nav .n-intl{color:var(--blue)}
+.sp-wrap .genre{background:var(--white);border:1px solid var(--border);border-radius:14px;padding:22px 26px;margin-bottom:16px;scroll-margin-top:64px}
+.sp-wrap .c-optics{--c:var(--red)}.sp-wrap .c-space{--c:var(--purple)}.sp-wrap .c-domestic{--c:var(--green)}.sp-wrap .c-intl{--c:var(--blue)}
+.sp-wrap .g-hd{display:flex;align-items:center;gap:10px;padding-bottom:10px;border-bottom:2px solid var(--c);margin-bottom:4px}
+.sp-wrap .g-ico{font-size:20px}
+.sp-wrap .g-hd h2{font-size:18px}
+.sp-wrap .blk{margin-top:18px}
+.sp-wrap .blk h3{font-size:14px;position:relative;padding-left:12px;margin-bottom:9px}
+.sp-wrap .blk h3::before{content:'';position:absolute;left:0;top:4px;bottom:4px;width:3px;border-radius:2px;background:var(--c)}
+.sp-wrap .blk h3 small{font-size:11px;color:var(--muted);font-weight:400;margin-left:6px}
+.sp-wrap .blk p{margin-bottom:9px}
+.sp-wrap .rank{list-style:none;counter-reset:r;display:flex;flex-direction:column;gap:6px}
+.sp-wrap .rank li{counter-increment:r;display:flex;align-items:flex-start;gap:10px;padding:7px 12px;border:1px solid var(--border);border-radius:9px;background:#fcfcfd}
+.sp-wrap .rank li::before{content:counter(r);font-family:'Oswald',sans-serif;font-size:15px;font-weight:700;color:var(--c);min-width:20px;text-align:right;line-height:1.6}
+.sp-wrap .c-optics .rank li:nth-child(-n+3){background:var(--red-lt);border-color:#fecaca}
+.sp-wrap .c-space .rank li:nth-child(-n+3){background:#f5f3ff;border-color:#ddd6fe}
+.sp-wrap .c-domestic .rank li:nth-child(-n+3){background:#ecfdf5;border-color:#a7f3d0}
+.sp-wrap .c-intl .rank li:nth-child(-n+3){background:#eff6ff;border-color:#bfdbfe}
+.sp-wrap .lk{flex-shrink:0;font-size:11px;font-weight:700;color:#be123c;background:#fff1f2;border:1px solid #fecdd3;border-radius:999px;padding:1px 8px;line-height:1.7;margin-top:2px}
+.sp-wrap .rk-t{font-size:13px}
+.sp-wrap .rk-t a,.sp-wrap .theme a{text-decoration:none}
+.sp-wrap .rk-t a:hover,.sp-wrap .theme a:hover{color:var(--c);text-decoration:underline}
+.sp-wrap .src{font-size:10px;color:var(--muted);margin-left:6px}
+.sp-wrap .theme{margin-bottom:12px}
+.sp-wrap .theme h4{font-size:13px;color:var(--c);margin-bottom:4px}
+.sp-wrap .theme ul{list-style:none}
+.sp-wrap .theme li{font-size:13px;padding:3px 0 3px 14px;position:relative;border-bottom:1px dashed #eef0f3}
+.sp-wrap .theme li::before{content:'';position:absolute;left:2px;top:12px;width:5px;height:5px;border-radius:50%;background:var(--c)}
+.sp-wrap .insight ol{list-style:none;display:flex;flex-direction:column;gap:9px}
+.sp-wrap .insight li{background:#fafafa;border-left:3px solid var(--c);border-radius:0 8px 8px 0;padding:9px 14px;font-size:13px}
+.sp-wrap .insight strong{display:block;margin-bottom:2px}
+.sp-wrap .note{margin-top:14px;font-size:11px;color:var(--muted);line-height:1.6}
+@media(max-width:640px){.sp-wrap .hero{padding:20px 16px}.sp-wrap .hero h2{font-size:20px}.sp-wrap .genre{padding:16px 14px}.sp-wrap .stats{grid-template-columns:1fr}}
+.weekly-banner.special-banner{background:linear-gradient(135deg,#fef2f2 0%,#fff7ed 100%);border-color:#fca5a5}
 .weekly-banner.special-banner .wk-ttl{color:#b91c1c}
 .weekly-banner.special-banner .wk-sub{color:#9a3412}
-.weekly-banner.special-banner .sp-go{margin-left:auto;flex-shrink:0;font-size:12px;font-weight:700;color:#fff;background:var(--red);border-radius:7px;padding:6px 12px}
 .weekly-banner.quiz-banner{background:linear-gradient(135deg,#eef2ff 0%,#e0e7ff 100%);border-color:#a5b4fc}
 .weekly-banner.quiz-banner .wk-ttl{color:#3730a3}
 .weekly-banner.quiz-banner .wk-sub{color:#4338ca}
@@ -641,15 +688,13 @@ body{font-family:'Noto Sans JP',sans-serif;font-size:13px;background:var(--bg);c
         </a>
       </div>
     </div>
-    <a class="weekly-banner special-banner" id="specialBanner" href="special/20261123.html" style="display:none">
+    <div class="weekly-banner special-banner" id="specialBanner" style="display:none">
       <span class="wk-ico">🎁</span>
       <div class="wk-txt">
-        <span class="wk-ttl">勤労感謝の日 特別企画：特別総集編（2026年5月〜11月）</span>
-        <span class="wk-sub">開設から半年間、皆さんの「いいね」が多かった記事と重要ニュースを、ジャンル別に振り返りました。</span>
+        <span class="wk-ttl">勤労感謝の日 特別企画：特別総集編</span>
+        <span class="wk-sub">本日は新しいニュースの更新はお休みです。開設から半年間（5/25〜11/20）で「いいね」が多かった記事と重要ニュースを、ジャンル別に振り返ります。</span>
       </div>
-      <span class="sp-go">特集を読む →</span>
-    </a>
-    <script>(function(){try{var now=Date.now(),s=Date.parse('2026-11-23T07:00:00+09:00'),e=Date.parse('2026-12-01T00:00:00+09:00');if((now>=s&&now<e)||/[?&]special=1/.test(location.search)){document.getElementById('specialBanner').style.display='flex';}}catch(_){}})();</script>
+    </div>
     <div class="weekly-banner" id="weeklyBanner" style="display:none">
       <span class="wk-ico">🏆</span>
       <div class="wk-txt">
@@ -665,6 +710,54 @@ body{font-family:'Noto Sans JP',sans-serif;font-size:13px;background:var(--bg);c
       </div>
     </div>
     <div class="ngrid" id="ngAll"></div>
+<template id="specialTpl"><div class="sp-wrap">
+  <div class="hero">
+    <div class="hero-kicker">勤労感謝の日（11/23）特別企画</div>
+    <h2>特別総集編<br>みんなの「いいね」で振り返る半年間</h2>
+    <div class="hero-period">対象期間：2026年5月25日（月）〜11月20日（金）</div>
+    <p class="msg">いつもポータルを読んで「いいね」を押してくださる皆さん、ありがとうございます。
+    開設から約半年間に掲載したニュースのうち、いいねが付いた記事を集計し、いいねの多かった記事と事業上重要な記事を選んでジャンルごとに振り返りました。
+    各見出しをクリックすると元記事が開きます。</p>
+    <div class="stats">
+      <div class="stat"><b>3,032</b><span>掲載記事数（4ジャンル合計）</span></div>
+      <div class="stat"><b>1,078</b><span>いいねが付いた記事</span></div>
+      <div class="stat"><b>1,540</b><span>いいねの合計</span></div>
+    </div>
+  </div>
+<div class="sp-nav"><a class="n-optics" href="#sp-optics">☀ 光学</a><a class="n-space" href="#sp-space">🛰 宇宙・防衛・核融合</a><a class="n-domestic" href="#sp-domestic">🏛 国内政治</a><a class="n-intl" href="#sp-intl">🌐 海外政治</a></div>
+<section class="genre c-optics" id="sp-optics">
+  <div class="g-hd"><span class="g-ico">☀</span><h2>光学・光アプリケーション</h2></div>
+  <div class="blk"><h3>この半年の動向</h3><p>この半年の光学ニュースの軸は、AIデータセンターで「銅から光へ」の移行が研究段階から量産段階に入ったことです。5月のOFC総括では「5年以内にAIデータセンターの全インターコネクトが光化する」が業界の共通認識となりました。6月のComputex 2026では、Marvell CEOとNVIDIAのJensen Huang氏が「銅の壁」を示し、CPOは必然だと強調しました。7月にはUMCとSILITHが1.6Tシリコンフォトニクスの量産出荷を始めました。10月のOCPでは、NVIDIAが400G/レーンの光設計を公開し、NVIDIAとCiscoは12.8T級のプラガブル規格「USFP」を提唱しました。CPOと高密度プラガブルが並走する構図が見えてきています。</p><p>これを支える投資も桁が変わりました。NVIDIAは金融大手6社と5,000億ドル規模の資金調達枠組みを作り、Corningとは米国内の光ファイバ増産で長期提携しました。国内では秋田市で2兆円超のAIデータセンター計画が出ています。フジクラは営業利益予想を47%上方修正しました。10月末には、MarvellがLumentumの買収を協議しているとの報道が出ており、光源の供給網そのものが再編局面に入っています。</p><p>一方で、社内のいいねが最も多かったのは、大阪公立大による光ファイバを用いたバクテリアの集積・解析でした。データセンター以外の光への関心も高いことが分かります。ノーベル賞では生理学・医学賞が光遺伝学に、物理学賞が浜松ホトニクス製の光電子増倍管を使うIceCubeに授与されました。光量子コンピュータのOptQCには、島津製作所、KDDI、三菱電機が相次いで出資しています。取扱メーカでも、ThalesによるExail買収、浜松ホトニクスによるNKT Photonicsのブランド統一などの動きがありました。</p></div>
+  <div class="blk"><h3>いいねランキング（社内版）</h3><ol class="rank"><li><span class="lk">♥ 6</span><div class="rk-t"><a href="https://optics.org/news" target="_blank" rel="noopener">大阪公立大、光ファイバでバクテリアを1点に集積・解析する新手法（5/27）</a><span class="src">optics.org</span></div></li><li><span class="lk">♥ 5</span><div class="rk-t"><a href="https://semiengineering.com/all-ai-data-center-interconnects-will-be-optical-within-5-years/" target="_blank" rel="noopener">OFC 2026総括：5年以内に全AIデータセンターインターコネクトが光化（5/25）</a><span class="src">SemiEngineering</span></div></li><li><span class="lk">♥ 5</span><div class="rk-t"><a href="https://www.ceramoptec.com/2026/05/13/photonics-north-june-2-5-2026/" target="_blank" rel="noopener">Photonics North 2026がカナダで開幕—AI・量子・産業応用の光学技術（6/2）</a><span class="src">CeramOptec</span></div></li><li><span class="lk">♥ 4</span><div class="rk-t"><a href="https://finance.biggo.com/news/Gvteh54BoicNoOgCOOua" target="_blank" rel="noopener">Jensen Huang「Marvellは次の兆ドル企業」—1.6T/2nmコヒーレント光も発表（6/3）</a><span class="src">BigGo Finance</span></div></li><li><span class="lk">♥ 4</span><div class="rk-t"><a href="https://www.optica-opn.org/home/news/" target="_blank" rel="noopener">Thales、Exail買収でドローン・水中戦領域を強化（7/22）</a><span class="src">Optics &amp; Photonics News</span></div></li><li><span class="lk">♥ 4</span><div class="rk-t"><a href="https://www.nikkei.com/article/DGXZQOGN108UK0Q6A810C2000000/" target="_blank" rel="noopener">エヌビディアと金融大手6社、AIインフラ向け5,000億ドルの資金調達枠組み（8/13）</a><span class="src">日本経済新聞</span></div></li><li><span class="lk">♥ 4</span><div class="rk-t"><a href="https://prtimes.jp/main/html/rd/p/000000296.000049537.html" target="_blank" rel="noopener">光響、Exail製2μm帯ツリウム・ホルミウム共添加ファイバの輸入販売を開始（8/19）</a><span class="src">PR TIMES</span></div></li><li><span class="lk">♥ 4</span><div class="rk-t"><a href="https://www.itmedia.co.jp/news/article/2608/18/2000000572/" target="_blank" rel="noopener">NVIDIA、SBエナジーに出資しOpenAI向けオハイオ州データセンターを後押し（8/19）</a><span class="src">ITmedia NEWS</span></div></li><li><span class="lk">♥ 4</span><div class="rk-t"><a href="https://www.nikkei.com/prime/tech-foresight/article/DGXZQOUC171RY0X10C26A8000000" target="_blank" rel="noopener">日経、光電融合（CPO）の業界地図を公開—主要22社を分類（8/19）</a><span class="src">日本経済新聞</span></div></li><li><span class="lk">♥ 4</span><div class="rk-t"><a href="https://picmagazine.net/article/125174/LITILIT_secures_%E2%82%AC8m_for_FEMODA" target="_blank" rel="noopener">LITILIT、モジュール型フェムト秒レーザー基盤「FEMODA」に1億ユーロ（8/21）</a><span class="src">PIC Magazine</span></div></li><li><span class="lk">♥ 4</span><div class="rk-t"><a href="https://optronics-media.com/news/20260826/111774/" target="_blank" rel="noopener">島津製作所とKDDI、光量子コンピュータのOptQCに出資（8/27）</a><span class="src">OPTRONICS ONLINE</span></div></li><li><span class="lk">♥ 4</span><div class="rk-t"><a href="https://prtimes.jp/main/html/rd/p/000000145.000064805.html" target="_blank" rel="noopener">デクセリアルズ、フォトニクス子会社DXPSの公式サイトを開設（9/2）</a><span class="src">PR TIMES</span></div></li><li><span class="lk">♥ 4</span><div class="rk-t"><a href="https://optronics-media.com/news/20260904/111974/" target="_blank" rel="noopener">パワーレーザー、12億円を調達—レーザーフュージョン光源と宇宙デブリSSA（9/7）</a><span class="src">OPTRONICS ONLINE</span></div></li><li><span class="lk">♥ 4</span><div class="rk-t"><a href="https://www.electrooptics.com/article/space-grade-laser-source-delivered-exail-cnes-quantum-pathfinder-mission" target="_blank" rel="noopener">Exail、欧州量子ミッション「CARIOQA」向け宇宙用レーザー源をCNESに納入（9/7）</a><span class="src">Electro Optics</span></div></li><li><span class="lk">♥ 4</span><div class="rk-t"><a href="https://optronics-media.com/news/20260915/112105/" target="_blank" rel="noopener">自民党の核融合議連、阪大レーザー科学研究所を視察（9/16）</a><span class="src">OPTRONICS ONLINE</span></div></li></ol></div>
+  <div class="blk"><h3>主なトピック <small>いいね＋重要度でピックアップ</small></h3><div class="theme"><h4>CPO・光電融合の量産化</h4><ul><li><a href="https://www.servethehome.com/marvell-computex-2026-keynote-live-coverage/" target="_blank" rel="noopener">Marvell CEO×Jensen Huang、「銅の壁」を提示—100Tスイッチと51.2T CPO実機を公開（6/3・いいね3）</a><span class="src">ServeTheHome</span></li><li><a href="https://investor.marvell.com/news-events/press-releases/detail/1024/marvell-announces-availability-of-industrys-first-102-4-tbps-switch-purpose-built-for-ai-and-cloud-data-center-infrastructure" target="_blank" rel="noopener">Marvell、業界初の102.4Tbpsスイッチ「Teralynx T100」—BGA・CPC・CPO対応（6/3・いいね3）</a><span class="src">Marvell IR</span></li><li><a href="https://www.umc.com/en/News/press_release/Content/technology_related/20260714" target="_blank" rel="noopener">UMCとSILITH、1.6Tシリコンフォトニクスの量産出荷を開始（7/16・いいね3）</a><span class="src">UMC</span></li><li><a href="https://www.globenewswire.com/news-release/2026/08/25/3350864/11543/en/coherent-corp-to-unveil-photonlink-platform-at-ecoc-on-september-21-2026.html" target="_blank" rel="noopener">Coherent、CPO/NPO対応の統合光プラットフォーム「PhotonLink」を発表（8/27・いいね3）</a><span class="src">GlobeNewswire</span></li><li><a href="https://optronics-media.com/news/20260825/111575/" target="_blank" rel="noopener">産総研・住友電工・住友ベークライトなど、CPO実用化の要素技術をOPICで報告（8/27・いいね3）</a><span class="src">OPTRONICS ONLINE</span></li><li><a href="https://convergedigest.com/nvidia-ocp-2026-vera-rubin-mgx-spectrum6-usfp/" target="_blank" rel="noopener">NVIDIA、Vera Rubin／MGX 1.2と400G/レーン光設計をOCPに公開（10/13・いいね3）</a><span class="src">Converge Digest</span></li><li><a href="https://convergedigest.com/nvidia-cisco-usfp-12-8t-pluggable-optics-ai-factories/" target="_blank" rel="noopener">NVIDIA・Cisco、12.8T級プラガブル光モジュール「USFP」を提唱（10/13・いいね2）</a><span class="src">Converge Digest</span></li><li><a href="https://finance.yahoo.com/markets/stocks/articles/marvell-lumentum-deal-reportedly-carry-194047451.html" target="_blank" rel="noopener">Marvell、光レーザー大手Lumentumの買収を協議と報道（11/2・いいね3）</a><span class="src">Yahoo Finance</span></li></ul></div><div class="theme"><h4>AIデータセンター投資と光ファイバ需要</h4><ul><li><a href="https://nvidianews.nvidia.com/news/nvidia-and-corning-announce-long-term-partnership-to-strengthen-us-manufacturing-for-ai-infrastructure" target="_blank" rel="noopener">NVIDIA×Corning、米国内の光接続製造能力10倍・北米3工場新設（6/3・いいね3）</a><span class="src">NVIDIA Newsroom</span></li><li><a href="https://note.com/junwatanabe72/n/ndfc82b5625f3" target="_blank" rel="noopener">フジクラ、2027年3月期営業利益予想を47%上方修正（6/23・いいね3）</a><span class="src">フジクラ / 古河電工 / 住友電工</span></li><li><a href="https://news.web.nhk/newsweb/na/na-k10015199451000" target="_blank" rel="noopener">秋田市に日本最大級のAIデータセンター計画、整備費2兆円超（8/10・いいね3）</a><span class="src">NHK</span></li><li><a href="https://www.nikkei.com/article/DGXZQOGN108UK0Q6A810C2000000/" target="_blank" rel="noopener">エヌビディアと金融大手6社、5,000億ドル規模の資金調達枠組み（8/13・いいね4）</a><span class="src">日本経済新聞</span></li><li><a href="https://optronics-media.com/news/20260824/111597/" target="_blank" rel="noopener">NTT・KDDIなど7社、オール光ネットワーク設計指針がITU-T Y.3335として国際標準化（8/26・いいね3）</a><span class="src">OPTRONICS ONLINE</span></li></ul></div><div class="theme"><h4>国内発の光デバイス・光計測研究</h4><ul><li><a href="https://www.hamamatsu.com/jp/en/news/announcements/2026/20260609000000.html" target="_blank" rel="noopener">浜松ホトニクス、世界トップクラス2.0kWのレーザーダイオードバーを開発（6/12・いいね3）</a><span class="src">浜松ホトニクス</span></li><li><a href="https://www.qst.go.jp/site/press/20260608.html" target="_blank" rel="noopener">QST・兵庫県立大ら、光で書き換える磁気メモリ材料を世界初開発（6/17・いいね3）</a><span class="src">QST・兵庫県立大・高輝度光科学研究センター</span></li><li><a href="https://optronics-media.com/news/20260810/111363/" target="_blank" rel="noopener">新潟大など、光コムと正弦波位相変調で「盲領域」を解消する3次元計測（8/12・いいね3）</a><span class="src">OPTRONICS ONLINE</span></li><li><a href="https://optronics-media.com/news/20260821/111562/" target="_blank" rel="noopener">東大と理研、フェムト秒軟X線ハイパースペクトル顕微鏡を開発（8/24・いいね3）</a><span class="src">OPTRONICS ONLINE</span></li><li><a href="https://optronics-media.com/news/20261001/112478/" target="_blank" rel="noopener">住友化学と九州大、KNN薄膜光変調器で180Gbaud—TFLN比3倍の変調効率（10/2・いいね2）</a><span class="src">OPTRONICS ONLINE</span></li><li><a href="https://optronics-media.com/news/20261027/113500/" target="_blank" rel="noopener">東京科学大・横浜国大・産総研、スローライト光変調器で200Gb/s・26fJ/bit（10/28・いいね2）</a><span class="src">OPTRONICS ONLINE</span></li></ul></div><div class="theme"><h4>レーザー・量子への資金流入</h4><ul><li><a href="https://picmagazine.net/article/125174/LITILIT_secures_%E2%82%AC8m_for_FEMODA" target="_blank" rel="noopener">LITILIT、フェムト秒レーザー基盤「FEMODA」に総額1億ユーロ（8/21・いいね4）</a><span class="src">PIC Magazine</span></li><li><a href="https://optronics-media.com/news/20260826/111774/" target="_blank" rel="noopener">島津製作所とKDDI、光量子コンピュータのOptQCに出資（8/27・いいね4）</a><span class="src">OPTRONICS ONLINE</span></li><li><a href="https://optronics-media.com/news/20260904/111974/" target="_blank" rel="noopener">パワーレーザー、12億円を調達（9/7・いいね4）</a><span class="src">OPTRONICS ONLINE</span></li><li><a href="https://optronics-media.com/news/20260915/112105/" target="_blank" rel="noopener">自民党の核融合議連、阪大レーザー科学研究所で「GEKKO-RE」「HYPERION計画」を視察（9/16・いいね4）</a><span class="src">OPTRONICS ONLINE</span></li><li><a href="https://optronics-media.com/news/20260916/112176/" target="_blank" rel="noopener">三菱電機、OptQCへ出資—ME Innovation Fundの16件目（9/17・いいね3）</a><span class="src">OPTRONICS ONLINE</span></li></ul></div><div class="theme"><h4>取扱メーカ・当社関連</h4><ul><li><a href="https://www.hamamatsu.com/jp/en/news/announcements/2026/20260625000000.html" target="_blank" rel="noopener">浜松ホトニクス、子会社NKT Photonicsの社名を変更し国際ブランドを統一（7/1・いいね3）</a><span class="src">浜松ホトニクス</span></li><li><a href="https://www.optica-opn.org/home/news/" target="_blank" rel="noopener">Thales、Exail買収でドローン・水中戦領域を強化（7/22・いいね4）</a><span class="src">Optics &amp; Photonics News</span></li><li><a href="https://prtimes.jp/main/html/rd/p/000000296.000049537.html" target="_blank" rel="noopener">光響、Exail製2μm帯TmHo共添加ファイバの輸入販売を開始（8/19・いいね4）</a><span class="src">PR TIMES</span></li><li><a href="https://www.sevensix.co.jp/news/sx-zseries/" target="_blank" rel="noopener">セブンシックス、ファイバレーザー加工機「SX-Zシリーズ」を販売開始（9/2・いいね3）</a><span class="src">セブンシックス</span></li><li><a href="https://prtimes.jp/main/html/rd/p/000000145.000064805.html" target="_blank" rel="noopener">デクセリアルズ、フォトニクス子会社DXPSの公式サイトを開設（9/2・いいね4）</a><span class="src">PR TIMES</span></li><li><a href="https://www.electrooptics.com/article/space-grade-laser-source-delivered-exail-cnes-quantum-pathfinder-mission" target="_blank" rel="noopener">Exail、「CARIOQA」向け宇宙用レーザー源をCNESに納入（9/7・いいね4）</a><span class="src">Electro Optics</span></li></ul></div><div class="theme"><h4>バイオ・基礎科学を支える光</h4><ul><li><a href="https://optics.org/news" target="_blank" rel="noopener">大阪公立大、光ファイバでバクテリアを集積・解析（5/27・いいね6）</a><span class="src">optics.org</span></li><li><a href="https://optronics-media.com/news/20261005/112531/" target="_blank" rel="noopener">2026年ノーベル生理学・医学賞、光遺伝学の3氏に（10/6・いいね3）</a><span class="src">OPTRONICS ONLINE</span></li><li><a href="https://optronics-media.com/news/20261005/112536/" target="_blank" rel="noopener">TDK、スマートグラス向け150nmメタオプティクスミラーで網膜直接投影を実証（10/6・いいね2）</a><span class="src">OPTRONICS ONLINE</span></li><li><a href="https://optronics-media.com/news/20261029/113466/" target="_blank" rel="noopener">浜松ホトニクス、IceCubeのノーベル物理学賞を受け光電子増倍管技術を公開（10/30・いいね2）</a><span class="src">OPTRONICS ONLINE</span></li></ul></div></div>
+  <div class="blk insight"><h3>考察</h3><ol><li><strong>1. CPOは「方式の議論」から「供給網の陣取り」へ。</strong>CPOと高密度プラガブル（USFP）が並走する見通しになり、どちらが主流になっても400G/レーン世代の波形評価、損失測定、調芯の要件は一段厳しくなります。光計測・評価の提案は、方式を問わず需要が伸びる領域として前に出せます。</li><li><strong>2. 光源が最大のボトルネックになりつつある。</strong>MarvellによるLumentum買収協議、浜松ホトニクスの高出力LDバー、CPO向け高出力レーザ光源の開発など、光源をめぐる動きが集中しています。InP系レーザや狭線幅光源は、需給と価格が動く前提で調達先の複線化を考えておく必要があります。</li><li><strong>3. 社内の関心はAIデータセンターに限らない。</strong>いいね上位にはバイオ、量子、レーザー核融合、宇宙光学が並びました。研究機関や新領域への提案テーマとして、これらを営業・技術の共通の話題にできます。</li><li><strong>4. 取扱メーカの再編に備える。</strong>ExailのThales傘下入り、NKT Photonicsのブランド統一など、取扱メーカの資本・ブランドが動いています。商流や窓口の変更に伴うリスクと、グループ全体の製品を提案できる機会の両面で、継続して確認していく必要があります。</li></ol></div>
+  <p class="note">本レポートは『ニュースポータル管理DB』（section=optics）の2026年5月25日〜11月20日掲載記事809件のうち、社内版でいいねが付いた443件（いいね合計689件、likes_intシートで集計）を対象に再構成したものです。掲載日が古い記事ほど、いいねが集まる期間が長いため、10〜11月の記事は重要度を加味して選んでいます。個別URLはDBを参照してください。</p>
+</section>
+<section class="genre c-space" id="sp-space">
+  <div class="g-hd"><span class="g-ico">🛰</span><h2>宇宙・防衛・核融合</h2></div>
+  <div class="blk"><h3>この半年の動向</h3><p>この半年で最もいいねを集めたのは、日本の2026年度防衛予算が過去最高の5兆8,000億円となり、光学・レーザーの国産化に重点配分されたというニュースでした。8月末には2027年度概算要求が過去最大の8兆8,908億円となり、AI指揮統制、無人機、長射程ミサイルが柱に据えられました。台湾も初めて1兆台湾ドルを超える防衛予算を打ち出しています。高エネルギーレーザー兵器では、nLIGHTがJLWSで最大6億2,700万ドルの契約を獲得し、年末には1MW級のデモを予定しています。300kW級の契約交渉も進み、出力競争が本格化しています。</p><p>宇宙では、衛星光通信が量産調達の段階に入りました。米宇宙開発庁（SDA）はTranche 1の154機すべてに衛星間レーザーリンクを搭載して展開を進めています。Rocket LabはMynaricを買収した後、Iridiumを80億ドルで買収すると発表し、光通信端末の供給者は集約が進んでいます。英国の可搬型光地上局「TERRA-M」やギリシャの光地上局など、地上側のインフラ整備も相次ぎました。NASAは火星通信中継衛星をBlue Originに7億ドルで発注しています。</p><p>核融合では、レーザー方式への公的資金が日米欧でそろって増えました。EUROfusionは5年で8億ユーロ、ドイツはレーザー核融合ハブ「VEGA」を始動し、米エネルギー省は商用化ロードマップを公表しました。国内では業界団体「J-LiFE産業推進機構」が発足し、中村修二氏も青色レーザーによるレーザー核融合に挑んでいます。</p></div>
+  <div class="blk"><h3>いいねランキング（社内版）</h3><ol class="rank"><li><span class="lk">♥ 5</span><div class="rk-t"><a href="https://www.brookings.edu/articles/late-breaking-shocks-and-shifting-goalposts-takaichis-highwire-washington-visit/" target="_blank" rel="noopener">日本の2026年度防衛予算、過去最高の5兆8,000億円—光学・レーザー国産化に重点（5/25）</a><span class="src">Brookings Institution</span></div></li><li><span class="lk">♥ 4</span><div class="rk-t"><a href="https://eetimes.itmedia.co.jp/ee/articles/2604/13/news082.html" target="_blank" rel="noopener">経産省、Rapidusに2026年度6,315億円の追加支援を承認（5/25）</a><span class="src">EE Times Japan</span></div></li><li><span class="lk">♥ 4</span><div class="rk-t"><a href="https://breakingdefense.com/2026/03/sda-hopes-to-bring-satellite-laser-links-into-use-within-next-6-months/" target="_blank" rel="noopener">米宇宙開発庁、衛星間レーザーリンク（OISL）の運用開始を6か月以内に（5/31）</a><span class="src">Breaking Defense</span></div></li><li><span class="lk">♥ 4</span><div class="rk-t"><a href="https://www.ans.org/news/2026-07-20/article-8217/llnl-and-pacific-fusion-achieve-3000shot-milestone-with-sirius-pulsedpower-prototype/" target="_blank" rel="noopener">LLNLとPacific Fusion、パルスパワー試作機Siriusで3,000ショット到達（7/22）</a><span class="src">ANS Nuclear Newswire</span></div></li><li><span class="lk">♥ 3</span><div class="rk-t"><a href="https://euro-fusion.org/news/" target="_blank" rel="noopener">EUROfusion、レーザー核融合に2026〜2030年で8億ユーロの追加投資（5/25）</a><span class="src">EUROfusion</span></div></li><li><span class="lk">♥ 3</span><div class="rk-t"><a href="https://www.thedefensenews.com/Archangel-Lightworks-Successfully-Trials-TERRA-M-Optical-Ground-Station-in-UK-First-Space-Laser-Downlink/" target="_blank" rel="noopener">英Archangel Lightworks、英国初の衛星光レーザーダウンリンクに成功（5/28）</a><span class="src">The Defense News</span></div></li><li><span class="lk">♥ 3</span><div class="rk-t"><a href="https://www.militarytimes.com/industry/techwatch/2026/06/02/the-us-military-wants-to-showcase-battle-ready-laser-weapons-by-2028/" target="_blank" rel="noopener">米軍、2028年までに実戦レーザー兵器のデモを目指す（6/4）</a><span class="src">Military Times</span></div></li><li><span class="lk">♥ 3</span><div class="rk-t"><a href="https://aviationweek.com/aerospace-daily-defense-report/2026-06-19" target="_blank" rel="noopener">nLIGHT、年末に1MWレーザー兵器デモ実施へ（6/23）</a><span class="src">Aviation Week</span></div></li><li><span class="lk">♥ 3</span><div class="rk-t"><a href="https://rocketlabcorp.com/updates/" target="_blank" rel="noopener">Rocket Lab、Iridiumを80億ドルで買収へ（7/2）</a><span class="src">Rocket Lab</span></div></li><li><span class="lk">♥ 3</span><div class="rk-t"><a href="https://keeptrack.space/space-brief/space-brief-2026-08-05" target="_blank" rel="noopener">Neuraspace、欧州の宇宙状況把握事業で1,800万ドルを調達（8/6）</a><span class="src">KeepTrack</span></div></li><li><span class="lk">♥ 3</span><div class="rk-t"><a href="https://world-nuclear-news.org/articles/us-army-selects-five-microreactor-vendors-to-power-bases" target="_blank" rel="noopener">米陸軍、基地向けマイクロ原子炉「Janus計画」で5社を選定（8/28）</a><span class="src">World Nuclear News</span></div></li><li><span class="lk">♥ 3</span><div class="rk-t"><a href="https://www.space.com/space-exploration/missions/blue-origin-wins-usd700-million-contract-to-build-nasas-next-mars-orbiter" target="_blank" rel="noopener">NASA、火星通信中継衛星をBlue Originに7億ドルで発注（9/3）</a><span class="src">Space.com</span></div></li><li><span class="lk">♥ 3</span><div class="rk-t"><a href="https://thedefensepost.com/2026/09/03/nec-mitsubishi-defense-deal/" target="_blank" rel="noopener">NECと三菱重工、防衛分野で戦略提携（9/4）</a><span class="src">The Defense Post</span></div></li></ol></div>
+  <div class="blk"><h3>主なトピック <small>いいね＋重要度でピックアップ</small></h3><div class="theme"><h4>防衛予算と防衛産業基盤</h4><ul><li><a href="https://www.brookings.edu/articles/late-breaking-shocks-and-shifting-goalposts-takaichis-highwire-washington-visit/" target="_blank" rel="noopener">日本の2026年度防衛予算、過去最高の5兆8,000億円（5/25・いいね5）</a><span class="src">Brookings Institution</span></li><li><a href="https://www.nikkei.com/article/DGXZQOUA110FP0R10C26A6000000/" target="_blank" rel="noopener">日英、AIなど軍民両用技術でスタートアップ支援基金を創設（6/15・いいね2）</a><span class="src">日本経済新聞</span></li><li><a href="https://www.thedefensenews.com/news-details/Japan-Accelerates-Military-Space-Program-With-Hypersonic-Tracking-Satellite-Network/" target="_blank" rel="noopener">防衛省、宇宙作戦群を880人規模に拡大—宇宙予算約1,000億円、レーザー測距装置を配備（6/15・いいね2）</a><span class="src">The Defense News（2026年5月）</span></li><li><a href="https://www.afpbb.com/articles/-/3648696" target="_blank" rel="noopener">台湾、2027年度防衛予算が初の1兆台湾ドル超え（8/20・いいね2）</a><span class="src">AFP</span></li><li><a href="https://www.jiji.com/jc/article?k=2026083100801&amp;g=pol&amp;m=rss" target="_blank" rel="noopener">防衛省、2027年度概算要求で過去最大8兆8,908億円（9/1・いいね2）</a><span class="src">時事通信</span></li><li><a href="https://thedefensepost.com/2026/09/03/nec-mitsubishi-defense-deal/" target="_blank" rel="noopener">NECと三菱重工、防衛分野で戦略提携（9/4・いいね3）</a><span class="src">The Defense Post</span></li><li><a href="https://news.web.nhk/newsweb/na/nd-20261026de65691" target="_blank" rel="noopener">自民党議連、防衛装備の生産力強化・移転の司令塔として新独立行政法人を提言（10/28・いいね2）</a><span class="src">NHK</span></li></ul></div><div class="theme"><h4>高エネルギーレーザー兵器</h4><ul><li><a href="https://www.militarytimes.com/industry/techwatch/2026/06/02/the-us-military-wants-to-showcase-battle-ready-laser-weapons-by-2028/" target="_blank" rel="noopener">米軍、2028年までに実戦レーザー兵器のデモを目指す—JLWSは「Golden Dome」の中核（6/4・いいね3）</a><span class="src">Military Times</span></li><li><a href="https://aviationweek.com/defense/missile-defense-weapons/electro-optic-systems-nears-300-kw-laser-contract-eyes-navy" target="_blank" rel="noopener">豪EOS、過去最高出力300kWの「Apollo」契約が最終段階（6/19・いいね2）</a><span class="src">Electro Optic Systems / Aviation Week</span></li><li><a href="https://aviationweek.com/aerospace-daily-defense-report/2026-06-19" target="_blank" rel="noopener">nLIGHT、年末に1MWレーザー兵器デモへ（6/23・いいね3）</a><span class="src">Aviation Week</span></li><li><a href="https://www.businesswire.com/news/home/20260709375006/en/nLIGHT-Awarded-$627-Million-Joint-Laser-Weapon-System-JLWS-Contract" target="_blank" rel="noopener">nLIGHT、JLWSで最大6億2,700万ドルの契約—150kW級から300〜500kW級へ（7/14・いいね2）</a><span class="src">BusinessWire／nLIGHT</span></li><li><a href="https://www.defensenews.com/news/your-military/2026/08/27/marines-fielding-new-laser-sights-at-school-of-infantry/" target="_blank" rel="noopener">米海兵隊、次世代レーザー照準器「SAL」の配備を開始（8/28・いいね2）</a><span class="src">Defense News</span></li></ul></div><div class="theme"><h4>衛星光通信・宇宙状況把握</h4><ul><li><a href="https://breakingdefense.com/2026/05/its-a-wrap-space-bacn-satellite-laser-link-program-shifts-from-darpa-to-diu/" target="_blank" rel="noopener">DARPAの衛星レーザー通信「Space-BACN」がDIUへ移管、実用化段階へ（5/27・いいね2）</a><span class="src">Breaking Defense</span></li><li><a href="https://www.thedefensenews.com/Archangel-Lightworks-Successfully-Trials-TERRA-M-Optical-Ground-Station-in-UK-First-Space-Laser-Downlink/" target="_blank" rel="noopener">英Archangel Lightworks、可搬型光地上局で英国初の衛星レーザーダウンリンク（5/28・いいね3）</a><span class="src">The Defense News</span></li><li><a href="https://breakingdefense.com/2026/03/sda-hopes-to-bring-satellite-laser-links-into-use-within-next-6-months/" target="_blank" rel="noopener">米SDA、OISLの運用開始を6か月以内に—Tranche 1の154機すべてが光リンク搭載（5/31・いいね4）</a><span class="src">Breaking Defense</span></li><li><a href="https://satnews.com/2026/05/18/astrolight-and-esa-unveil-operational-optical-ground-station-in-greece-for-satellite-laser-links/" target="_blank" rel="noopener">ESAとギリシャ、光地上局「Holomondas」の運用を開始（5/31・いいね2）</a><span class="src">SatNews</span></li><li><a href="https://www.govconwire.com/articles/rocket-lab-mynaric-acquisition-pwsa-laser-comms" target="_blank" rel="noopener">Rocket Lab、Mynaricの買収を完了し、続いてIridiumを80億ドルで買収へ（6/9・7/2・いいね2〜3）</a><span class="src">GovConWire</span></li><li><a href="https://keeptrack.space/space-brief/space-brief-2026-08-05" target="_blank" rel="noopener">Neuraspace、宇宙状況把握事業で1,800万ドルを調達（8/6・いいね3）</a><span class="src">KeepTrack</span></li><li><a href="https://www.space.com/space-exploration/missions/blue-origin-wins-usd700-million-contract-to-build-nasas-next-mars-orbiter" target="_blank" rel="noopener">NASA、火星通信中継衛星をBlue Originに7億ドルで発注（9/3・いいね3）</a><span class="src">Space.com</span></li></ul></div><div class="theme"><h4>核融合（レーザー方式を中心に）</h4><ul><li><a href="https://euro-fusion.org/news/" target="_blank" rel="noopener">EUROfusion、レーザー核融合に5年で8億ユーロの追加投資（5/25・いいね3）</a><span class="src">EUROfusion</span></li><li><a href="https://www.ans.org/news/2026-06-10/article-8112/does-latest-fusion-strategy-aims-for-commercial-energy-by-the-2030s/" target="_blank" rel="noopener">米エネルギー省、核融合の商用化国家戦略「FS&amp;Tロードマップ」を公表（6/11・いいね2）</a><span class="src">ANS Nuclear Newswire</span></li><li><a href="https://www.cnn.com/science/shuji-nakamura-lit-up-the-world-and-now-wants-to-power-it-spc" target="_blank" rel="noopener">中村修二氏、青色レーザーを応用したレーザー核融合発電に挑戦（7/8・いいね2）</a><span class="src">CNN</span></li><li><a href="https://www.ans.org/news/2026-07-20/article-8217/llnl-and-pacific-fusion-achieve-3000shot-milestone-with-sirius-pulsedpower-prototype/" target="_blank" rel="noopener">LLNLとPacific Fusion、パルスパワー試作機で3,000ショット到達（7/22・いいね4）</a><span class="src">ANS Nuclear Newswire</span></li><li><a href="https://www.nikkei.com/article/DGXZQOUC308HA0Q6A730C2000000/" target="_blank" rel="noopener">レーザー核融合の業界団体「J-LiFE産業推進機構」が発足—三菱電機・EX-Fusionなど（8/4・いいね2）</a><span class="src">日本経済新聞</span></li><li><a href="https://optics.org/news/germany-to-launch-three-new-fusion-hubs-combining-research-and-industry" target="_blank" rel="noopener">ドイツ、核融合ハブ3拠点を始動—レーザー核融合「VEGA」に初回1億2,500万ユーロ（8/6・いいね2）</a><span class="src">optics.org</span></li><li><a href="https://monoist.itmedia.co.jp/mn/articles/2608/26/news025.html" target="_blank" rel="noopener">QST、ITER用超伝導トロイダル磁場コイルで大電流パルス通電に成功（8/27・いいね2）</a><span class="src">ITmedia MONOist</span></li></ul></div><div class="theme"><h4>経済安保とサプライチェーン</h4><ul><li><a href="https://eetimes.itmedia.co.jp/ee/articles/2604/13/news082.html" target="_blank" rel="noopener">経産省、Rapidusに6,315億円の追加支援—累計2兆3,540億円（5/25・いいね4）</a><span class="src">EE Times Japan</span></li><li><a href="https://www.defensenews.com/news/pentagon-congress/2026/07/20/new-executive-order-tightens-defense-supply-chain-waiver-rules/" target="_blank" rel="noopener">米、防衛サプライチェーンの重要鉱物調達を厳格化—2027年から中国等の免除を停止（7/27・いいね2）</a><span class="src">Defense News/ホワイトハウス</span></li><li><a href="https://thedefensepost.com/2026/08/12/uk-drone-boats-china/" target="_blank" rel="noopener">英国防省、無人艇搭載カメラが中国へデータ送信と判明し全艦の接続を遮断（8/14・いいね2）</a><span class="src">The Defense Post</span></li></ul></div></div>
+  <div class="blk insight"><h3>考察</h3><ol><li><strong>1. 防衛光学は「予算の拡大」から「調達の実行」へ。</strong>過去最大の概算要求と新独立行政法人の構想により、装備品サプライヤーの調達の見通しは立てやすくなる方向です。レーザー測距、赤外イメージング、光通信リンクなど、当社の光源・光計測が関わる官需チャネルを整理しておく時期に来ています。</li><li><strong>2. 衛星光通信は端末の集約と量産の段階に入った。</strong>Mynaricの買収で独立系の光通信端末メーカーは減り、需要の中心は量産と地上局側に移っています。精密追尾光学系、高感度受光素子、宇宙用レーザー源が引き続き鍵になります。</li><li><strong>3. レーザー核融合は国家予算と業界団体がそろった。</strong>日米欧で公的資金が継続して入り、国内でもJ-LiFEが発足しました。高出力・高繰り返しレーザ、増幅用ファイバ、大口径光学素子、計測は当社の取扱領域と重なるため、参画や情報収集の窓口を検討する価値があります。</li><li><strong>4. 光学部品の原産地が安全保障の論点になった。</strong>英国防省の事例や米国の重要鉱物規制により、防衛用途のカメラ・センサの原産地審査は世界的に厳しくなります。欧米日の取扱メーカは強みになる一方、ガリウム・インジウムなど化合物半導体材料の調達リスクには注意が必要です。</li></ol></div>
+  <p class="note">本レポートは『ニュースポータル管理DB』（section=space）の2026年5月25日〜11月20日掲載記事778件のうち、社内版でいいねが付いた269件（いいね合計351件、likes_intシートで集計）を対象に再構成したものです。掲載日が古い記事ほど、いいねが集まる期間が長いため、10〜11月の記事は重要度を加味して選んでいます。個別URLはDBを参照してください。</p>
+</section>
+<section class="genre c-domestic" id="sp-domestic">
+  <div class="g-hd"><span class="g-ico">🏛</span><h2>国内政治</h2></div>
+  <div class="blk"><h3>この半年の動向</h3><p>高市政権のもとで、経済政策の転換が続いた半年でした。7月に政権初の「骨太の方針」と、17分野で官民370兆円超を見込む成長戦略を決定し、食料品の消費税を2027年4月から2年間1%に下げる方針も示しました。日銀は6月に政策金利を31年ぶりの1.0%へ引き上げ、7〜8月には円安を受けて政府・日銀が円買い介入に踏み切り、日米は15年ぶりに協調介入を公表しました。社内で最もいいねが多かったのは、OpenAIによる日本向けサイバー防衛AIの提供でした。</p></div>
+  <div class="blk"><h3>いいねランキング（社内版）</h3><ol class="rank"><li><span class="lk">♥ 9</span><div class="rk-t"><a href="https://www.jiji.com/jc/archives?g=eco_archive_0" target="_blank" rel="noopener">OpenAI、日本向けサイバー防衛特化AIモデルを提供へ（5/25）</a><span class="src">時事通信</span></div></li><li><span class="lk">♥ 7</span><div class="rk-t"><a href="https://news.web.nhk/newsweb/genre/politics" target="_blank" rel="noopener">補正予算案の審議日程、与党・中道で折り合わず—3兆円規模・電気代支援中心（5/29）</a><span class="src">NHK</span></div></li><li><span class="lk">♥ 6</span><div class="rk-t"><a href="https://www.jiji.com/jc/article?k=2026062200345&amp;g=pol" target="_blank" rel="noopener">高市首相、消費減税「2年限定」を明言—食料品ゼロ税率へ（6/23）</a><span class="src">時事通信</span></div></li><li><span class="lk">♥ 5</span><div class="rk-t"><a href="https://www.nikkei.com/" target="_blank" rel="noopener">夏のボーナス、初の平均100万円超え（5/26）</a><span class="src">日本経済新聞</span></div></li><li><span class="lk">♥ 4</span><div class="rk-t"><a href="https://www.kantei.go.jp/jp/105/actions/202607/21keizai_seichyou.html" target="_blank" rel="noopener">政府、新たな成長戦略を決定—17分野で投資規模総額370兆円超（7/22）</a><span class="src">NHK</span></div></li></ol></div>
+  <div class="blk"><h3>主なトピック <small>いいね＋重要度でピックアップ</small></h3><div class="theme"><h4>主な出来事</h4><ul><li><a href="https://www.nikkei.com/article/DGXZQOUB154P00V10C26A6000000/" target="_blank" rel="noopener">日銀、政策金利を1.0%へ引き上げ—31年ぶりの水準（6/17・いいね3）</a><span class="src">日本経済新聞 / Bloomberg</span></li><li><a href="https://txbiz.tv-tokyo.co.jp/nmssat/news/post_342217" target="_blank" rel="noopener">中東対応の補正予算が成立—総額3兆1,135億円、ガソリン・電気・ガス支援（6/17・いいね2）</a><span class="src">テレ東BIZ / NHK</span></li><li><a href="https://www.nikkei.com/article/DGXZQOGM292260Z20C26A6000000/" target="_blank" rel="noopener">中国、軍民両用品の対日輸出禁止「第2弾」—日本の20社・団体を追加（6/30・いいね2）</a><span class="src">日本経済新聞 / ロイター</span></li><li><a href="https://news.web.nhk/newsweb/na/na-k10015181561000" target="_blank" rel="noopener">高市政権初の「骨太の方針」と成長戦略を決定（7/22・いいね3〜4）</a><span class="src">NHK</span></li><li><a href="https://www.nikkei.com/article/DGXZQOUA292ZG0Z20C26A7000000/" target="_blank" rel="noopener">食料品の消費税を2027年4月から2年間1%とする方針（7/30・いいね2）</a><span class="src">日本経済新聞</span></li><li><a href="https://www.nikkei.com/article/DGXZQOGN30CSI0Q6A730C2000000/" target="_blank" rel="noopener">政府・日銀が円買い介入、日米が15年ぶりの協調介入を公表（7/31・8/4・いいね2）</a><span class="src">日本経済新聞</span></li><li><a href="https://ryukyushimpo.jp/kyodo/entry-5581639.html" target="_blank" rel="noopener">不正アクセスによる情報漏えい、2026年1〜10月で3億3千万件超（10/30・いいね2）</a><span class="src">共同通信</span></li></ul></div></div>
+  <div class="blk insight"><h3>考察</h3><ol><li><strong>1. 成長戦略の17分野と防衛費が、光技術の公的需要を下支えする。</strong>重点分野への投資枠と防衛予算の拡大は、研究機関・官需向けの案件につながります。</li><li><strong>2. 為替と輸出規制は調達コストに直結する。</strong>円安局面での介入や中国の対日輸出規制は、海外メーカ品の仕入れ採算と供給の見通しに影響するため、引き続き注視が必要です。</li></ol></div>
+  <p class="note">本レポートは『ニュースポータル管理DB』（section=domestic）の2026年5月25日〜11月20日掲載記事707件のうち、社内版でいいねが付いた202件（いいね合計286件、likes_intシートで集計）を対象に再構成したものです。掲載日が古い記事ほど、いいねが集まる期間が長いため、10〜11月の記事は重要度を加味して選んでいます。個別URLはDBを参照してください。</p>
+</section>
+<section class="genre c-intl" id="sp-intl">
+  <div class="g-hd"><span class="g-ico">🌐</span><h2>海外政治</h2></div>
+  <div class="blk"><h3>この半年の動向</h3><p>通年で最大のテーマは、イランとの紛争とホルムズ海峡の封鎖でした。6月に米国とイランは合意に向けたロードマップで一致しましたが、10月にもイランは海峡の閉鎖継続を明言し、ブレント原油は1バレル114ドル台まで上昇しました。米国ではウォーシュFRB議長のもとでインフレが再燃し、利上げ観測が強まっています。通商ではEU・米国の15%関税合意が発効し、カナダは対米報復関税を発動しました。中国はヘリウムの臨時輸出禁止を導入し、経済安保をめぐる規制の応酬も続いています。</p></div>
+  <div class="blk"><h3>いいねランキング（社内版）</h3><ol class="rank"><li><span class="lk">♥ 5</span><div class="rk-t"><a href="https://www.tomshardware.com/news/live/computex-2026-" target="_blank" rel="noopener">Computex 2026開幕—NVIDIA・AMD・Intel・QualcommのCEOが台北に集結（6/2）</a><span class="src">Tom&#x27;s Hardware</span></div></li><li><span class="lk">♥ 4</span><div class="rk-t"><a href="https://www.cbsnews.com/live-updates/iran-war-us-trump-vance-ceasefire-strait-of-hormuz-deal-close/" target="_blank" rel="noopener">イスラエル軍、レバノン南部で作戦拡大（5/31）</a><span class="src">CBS News</span></div></li><li><span class="lk">♥ 4</span><div class="rk-t"><a href="https://www.cnbc.com/2026/06/12/spacex-ipo-spcx-live-updates.html" target="_blank" rel="noopener">SpaceX史上最大のIPOが示す「宇宙×AI×光通信」の成長期待（6/15）</a><span class="src">CNBC・NPR</span></div></li><li><span class="lk">♥ 4</span><div class="rk-t"><a href="https://www.cnbc.com/2026/07/02/donald-trump-interview-live-updates.html" target="_blank" rel="noopener">米FRB、ウォーシュ新議長の下でインフレ再燃—年内利上げの可能性（7/8）</a><span class="src">CNBC</span></div></li><li><span class="lk">♥ 3</span><div class="rk-t"><a href="https://www.npr.org/2026/06/21/g-s1-129222/us-iran-deal-lebanon-israel-strait-hormuz-jd-vance" target="_blank" rel="noopener">米・イラン、スイス協議で「ロードマップ」合意（6/23）</a><span class="src">NPR / Britannica</span></div></li></ol></div>
+  <div class="blk"><h3>主なトピック <small>いいね＋重要度でピックアップ</small></h3><div class="theme"><h4>主な出来事</h4><ul><li><a href="https://www.npr.org/2026/06/21/g-s1-129222/us-iran-deal-lebanon-israel-strait-hormuz-jd-vance" target="_blank" rel="noopener">米・イラン、スイス協議で「ロードマップ」合意—60日以内の最終合意をめざす（6/23・いいね3）</a><span class="src">NPR / Britannica</span></li><li><a href="https://ourtake.bakerbotts.com/post/102n7tq/trump-tariff-tracker-july-2-2026" target="_blank" rel="noopener">EU・米通商合意が発効—EU産品に15%関税（7/8・いいね2）</a><span class="src">Trump Tariff Tracker</span></li><li><a href="https://www.cistec.or.jp/service/uschina.html" target="_blank" rel="noopener">中国、ヘリウムの臨時輸出禁止措置を導入（7/22・いいね3）</a><span class="src">CISTEC</span></li><li><a href="https://www.bloomberg.com/news/articles/2026-09-07/canada-set-to-hit-back-at-trump-tariffs-risking-wider-trade-war" target="_blank" rel="noopener">カナダ、対米報復関税を発動へ—約200億ドル相当・最大50%（9/8・いいね2）</a><span class="src">Bloomberg</span></li><li><a href="https://www.aljazeera.com/news/2026/10/4/iran-says-strait-of-hormuz-to-remain-closed-until-us-meets-conditions" target="_blank" rel="noopener">イラン、ホルムズ海峡の閉鎖継続を明言（10/5・いいね1）</a><span class="src">アルジャジーラ</span></li><li><a href="https://www.aljazeera.com/news/2026/10/23/us-iran-war-then-and-now-how-the-landscape-has-changed-since-february" target="_blank" rel="noopener">ブレント原油が1バレル114.47ドル—開戦前から58%高（10/26・いいね1）</a><span class="src">Al Jazeera</span></li><li><a href="https://www.visiontimes.com/2026/11/03/nvidia-moves-to-restrict-chinas-access-to-ai-computing-as-us-china-tech-rivalry-intensifies.html" target="_blank" rel="noopener">NVIDIA、クラウド事業者に中国顧客比率49%以下を要請—輸出規制の抜け穴を封鎖（11/5・いいね1）</a><span class="src">Vision Times（FT報道）</span></li></ul></div></div>
+  <div class="blk insight"><h3>考察</h3><ol><li><strong>1. エネルギー価格と物流が最大の外部リスク。</strong>ホルムズ海峡の封鎖が長引けば、原油高を通じて輸送費や部材価格に波及します。</li><li><strong>2. 輸出規制は材料レベルにまで広がった。</strong>ヘリウムや半導体をめぐる規制は、光部品・光計測機器の製造や供給にも影響し得るため、取扱メーカの調達状況を確認しておく必要があります。</li></ol></div>
+  <p class="note">本レポートは『ニュースポータル管理DB』（section=intl）の2026年5月25日〜11月20日掲載記事738件のうち、社内版でいいねが付いた164件（いいね合計214件、likes_intシートで集計）を対象に再構成したものです。掲載日が古い記事ほど、いいねが集まる期間が長いため、10〜11月の記事は重要度を加味して選んでいます。個別URLはDBを参照してください。</p>
+</section>
+  </div></template>
     <div class="charts-flow" id="chAll"></div>
     <div class="filter-empty" id="filterEmpty" style="display:none"><div class="filter-empty-ico">🗂️</div><div>このジャンルのサブジャンルが選択されていません。<br>上のサブジャンルから見たいものを選択してください。</div></div>
   </main>
@@ -1243,7 +1336,8 @@ async function loadAll(){
   renderCal();
   if(availDates.length>0){
     const todayDs=_dateStr(new Date());
-    loadDate(_isWeekendSpecial(todayDs)?todayDs:availDates[availDates.length-1]);
+    const spPrev=SPECIAL_PREVIEW?Object.keys(SPECIAL_DAYS)[0]:null;
+    loadDate(spPrev||(_isWeekendSpecial(todayDs)?todayDs:availDates[availDates.length-1]));
   }
 }
 
@@ -1287,12 +1381,17 @@ document.getElementById('calNext').onclick=()=>{calM++;if(calM>11){calM=0;calY++
 const WEEKEND_SPECIAL_START='2026-07-01';
 // 土曜ランキング・日曜クイズの公開時刻（その日の7:00 JST）。7時前は「公開前」表示。
 const WEEKEND_RELEASE_HOUR=7;
+// ── 祝日などの特別企画日（ニュース更新なし）。当日7:00に公開。URLに ?special=1 で事前確認可 ──
+const SPECIAL_DAYS={'2026-11-23':'tpl'};
+const SPECIAL_PREVIEW=/[?&]special=1/.test(location.search);
+function _isSpecialDay(ds){return !!SPECIAL_DAYS[ds];}
 
 // 現在のローカル日付・時刻
 function _nowDateStr(){return _dateStr(new Date());}
 function _nowHour(){return new Date().getHours();}
 // 指定日付の公開時刻（その日の7:00）にまだ達していないか（未来日も公開前扱い）
 function _isBeforeRelease(ds){
+  if(SPECIAL_PREVIEW&&_isSpecialDay(ds))return false;
   const rel=new Date(ds+'T00:00:00');
   rel.setHours(WEEKEND_RELEASE_HOUR,0,0,0);
   return Date.now()<rel.getTime();
@@ -1317,6 +1416,7 @@ function _mmdd(ds){return ds&&ds.length>=10?ds.slice(5).replace('-','/'):'';}
 // 2026年6月までは土日もニュースデータがあるため常に daily
 // 2026年7月以降の土日は、その日の7時までは 'pending'（公開前案内）を表示する
 function _dayMode(ds){
+  if(_isSpecialDay(ds))return _isBeforeRelease(ds)?'pending':'special';
   if(ds<WEEKEND_SPECIAL_START)return 'daily';
   const dow=new Date(ds+'T00:00:00').getDay();
   if(dow!==6&&dow!==0)return 'daily';
@@ -1327,6 +1427,7 @@ function _dayMode(ds){
 }
 // pending判定時に、本来のモード（ranking/quiz）を返す補助
 function _pendingTargetMode(ds){
+  if(_isSpecialDay(ds))return 'special';
   const dow=new Date(ds+'T00:00:00').getDay();
   return dow===6?'ranking':'quiz';
 }
@@ -1351,7 +1452,8 @@ function _schedulePendingRelease(ds){
 function _isWeekendSpecial(ds){
   const mode=_dayMode(ds);
   if(mode==='daily')return false;
-  if(mode==='pending')return ds===_nowDateStr(); // 当日の公開前のみ案内表示のため選択可
+  if(mode==='pending')return ds===_nowDateStr();
+  if(mode==='special')return true; // 当日の公開前のみ案内表示のため選択可
   const {start,end}=_weekdayWindow(ds);
   return availDates.some(d=>d>=start&&d<=end);
 }
@@ -1386,6 +1488,15 @@ function setWeeklyBanner(ds,on){
   }
 }
 // クイズビューの案内バナー表示切替
+function setSpecialBanner(on){
+  const b=document.getElementById('specialBanner');
+  if(b)b.style.display=on?'flex':'none';
+}
+function renderSpecialBlock(grid){
+  grid.className='sp-flow';
+  const t=document.getElementById('specialTpl');
+  if(t)grid.appendChild(t.content.cloneNode(true));
+}
 function setQuizBanner(ds,on){
   const b=document.getElementById('quizBanner');
   if(!b)return;
@@ -1620,10 +1731,12 @@ function renderPendingBlock(grid){
   grid.className='pending-flow';
   const ds=curDate;
   const target=_pendingTargetMode(ds);
-  const isRank=target==='ranking';
-  const ico=isRank?'🏆':'📝';
-  const ttl=isRank?'今週の週間ランキング':'今週のニュースクイズ';
-  const desc=isRank
+  const isRank=target==='ranking',isSp=target==='special';
+  const ico=isSp?'🎁':isRank?'🏆':'📝';
+  const ttl=isSp?'勤労感謝の日 特別総集編':isRank?'今週の週間ランキング':'今週のニュースクイズ';
+  const desc=isSp
+    ? '本日は新しいニュースの更新はお休みです。開設から半年間の「いいね」で振り返る特別総集編を、本日 7:00 に公開します。'
+    : isRank
     ? '今週の平日（月〜金）で反応の多かった記事のランキングを、本日 7:00 に公開します。'
     : '今週の平日（月〜金）のニュースから作成した技術・政治クイズを、本日 7:00 に公開します。';
   grid.innerHTML=`
@@ -1928,6 +2041,15 @@ function loadDate(ds){
   const dayMedia=allMediaRows.find(r=>r.date===ds)||null;
   const data={optics:{items:[],charts:[]},space:{items:[],charts:[]},domestic:{items:[],charts:[]},intl:{items:[],charts:[]}};
 
+  setSpecialBanner(mode==='special');
+  if(mode==='special'){
+    // 特別企画日：ニュース更新なし。特別総集編を同一ページ内に表示
+    setWeeklyBanner(ds,false);
+    setQuizBanner(ds,false);
+    renderAll(data,dayMedia,'special');
+    renderDailyLinks(ds);
+    return;
+  }
   if(mode==='pending'){
     // 当日土日の公開前（7時前）：公開予告を表示し、公開時刻に自動で切替
     const target=_pendingTargetMode(ds);
@@ -2048,6 +2170,12 @@ function renderFlow(){
     // 横断検索：日付・土日モードに関係なく、期間内の全記事から表示
     empty.style.display='none';
     renderSearchTimeline(grid);
+    return;
+  }
+  if(_curMode==='special'){
+    // 特別企画日：特別総集編を表示（ジャンルフィルタ非依存）
+    empty.style.display='none';
+    renderSpecialBlock(grid);
     return;
   }
   if(_curMode==='pending'){
