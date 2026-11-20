@@ -236,6 +236,11 @@ body{font-family:'Noto Sans JP',sans-serif;font-size:13px;background:var(--bg);c
 .pending-cd{display:inline-block;font-family:'Oswald',sans-serif;font-size:20px;font-weight:700;color:#4338ca;background:#e0e7ff;border-radius:10px;padding:8px 18px;letter-spacing:.03em}
 .pending-note{font-size:11px;color:#94a3b8;margin-top:14px;line-height:1.6}
 /* ── 日曜：週間ニュースクイズ ── */
+.weekly-banner.special-banner{background:linear-gradient(135deg,#fef2f2 0%,#fff7ed 100%);border-color:#fca5a5;text-decoration:none;cursor:pointer;transition:box-shadow .15s}
+.weekly-banner.special-banner:hover{box-shadow:0 2px 10px rgba(220,38,38,.15)}
+.weekly-banner.special-banner .wk-ttl{color:#b91c1c}
+.weekly-banner.special-banner .wk-sub{color:#9a3412}
+.weekly-banner.special-banner .sp-go{margin-left:auto;flex-shrink:0;font-size:12px;font-weight:700;color:#fff;background:var(--red);border-radius:7px;padding:6px 12px}
 .weekly-banner.quiz-banner{background:linear-gradient(135deg,#eef2ff 0%,#e0e7ff 100%);border-color:#a5b4fc}
 .weekly-banner.quiz-banner .wk-ttl{color:#3730a3}
 .weekly-banner.quiz-banner .wk-sub{color:#4338ca}
@@ -636,6 +641,15 @@ body{font-family:'Noto Sans JP',sans-serif;font-size:13px;background:var(--bg);c
         </a>
       </div>
     </div>
+    <a class="weekly-banner special-banner" id="specialBanner" href="special/20261123.html" style="display:none">
+      <span class="wk-ico">🎁</span>
+      <div class="wk-txt">
+        <span class="wk-ttl">勤労感謝の日 特別企画：特別総集編（2026年5月〜11月）</span>
+        <span class="wk-sub">開設から半年間、皆さんの「いいね」が多かった記事と重要ニュースを、ジャンル別に振り返りました。</span>
+      </div>
+      <span class="sp-go">特集を読む →</span>
+    </a>
+    <script>(function(){try{var now=Date.now(),s=Date.parse('2026-11-23T07:00:00+09:00'),e=Date.parse('2026-12-01T00:00:00+09:00');if((now>=s&&now<e)||/[?&]special=1/.test(location.search)){document.getElementById('specialBanner').style.display='flex';}}catch(_){}})();</script>
     <div class="weekly-banner" id="weeklyBanner" style="display:none">
       <span class="wk-ico">🏆</span>
       <div class="wk-txt">
