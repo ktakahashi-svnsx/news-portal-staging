@@ -285,6 +285,8 @@ body{font-family:'Noto Sans JP',sans-serif;font-size:13px;background:var(--bg);c
 .sp-wrap .insight strong{display:block;margin-bottom:2px}
 .sp-wrap .note{margin-top:14px;font-size:11px;color:var(--muted);line-height:1.6}
 @media(max-width:640px){.sp-wrap .hero{padding:20px 16px}.sp-wrap .hero h2{font-size:20px}.sp-wrap .genre{padding:16px 14px}.sp-wrap .stats{grid-template-columns:1fr}}
+.sp-hint{font-size:12px;color:var(--muted);margin:0 0 12px}
+.filter-panel.sp-mode .main-tab-badge,.filter-panel.sp-mode .sub-row,.filter-panel.sp-mode .filter-actions{display:none}
 .weekly-banner.special-banner{background:linear-gradient(135deg,#fef2f2 0%,#fff7ed 100%);border-color:#fca5a5}
 .weekly-banner.special-banner .wk-ttl{color:#b91c1c}
 .weekly-banner.special-banner .wk-sub{color:#9a3412}
@@ -1495,7 +1497,13 @@ function setSpecialBanner(on){
 function renderSpecialBlock(grid){
   grid.className='sp-flow';
   const t=document.getElementById('specialTpl');
-  if(t)grid.appendChild(t.content.cloneNode(true));
+  if(!t)return;
+  const frag=t.content.cloneNode(true);
+  // 上部の大ジャンルタブ（光学／宇宙・防衛／国内政治／海外政治）で表示ジャンルを切り替える
+  const nav=frag.querySelector('.sp-nav');
+  if(nav){const h=document.createElement('p');h.className='sp-hint';h.textContent='上の「光学／宇宙・防衛／国内政治／海外政治」タブで、表示するジャンルを切り替えられます。';nav.replaceWith(h);}
+  frag.querySelectorAll('.genre').forEach(function(sec){if(sec.id!=='sp-'+activeMain)sec.remove();});
+  grid.appendChild(frag);
 }
 function setQuizBanner(ds,on){
   const b=document.getElementById('quizBanner');
@@ -2166,6 +2174,7 @@ function renderFlow(){
   const data=_curData||{};
   updateChipCounts(_computeViewCounts(data));
   _refreshFilterUI();
+  {const fp=document.getElementById('filterPanel');if(fp)fp.classList.toggle('sp-mode',_curMode==='special'&&!_isSearchMode());}
   if(_isSearchMode()){
     // 横断検索：日付・土日モードに関係なく、期間内の全記事から表示
     empty.style.display='none';
